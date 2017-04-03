@@ -1,0 +1,64 @@
+# Paramètres communs aux makefiles
+# \author Pierre Pomeret-Coquot
+# \version 1
+
+
+
+
+
+# Paramètres utilisateur
+# JAVA_HOME          = /usr/lib/jvm/java-7-openjdk-amd64
+JAVA_HOME            = $(subst /jre,,$(shell jrunscript -e 'java.lang.System.out.println(java.lang.System.getProperty("java.home"));'))
+SYSTEME              = linux
+
+
+# Executable
+EXE                  = mon_premier_programme
+
+
+# Bibliothèques
+LIB_CRETINHEX_SO     = cretinhex.so
+LIB_CRETINHEX_DLL    = cretinhex.dll
+
+ifeq ($(SYSTEME), windows)
+	LIB_CRETINHEX        = $(LIB_CRETINHEX_DLL)
+else
+	LIB_CRETINHEX        = $(LIB_CRETINHEX_SO)
+endif
+
+
+# Dossiers du projet (relatif au projet)
+PARAMS               = parametres
+DOC                  = doc
+JAVA                 = java
+C                    = c
+
+
+# Dossiers Java (relatifs à java/)
+JAVA_SRC             = src
+JAVA_BIN             = bin
+JAVA_APP             = $(JAVA_BIN)/cretinplay/Application.class
+JAVA_CLASS_APP       = cretinplay.Application
+JAVA_CLASS_PARTIEJNI = noyau.PartieJNI
+
+
+# Dossiers C
+C_CRETINLIB          = cretinlib
+C_HEX                = hex
+C_TESTS              = tests
+C_TOUT               = $(C_CRETINLIB) $(C_HEX) $(C_TESTS)
+
+
+# Compilation C
+CC                   = gcc
+C_OPT                = -Wall -Werror -ansi -fPIC
+JNI_OPT              = -I$(JAVA_HOME)/include/ -I$(JAVA_HOME)/include/linux
+DOS_O                = obj
+DOS_D                = dep
+
+
+# JNI
+C_HEADER_PARTIEJNI   = $(C_HEX)/PartieJNI.h
+
+
+
