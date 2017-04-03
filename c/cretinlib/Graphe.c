@@ -47,7 +47,10 @@
  */
 
 
-
+typedef struct Graphe {
+	LDC pointsEntree;
+	int nbNoeuds;
+} GrapheInterne;
 
 
 
@@ -117,7 +120,7 @@ GrapheNoeud GrapheNoeud_init(GrapheElement e, GrapheElementFree free){
 }
 
 
-/**
+/*
  * \brief   Récupère l'élément contenu dans un noeud
  */
 GrapheElement GrapheNoeud_obtenirElement(GrapheNoeud noeud){
@@ -125,7 +128,7 @@ GrapheElement GrapheNoeud_obtenirElement(GrapheNoeud noeud){
 }
 
 
-/**
+/*
  * \brief   Donne la liste des noeuds voisins
  */
 LDC GrapheNoeud_obtenirVoisins(GrapheNoeud noeud){
@@ -134,14 +137,14 @@ LDC GrapheNoeud_obtenirVoisins(GrapheNoeud noeud){
 
 
 
-/**
+/*
  * \brief Égalité de noeuds : même adresse
  */
 int GrapheNoeud_estEgal(GrapheNoeud n1, GrapheNoeud n2){
 	return (n1 == n2);
 }
 
-/**
+/*
  * \brief   Fusionne deux noeuds dans le premier
  * \param   n1 Le premier noeud
  * \param   n2 Le noeud à fusionner dans le premier
@@ -170,15 +173,68 @@ GrapheNoeud GrapheNoeud_fusionner(GrapheNoeud n1, GrapheNoeud n2){
 }
 
 
-/**
+/*
  * \brief   Libère la mémoire allouée à un noeud
  * \note    Libère aussi la mémoire allouée à l'élément avec la fonction GrapheElementFree fournit à l'initialisation, si différente de NULL
  */
-void GrapheNoeud_libererMemoire(GrapheNoeud * noeud);
+void GrapheNoeud_libererMemoire(GrapheNoeud * noeud){
+	if ((*noeud)->free != NULL)
+		(*noeud)->free(&((*noeud)->element));
+	free(*noeud);
+}
 
 
  
 /** @} */
+
+
+
+
+
+
+
+
+
+
+
+/* Graphe */
+
+/*
+ * \brief   Initialise un graphe
+ * \param   pointsEntree Une LDC contenant les noeuds qui sont des points d'entrées
+ * \return  Un graphe initialisé
+ */
+Graphe Graphe_init(LDC pointsEntree){
+	Graphe g;
+
+	g = (Graphe) malloc(sizeof(GrapheInterne));
+	assert(g != NULL);
+
+	g->pointsEntree = pointsEntree;
+	g->nbNoeuds = 0;
+	
+	return g;
+}
+
+/*
+ * \brief   Insertion d'un noeud
+ * \param   noeud Le noeud à insérer, correctement initialisé
+ * \param   voisins Une LDC contenant les noeuds voisins
+ * \return  Le graphe mis à jour
+ * \todo    Faire la fonction Graphe_insererNoeud()
+ */
+Graphe Graphe_insererNoeud(Graphe g, GrapheNoeud noeud, LDC voisins){
+	return g;
+}
+
+/*
+ * \brief   Libère la mémoire allouée à un Graphe
+ * \todo    Faire la fonction Graphe_libererMemoire()
+ *          et trouver l'heuristique permettant de nettoyer tous les noeuds
+ */
+void Graphe_libererMemoire(Graphe * g){
+}
+
 
 
 
