@@ -22,6 +22,8 @@ GENERE  = $(subst .c,,$(wildcard mk_*.c))
 # Tout
 all: $(MAINS) $(GENERE)
 
+
+# Tests
 tests: $(SERIE_TESTS)
 
 memory_tests: tests_memoire
