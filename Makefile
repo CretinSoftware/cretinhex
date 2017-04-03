@@ -16,9 +16,6 @@
 
 
 # RÉGLAGES
-
-
-
 include parametres/make.txt
 
 
