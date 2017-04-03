@@ -29,26 +29,22 @@
  * \par Type abstrait de données
  *
  * <pre style="line-height:1.1em;">
- * SORTE :            Graphe
+ * Sorte :            Graphe
  * 
- * UTILISE :          GrapheElement, LDC, int
+ * Utilise :          GrapheNoeud, LDC
  *
- * CONSTRUCTEURS :    Graphe_init                                     _____ -> LDC
- *                    LDC_insererElement            LDC, LDCElement, int -> LDC   
+ * Constructeurs :    init :                            pointsEntree[] → Graphe
+ *                    insererNoeud :       GrapheNoeud x GrapheNoeud[] → Graphe
  *
- * OPERATEURS :       LDC_obtenirElement                        LDC, int -> LDCElement
- *                    LDC_enleverElement                        LDC, int -> LDC
- *                    LDC_taille                                     LDC -> int
- *                    LDC_libererMemoire                      LDCElement -> _____
+ * Opérateurs :       libererMemoire :                          Graphe → __
  *
  * </pre>
- * \todo Finir le TAD     
  *
  * @{               
  */
 
 
-
+typedef struct Graphe * Graphe;
 
 
 
@@ -148,6 +144,35 @@ void GrapheNoeud_libererMemoire(GrapheNoeud * noeud);
 
  
 /** @} */
+
+
+
+
+
+
+
+
+
+/* Graphe */
+
+/**
+ * \brief   Initialise un graphe
+ */
+Graphe Graphe_init(LDC pointsEntree);
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -30,6 +30,10 @@ NUplet NUplet_init(int dimension){
 	return nuplet;
 }
 
+int NUplet_dimension(NUplet nuplet){
+	return nuplet->dim;
+}
+
 NUplet NUplet_set(NUplet nuplet, int position, int valeur){
 	assert(position >= 0 && position < nuplet->dim);
 	nuplet->valeurs[position] = valeur;
@@ -53,4 +57,22 @@ void NUplet_afficher(NUplet nuplet){
 		printf("%d ", nuplet->valeurs[i]);
 	printf("\n");
 }
+
+
+int NUplet_egal(NUplet nu1, NUplet nu2){
+	int ok;
+	int i;
+	
+	ok = (NUplet_dimension(nu1) == NUplet_dimension(nu2));
+	i = 0;
+	
+	while (ok && i < NUplet_dimension(nu1)){
+		ok = (NUplet_get(nu1, i) == NUplet_get(nu2, i));
+		++i;
+	}
+	
+	
+	return ok;
+}
+
 

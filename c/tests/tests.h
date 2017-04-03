@@ -24,9 +24,11 @@ void erreurUnix(const char * str, int CE);
 /* n-uplet */
 typedef struct s_NUplet * NUplet;
 NUplet NUplet_init(int dimension);
+int NUplet_dimension(NUplet nuplet);
 NUplet NUplet_set(NUplet nuplet, int position, int valeur);
 int NUplet_get(NUplet nuplet, int position);
 void NUplet_libererMemoire(NUplet * nuplet);
 void NUplet_afficher(NUplet nuplet);
+int NUplet_egal(NUplet nu1, NUplet nu2);
 
 # endif

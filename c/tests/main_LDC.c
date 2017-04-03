@@ -12,9 +12,10 @@
 void erreurUsage(char * argv[]){
 	fprintf(stderr, "%s: usage :\n", argv[0]);
 	fprintf(stderr, "	-c  dimension_n-uplet  nombre_n-uplets  fichier_source\n");
-	fprintf(stderr, "	-r  nombre_valeurs  fichier_source  fichier_valeurs_à_rechercher\n");
+	fprintf(stderr, "	-r  dimension_n-uplet  nombre_n-uplets  fichier_valeurs_à_rechercher  fichier_source\n");
 	exit(10);
 }
+
 
 
 
@@ -38,13 +39,13 @@ void afficherLDC(LDC ldc){
 
 /**
  * \brief Fonction de construction depuis un fichier (façon révisions de système)
- * \param lgTab Le numbre d'élément par ligne
- * \param n le nombre de lgTab-uplets
- * \param fichier le chemin du fichier contenant les n lgTab-uplets
+ * \param dim Le numbre d'élément par ligne
+ * \param n le nombre de dim-uplets
+ * \param fichier le chemin du fichier contenant les n dim-uplets
  *
  */
 
-LDC mkLDC(int lgTab, int n, const char * fichier){
+LDC mkLDC(int dim, int n, const char * fichier){
 	
 	FILE * f;
 	int i, j, v;
@@ -57,8 +58,8 @@ LDC mkLDC(int lgTab, int n, const char * fichier){
 	ldc = LDC_init();
 	
 	for (i = 0; i < n; ++i){
-		nuplet = NUplet_init(lgTab);
-		for (j=0; j < lgTab; ++j){
+		nuplet = NUplet_init(dim);
+		for (j=0; j < dim; ++j){
 			fscanf(f, "%d", &v);
 			NUplet_set(nuplet, j, v);
 		}
@@ -76,21 +77,57 @@ LDC mkLDC(int lgTab, int n, const char * fichier){
 /**
  * \brief Test de construction / insertion
  */
-void test_construction(int lg, int nb, const char * fichier){
+void test_construction(int dim, int nb, const char * fichier){
 	LDC ldc;
-	ldc = mkLDC(lg, nb, fichier);
+	ldc = mkLDC(dim, nb, fichier);
 	afficherLDC(ldc);
 	LDC_libererMemoire(&ldc);
 }
 
 
+
+
+
+
 /**
  * \brief Test de recherche
  */
-void test_recherche(int nb, const char * f_src, const char * f_valeurs){
+void test_recherche(int dim, int nb, const char * f_valeurs, const char * f_src){
 	LDC ldc;
-	ldc = mkLDC(1, nb, f_src);
-	afficherLDC(ldc);
+	int i, v;
+	char str[256];
+	
+	NUplet nuplet;
+	
+	ldc = mkLDC(dim, nb, f_src);
+	
+	
+	FILE * f_rech = fopen(f_valeurs, "r");
+	assert (f_rech != NULL);
+	
+	
+	do {
+		nuplet = NUplet_init(dim);
+		for (i = 0; i < dim; ++i){
+			fscanf(f_rech, "%d", &v);
+			nuplet = NUplet_set(nuplet, i, v);
+		}
+		
+		fscanf(f_rech, "%s ", str);
+		
+		
+		/* Affichage */
+		NUplet_afficher(nuplet);
+		if (LDC_obtenirPosition(ldc, nuplet, (LDCElementEgal) NUplet_egal) >= 0)
+			printf("true\n");
+		else
+			printf("false\n");
+		
+		NUplet_libererMemoire(&nuplet);
+		
+	} while (!feof(f_rech));
+	
+	fclose(f_rech);	
 	LDC_libererMemoire(&ldc);
 }
 
@@ -108,8 +145,8 @@ int main(int argc, char * argv[]){
 			test_construction(atoi(argv[2]), atoi(argv[3]), argv[4]);
 			break;
 		case 'r':
-			if (argc != 5) erreurUsage(argv);
-			test_recherche(atoi(argv[2]), argv[3], argv[4]);
+			if (argc != 6) erreurUsage(argv);
+			test_recherche(atoi(argv[2]), atoi(argv[3]), argv[4], argv[5]);
 			break;
 		
 		default:

@@ -133,6 +133,14 @@ LDC GrapheNoeud_obtenirVoisins(GrapheNoeud noeud){
 }
 
 
+
+/**
+ * \brief Égalité de noeuds : même adresse
+ */
+int GrapheNoeud_estEgal(GrapheNoeud n1, GrapheNoeud n2){
+	return (n1 == n2);
+}
+
 /**
  * \brief   Fusionne deux noeuds dans le premier
  * \param   n1 Le premier noeud
@@ -146,13 +154,13 @@ GrapheNoeud GrapheNoeud_fusionner(GrapheNoeud n1, GrapheNoeud n2){
 		voisin = (GrapheNoeud) LDC_obtenirElement(n2->voisins, 0);
 		
 		/* Le voisin n'est pas un voisin de n1 : on l'ajoute */
-		if (LDC_obtenirPosition(n1->voisins, voisin) < 0)
+		if (LDC_obtenirPosition(n1->voisins, voisin, (LDCElementEgal) GrapheNoeud_estEgal) < 0)
 			n1->voisins = LDC_insererElement(n1->voisins, -1, (LDCElement) voisin, NULL);
 			voisin->voisins = LDC_insererElement(voisin->voisins, -1, (LDCElement) n1, NULL);
 
 		/* Suppression du voisin dans n2 et de n2 dans voisin */
 		n2->voisins = LDC_enleverElement(n2->voisins, 0);
-		voisin->voisins = LDC_enleverElement(n2->voisins, LDC_obtenirPosition(voisin->voisins, (LDCElement) n2));
+		voisin->voisins = LDC_enleverElement(n2->voisins, LDC_obtenirPosition(voisin->voisins, (LDCElement) n2, (LDCElementEgal) GrapheNoeud_estEgal));
 	}
 	
 	/* Libération du noeud n2 */

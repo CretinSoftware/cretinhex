@@ -128,7 +128,7 @@ do
 	done
 	
 	# On lance la série de tests
-	./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "$f_out" "$commande" "$largeur" "$bcl2" "$bcl"
+	./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "" "" "$f_out" "$commande" "$largeur" "$bcl2" "$bcl"
 done
 
 

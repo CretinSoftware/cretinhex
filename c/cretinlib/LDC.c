@@ -245,25 +245,29 @@ LDCElement LDC_obtenirElement(LDC ldc, int pos){
 
 
 /**
- \fn LDC LDC_obtenirPosition(LDC ldc, LDCElement e)
+ \fn LDC LDC_obtenirPosition(LDC ldc, LDCElement e, LDCElementEgal egal)
  \brief renvoie la position d'un élément, -1 si absent
  */
-int LDC_obtenirPosition(LDC ldc, LDCElement e){
+int LDC_obtenirPosition(LDC ldc, LDCElement e, LDCElementEgal egal){
 	LDCIterateur it;
 	
 	it = LDCIterateur_init(ldc, LDCITERATEUR_AVANT);
 	it = LDCIterateur_debut(it); 
 	
-	while (LDCIterateur_valeur(it) != e && !LDCIterateur_fin(it))
+	
+	while (!LDCIterateur_fin(it) && !egal(LDCIterateur_valeur(it), e))
 		it = LDCIterateur_avancer(it);
 	
-	if (LDCIterateur_fin(it))
+	
+	if (LDCIterateur_fin(it)){
+		LDCIterateur_libererMemoire(&it);
 		return -1;
+	}
 	
 	int pos = LDCIterateur_position(it);
 	LDCIterateur_libererMemoire(&it);
 	
-	return pos;
+	return pos;	
 }
 		
 

@@ -9,7 +9,7 @@
 function erreur(){ 
 	case $1 in
 		usage)
-			echo "$0: usage: $0 [-v] fichier_in fichier_out \"commande\"" >&2
+			echo "$0: usage: $0 [-v] fichier_in fichier_in2 fichier_out \"commande\"" >&2
 			exit 2
 			;;
 		fichier)
@@ -45,15 +45,17 @@ fi
 
 
 
-# 3 parametres restants
-test $# -eq 3 || erreur usage
+# 4 parametres restants
+test $# -eq 4 || erreur usage
 
 f_in="$1"
-f_out="$2"
+f_in2="$2"
+f_out="$3"
 f_log="`dirname "$f_out"`/log_`basename "$f_out"`"
-commande="$3"
+commande="$4"
 
 test -f "$f_in" -a -r "$f_in" || erreur fichier "$f_in"
+test ! "$f_in2" || test -f "$f_in2" -a -r "$f_in" || erreur fichier "$f_in2"
 test ! -f "$f_out" -o -w "$f_out" || erreur fichier "$f_out"
 
 mkdir -p `dirname "$f_out"`

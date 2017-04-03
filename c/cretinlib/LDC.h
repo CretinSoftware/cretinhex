@@ -64,6 +64,7 @@
 
 typedef void * LDCElement;                      /**< Pointeur vers un truc externe, pour être contenu dans un LDCElement */
 typedef void (*LDCElementFree)(LDCElement *);     /**< Callback pour libérer la mémoire allouée à un LDCElement par un script externe */
+typedef int (*LDCElementEgal)(LDCElement, LDCElement); /**< Fonction définissant l'égalité entre deux éléments */
 
 /** @} */
 
@@ -135,10 +136,10 @@ LDCElement LDC_obtenirElement(LDC ldc, int pos);
 
 
 /**
- \fn int LDC_obtenirPosition(LDC ldc, LDCElement e)
+ \fn int LDC_obtenirPosition(LDC ldc, LDCElement e, LDCElementEgal egal)
  \brief renvoie la position d'un élément, -1 si absent
  */
-int LDC_obtenirPosition(LDC ldc, LDCElement e); 
+int LDC_obtenirPosition(LDC ldc, LDCElement e, LDCElementEgal egal); 
 
 
 
@@ -251,12 +252,6 @@ int LDCIterateur_fin(LDCIterateur it);
  * \brief Donne la valeur à la position de l'itérateur
  */
 LDCElement LDCIterateur_valeur(LDCIterateur it);
-
-/**
- * \fn int LDCIterateur_position(LDCIterateur it)
- * \brief Donne la valeur à la position de l'itérateur
- */
-int LDCIterateur_position(LDCIterateur it);
 /** @} */
 
 
