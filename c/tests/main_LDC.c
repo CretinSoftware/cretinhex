@@ -11,7 +11,8 @@
  */
 void erreurUsage(char * argv[]){
 	fprintf(stderr, "%s: usage :\n", argv[0]);
-	fprintf(stderr, "	-c dimension_n-uplet  nombre_n-uplets  fichier_source\n");
+	fprintf(stderr, "	-c  dimension_n-uplet  nombre_n-uplets  fichier_source\n");
+	fprintf(stderr, "	-r  nombre_valeurs  fichier_source  fichier_valeurs_à_rechercher\n");
 	exit(10);
 }
 
@@ -73,7 +74,7 @@ LDC mkLDC(int lgTab, int n, const char * fichier){
 
 
 /**
- * \brief Test de construction
+ * \brief Test de construction / insertion
  */
 void test_construction(int lg, int nb, const char * fichier){
 	LDC ldc;
@@ -81,6 +82,21 @@ void test_construction(int lg, int nb, const char * fichier){
 	afficherLDC(ldc);
 	LDC_libererMemoire(&ldc);
 }
+
+
+/**
+ * \brief Test de recherche
+ */
+void test_recherche(int nb, const char * f_src, const char * f_valeurs){
+	LDC ldc;
+	ldc = mkLDC(1, nb, f_src);
+	afficherLDC(ldc);
+	LDC_libererMemoire(&ldc);
+}
+
+
+
+
 
 int main(int argc, char * argv[]){
 
@@ -90,6 +106,10 @@ int main(int argc, char * argv[]){
 		case 'c':
 			if (argc != 5) erreurUsage(argv);
 			test_construction(atoi(argv[2]), atoi(argv[3]), argv[4]);
+			break;
+		case 'r':
+			if (argc != 5) erreurUsage(argv);
+			test_recherche(atoi(argv[2]), argv[3], argv[4]);
 			break;
 		
 		default:

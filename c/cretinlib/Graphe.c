@@ -1,21 +1,20 @@
 /**
- * \file Graphe.h
- * \brief Fichier header du type Graphe.
+ * \file Graphe.c
+ * \brief Implémentation du type Graphe.
  * \author Pierre POMERET-COQUOT
  * \version 1.0
  * \date 3 avril 2017
  *
  */
-# ifndef __CRETIN_GRAPHE__
-# define __CRETIN_GRAPHE__
-
-# include "LDC.h"
-
-
-
+ 
+# include "Graphe.h"
+# include <stdio.h>
+# include <stdlib.h>
+# include <assert.h>
 
 
-/**
+
+/*
  * \defgroup pack_cretinlib_Graphe Graphe
  * \ingroup pack_cretinlib
  * \author Pierre POMERET-COQUOT
@@ -54,19 +53,6 @@
 
 
 
-/**
- * \defgroup pack_cretinlib_GrapheElement GrapheElement
- * 
- * \par Description
- * Type manipulé par les Graphes, dans lesquels vous pouvez stocker vos &laquo; trucs &raquo;
- *
- * 
- * @{               
- */
-
-typedef void * GrapheElement;                           /**< Pointeur vers un truc externe, pour être contenu dans un LDCElement */
-typedef void (*GrapheElementFree)(GrapheElement *);     /**< Callback pour libérer la mémoire allouée à un LDCElement par un script externe */
-/** @} */
 
 
 
@@ -76,9 +62,7 @@ typedef void (*GrapheElementFree)(GrapheElement *);     /**< Callback pour libé
 
 
 
-
-
-/**
+/*
  * \defgroup pack_cretinlib_GrapheNoeud GrapheNoeud
  * 
  * \par Description
@@ -104,30 +88,49 @@ typedef void (*GrapheElementFree)(GrapheElement *);     /**< Callback pour libé
  * @{               
  */
 
-typedef struct GrapheNoeud * GrapheNoeud;                           /**< Noeud d'un Graphe */
+typedef struct GrapheNoeud {
+	GrapheElement element;
+	GrapheElementFree free;
+	LDC voisins;
+} GrapheNoeudInterne;
 
 
 
 
-/**
+/*
  * \brief   Initialise un GrapheNoeud
  * \param   e L'élément contenu dans ce noeud
  * \param   free Fonction pour effacer l'élément, ou NULL
  * \return  Le noeud initialisé
  */
-GrapheNoeud GrapheNoeud_init(GrapheElement e, GrapheElementFree free);
+GrapheNoeud GrapheNoeud_init(GrapheElement e, GrapheElementFree free){
+	GrapheNoeud noeud;
+	
+	noeud = (GrapheNoeud) malloc(sizeof(GrapheNoeudInterne));
+	assert(noeud != NULL);
+	
+	noeud->element = e;
+	noeud->free = free;
+	noeud->voisins = LDC_init();
+	
+	return noeud;
+}
 
 
 /**
  * \brief   Récupère l'élément contenu dans un noeud
  */
-GrapheElement GrapheNoeud_obtenirElement(GrapheNoeud noeud);
+GrapheElement GrapheNoeud_obtenirElement(GrapheNoeud noeud){
+	return noeud->element;
+}
 
 
 /**
  * \brief   Donne la liste des noeuds voisins
  */
-LDC GrapheNoeud_obtenirVoisins(GrapheNoeud noeud);
+LDC GrapheNoeud_obtenirVoisins(GrapheNoeud noeud){
+	return noeud->voisins;
+}
 
 
 /**
@@ -136,7 +139,27 @@ LDC GrapheNoeud_obtenirVoisins(GrapheNoeud noeud);
  * \param   n2 Le noeud à fusionner dans le premier
  * \return  Le premier noeud fusionné avec le second
  */
-GrapheNoeud GrapheNoeud_fusionner(GrapheNoeud n1, GrapheNoeud n2);
+GrapheNoeud GrapheNoeud_fusionner(GrapheNoeud n1, GrapheNoeud n2){
+	GrapheNoeud voisin;	
+	
+	while (LDC_taille(n2->voisins) > 0){
+		voisin = (GrapheNoeud) LDC_obtenirElement(n2->voisins, 0);
+		
+		/* Le voisin n'est pas un voisin de n1 : on l'ajoute */
+		if (LDC_obtenirPosition(n1->voisins, voisin) < 0)
+			n1->voisins = LDC_insererElement(n1->voisins, -1, (LDCElement) voisin, NULL);
+			voisin->voisins = LDC_insererElement(voisin->voisins, -1, (LDCElement) n1, NULL);
+
+		/* Suppression du voisin dans n2 et de n2 dans voisin */
+		n2->voisins = LDC_enleverElement(n2->voisins, 0);
+		voisin->voisins = LDC_enleverElement(n2->voisins, LDC_obtenirPosition(voisin->voisins, (LDCElement) n2));
+	}
+	
+	/* Libération du noeud n2 */
+	GrapheNoeud_libererMemoire(&n2);
+	
+	return n1;
+}
 
 
 /**
@@ -152,4 +175,3 @@ void GrapheNoeud_libererMemoire(GrapheNoeud * noeud);
 
 
 /** @} */
-# endif

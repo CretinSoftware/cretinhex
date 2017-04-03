@@ -135,6 +135,14 @@ LDCElement LDC_obtenirElement(LDC ldc, int pos);
 
 
 /**
+ \fn int LDC_obtenirPosition(LDC ldc, LDCElement e)
+ \brief renvoie la position d'un élément, -1 si absent
+ */
+int LDC_obtenirPosition(LDC ldc, LDCElement e); 
+
+
+
+/**
  * \fn LDC LDC_enleverElement(LDC ldc, int pos)
  * \brief Insère l'élément e à la position voulue
  * \return La LDC
@@ -213,7 +221,13 @@ LDCIterateur LDCIterateur_init(LDC ldc, int sens);
 void LDCIterateur_libererMemoire(LDCIterateur * it);
 
 /**
- * \fn LDCIterateur LDCIterateur_avancer(int n)
+ * \fn int LDCIterateur_position(LDCiterateur it)
+ * \brief Avance d'une position
+ */
+int LDCIterateur_position(LDCIterateur it);
+
+/**
+ * \fn LDCIterateur LDCIterateur_avancer(LDCIterateur it)
  * \brief Avance d'une position
  */
 LDCIterateur LDCIterateur_avancer(LDCIterateur it);
