@@ -13,7 +13,6 @@
 
 
 
-
 /**
  * \defgroup pack_cretinlib_Graphe Graphe
  * \ingroup pack_cretinlib
