@@ -156,11 +156,24 @@ void GrapheNoeud_libererMemoire(GrapheNoeud * noeud);
 /* Graphe */
 
 /**
- * \brief   Initialise un graphe
- * \param   pointsEntree Une LDC contenant les noeuds qui sont des points d'entrées
+ * \param   nbPointsEntree  Le nombre de points d'entrée du graphe
  * \return  Un graphe initialisé
  */
-Graphe Graphe_init(LDC pointsEntree);
+Graphe Graphe_init(int nbPointsEntree);
+
+/**
+ * \brief Donne ne nombre de points d'entrées (passé lors de l'initialisation)
+ */
+int Graphe_nbPointsEntree(Graphe g);
+
+/**
+ * \brief   Récupère un point d'entrée (un noeud sans valeur)
+ * \param   g Le graphe en question
+ * \param   i L'indice du point d'entrée
+ * \return  Le graphe mis à jour
+ * \req     0 &le; i &lt; Graphe_nbPointsEntree(g)
+ */
+GrapheNoeud Graphe_pointEntree(Graphe g, int i);
 
 /**
  * \brief   Insertion d'un noeud
@@ -169,12 +182,12 @@ Graphe Graphe_init(LDC pointsEntree);
  * \return  Le graphe mis à jour
  * \todo    Faire la fonction Graphe_insererNoeud()
  */
-Graphe Graphe_insererNoeud(Graphe g, GrapheNoeud noeud, LDC voisins);
+Graphe Graphe_insererNoeud(Graphe g, GrapheNoeud noeud, GrapheNoeud * voisins, int nbVoisins);
 
 /**
  * \brief   Libère la mémoire allouée à un Graphe
- * \todo    Faire la fonction Graphe_libererMemoire()
- *          et trouver l'heuristique permettant de nettoyer tous les noeuds
+ * \attention Ne libère pas la mémoire allouée aux noeuds !
+ * \todo    Trouver l'heuristique permettant de nettoyer tous les noeuds
  */
 void Graphe_libererMemoire(Graphe * g);
 
