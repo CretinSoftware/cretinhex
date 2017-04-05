@@ -27,7 +27,7 @@ all: c java raccourci
 
 java: $(JAVA)/$(JAVA_APP)
 
-c: $(C_SO)
+c: $(foreach lib, $(LIB_CRETINHEX), $(C)/$(lib))
 
 raccourci: $(EXE)
 
