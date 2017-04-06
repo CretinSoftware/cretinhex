@@ -253,6 +253,73 @@ GrapheNoeud Graphe_pointEntree(Graphe g, int i){
 	return (GrapheNoeud) LDC_obtenirElement(g->pointsEntree, i);
 }
 
+
+/*
+ * \brief   Renvoie tous les noeuds du graphe
+ * \param   g    Le graphe à fouiller
+ * \return  Une LDC contenant tous les noeuds du graphe (mais pas les points d'entrée)
+ */
+LDC Graphe_tousLesNoeuds(Graphe g){
+	LDC ldc;
+	LDCIterateur it1, it2;
+	GrapheNoeud n1, n2;
+	
+	ldc = LDC_init();
+	
+	/* On ajoute tous les voisins des points d'entrée */
+	it1 = LDCIterateur_init(g->pointsEntree, LDCITERATEUR_AVANT);
+	for (it1 = LDCIterateur_debut(it1); !LDCIterateur_fin(it1); it1 = LDCIterateur_avancer(it1)){
+		
+		n1 = (GrapheNoeud) LDCIterateur_valeur(it1);
+		it2 = LDCIterateur_init(n1->voisins, LDCITERATEUR_AVANT);
+		for (it2 = LDCIterateur_debut(it2); !LDCIterateur_fin(it2); it2 = LDCIterateur_avancer(it2)){
+			
+			n2 = (GrapheNoeud) LDCIterateur_valeur(it2);
+			if (LDC_obtenirPosition(ldc, n2, (LDCElementEgal) GrapheNoeud_estEgal) < 0)
+				ldc = LDC_insererElement(ldc, -1, n2, NULL);
+		}
+		LDCIterateur_libererMemoire(&it2);
+	}
+	LDCIterateur_libererMemoire(&it1);
+	
+	/* On parcourt la liste des voisins et on ajoute les voisins des voisins */
+	it1 = LDCIterateur_init(ldc, LDCITERATEUR_AVANT);
+	for (it1 = LDCIterateur_debut(it1); !LDCIterateur_fin(it1); it1 = LDCIterateur_avancer(it1)){
+	
+		n1 = (GrapheNoeud) LDCIterateur_valeur(it1);
+		if (LDC_obtenirPosition(ldc, n1, (LDCElementEgal) GrapheNoeud_estEgal) < 0)
+			ldc = LDC_insererElement(ldc, -1, n1, NULL);
+	}
+	LDCIterateur_libererMemoire(&it1);
+	
+	return ldc;
+}
+
+
+/*
+ * \brief   Trouve un noeud dont l'élément est égal à celui recherché
+ * \param   g    Le graphe à fouiller
+ * \param   e    L'élément à comparer
+ * \param   egal Fonction pour comparer les éléments
+ * \return  Le noeud trouvé, ou NULL
+ */
+GrapheNoeud Graphe_trouverNoeud(Graphe g, GrapheElement e, GrapheElementEgal egal){
+	int trouve;
+	LDC tousLesNoeuds;
+	LDCIterateur it;
+	
+	trouve = 0;
+	tousLesNoeuds = Graphe_tousLesNoeuds(g);
+	it = LDCIterateur_init(tousLesNoeuds, LDCITERATEUR_AVANT);
+	
+	for (it = LDCIterateur_debut(it); !LDCIterateur_fin(it) && !trouve; it = LDCIterateur_avancer(it))
+		trouve = egal(  ((GrapheNoeud)LDCIterateur_valeur(it))->element, e);
+	
+	if (trouve)
+		return (GrapheNoeud) LDCIterateur_valeur(it);
+	return NULL;
+}
+
 /*
  * \brief   Insertion d'un noeud
  * \param   g       Le graphe à modifier
