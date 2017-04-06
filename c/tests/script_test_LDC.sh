@@ -122,7 +122,7 @@ done
 # On lance la série de tests
 ./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "$f_out" "$commande" "$DIMENSIONS" "$bcl"
 
-
+#exit $?
 
 
 

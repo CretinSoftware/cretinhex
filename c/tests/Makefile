@@ -29,9 +29,9 @@ tests: $(SERIE_TESTS)
 memory_tests: tests_memoire
 tests_memoire: $(SERIE_TESTS_MEMOIRE)
 
-LDC: main_LDC mk_n-uplets
+LDC LDC_memoire: main_LDC mk_n-uplets
 
-Partie: main_Partie mk_sauvegardes
+Partie Partie_memoire: main_Partie mk_sauvegardes
 
 $(SERIE_TESTS):
 	./script_test_$@.sh
