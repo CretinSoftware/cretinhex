@@ -64,5 +64,7 @@ int main(int argc, char * argv[]){
 	Partie_libererMemoire(&p);
 	
 	
+	fclose(f);
+	
 	return 0;
 }

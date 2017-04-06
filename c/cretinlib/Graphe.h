@@ -62,6 +62,8 @@ typedef struct Graphe * Graphe;
 
 typedef void * GrapheElement;                           /**< Pointeur vers un truc externe, pour être contenu dans un LDCElement */
 typedef void (*GrapheElementFree)(GrapheElement *);     /**< Callback pour libérer la mémoire allouée à un LDCElement par un script externe */
+typedef int  (*GrapheElementEgal)(GrapheElement, GrapheElement); /**< Affirme que deux éléments sont égaux, ou non */
+
 /** @} */
 
 
@@ -174,6 +176,22 @@ int Graphe_nbPointsEntree(Graphe g);
  * \req     0 &le; i &lt; Graphe_nbPointsEntree(g)
  */
 GrapheNoeud Graphe_pointEntree(Graphe g, int i);
+
+/**
+ * \brief   Renvoie tous les noeuds du graphe
+ * \param   g    Le graphe à fouiller
+ * \return  Une LDC contenant tous les noeuds du graphe (mais pas les points d'entrée)
+ */
+LDC Graphe_tousLesNoeuds(Graphe g);
+
+/**
+ * \brief   Trouve un noeud dont l'élément est égal à celui recherché
+ * \param   g    Le graphe à fouiller
+ * \param   e    L'élément à comparer
+ * \param   egal Fonction pour comparer les éléments
+ * \return  Le noeud trouvé, ou NULL
+ */
+GrapheNoeud Graphe_trouverNoeud(Graphe g, GrapheElement e, GrapheElementEgal egal);
 
 /**
  * \brief   Insertion d'un noeud
