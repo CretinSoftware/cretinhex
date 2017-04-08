@@ -64,6 +64,7 @@
 
 typedef void * LDCElement;                      /**< Pointeur vers un truc externe, pour être contenu dans un LDCElement */
 typedef void (*LDCElementFree)(LDCElement *);     /**< Callback pour libérer la mémoire allouée à un LDCElement par un script externe */
+typedef int (*LDCElementEgal)(LDCElement, LDCElement); /**< Fonction définissant l'égalité entre deux éléments */
 
 /** @} */
 
@@ -106,6 +107,8 @@ LDC LDC_init();
  * L'indexation des valeurs est habituelle (0 désigne le premier élément). 
  *
  * Il est aussi possible d'utiliser -1 pour désigner le dernier élément, -2 pour l'avant-dernier, etc.
+ *
+ * \pre 0 &le; pos &le; LDC_taille(ldc)  ou  -1 &ge; pos &ge; -1 - LDC_taille(ldc)
  * 
  * \attention Eviter les fuites de mémoires
  * Le LDCElement transmis est un pointeur (void *) vers ce que vous voulez.
@@ -135,6 +138,14 @@ LDCElement LDC_obtenirElement(LDC ldc, int pos);
 
 
 /**
+ \fn int LDC_obtenirPosition(LDC ldc, LDCElement e, LDCElementEgal egal)
+ \brief renvoie la position d'un élément, -1 si absent
+ */
+int LDC_obtenirPosition(LDC ldc, LDCElement e, LDCElementEgal egal); 
+
+
+
+/**
  * \fn LDC LDC_enleverElement(LDC ldc, int pos)
  * \brief Insère l'élément e à la position voulue
  * \return La LDC
@@ -153,6 +164,35 @@ LDC LDC_enleverElement(LDC ldc, int pos);
 int LDC_taille(LDC ldc);
 
 
+
+/**
+ * \fn      LDC LDC_fusion(LDC ldc1, LDC ldc2)
+ * \brief   Fusionne deux LDC
+ * \return  La ldc1 à laquelle on a ajouté les éléments de ldc2
+ * \note    ldc2 est supprimée lors de l'opération
+ */
+LDC LDC_fusion(LDC ldc1, LDC ldc2);
+
+
+
+/**
+ * \fn      LDC LDC_fusion(LDC ldc1, LDC ldc2)
+ * \brief   Fusionne deux LDC sans doublons
+ * \param   ldc1 La LDC qui reçoit
+ * \param   ldc2 La LDC à concatener à ldc1
+ * \param   egal Fonction déterminant l'égalité entre LDCElement
+ * \return  La ldc1 à laquelle on a ajouté les éléments de ldc2 qui ne sont pas dans ldc1
+ * \note    ldc2 est supprimée lors de l'opération
+ * \pre     ldc1 ne contient pas de doublons
+ */
+LDC LDC_fusionSansDoublons(LDC ldc1, LDC ldc2, LDCElementEgal egal);
+
+
+/*
+ * \fn      void LDC_afficher(LDC ldc)
+ * \brief   Affiche une LDC (les adresses de ses éléments)
+ */
+void LDC_afficher(LDC ldc);
 
 /**
  * \fn void LDC_libererMemoire(LDC ldc)
@@ -213,7 +253,13 @@ LDCIterateur LDCIterateur_init(LDC ldc, int sens);
 void LDCIterateur_libererMemoire(LDCIterateur * it);
 
 /**
- * \fn LDCIterateur LDCIterateur_avancer(int n)
+ * \fn int LDCIterateur_position(LDCiterateur it)
+ * \brief Avance d'une position
+ */
+int LDCIterateur_position(LDCIterateur it);
+
+/**
+ * \fn LDCIterateur LDCIterateur_avancer(LDCIterateur it)
  * \brief Avance d'une position
  */
 LDCIterateur LDCIterateur_avancer(LDCIterateur it);
@@ -237,12 +283,6 @@ int LDCIterateur_fin(LDCIterateur it);
  * \brief Donne la valeur à la position de l'itérateur
  */
 LDCElement LDCIterateur_valeur(LDCIterateur it);
-
-/**
- * \fn int LDCIterateur_position(LDCIterateur it)
- * \brief Donne la valeur à la position de l'itérateur
- */
-int LDCIterateur_position(LDCIterateur it);
 /** @} */
 
 

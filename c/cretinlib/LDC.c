@@ -27,6 +27,10 @@
 
 
 
+
+
+
+
 /**
  * \defgroup pack_cretinlib_LDCCellule LDCCellule
  * \ingroup pack_cretinlib_LDC
@@ -152,6 +156,20 @@ LDCCellule LDCCellule_suivant(LDCCellule c){
 
 
 
+/*
+ * \struct LDCIterateur
+ * \brief Itérateur pour la LDC
+ */
+typedef struct LDCIterateur {
+	LDC ldc;
+	LDCCellule c;
+	LDCCellule (*avancer)(LDCCellule);
+	int position;
+} LDCIterateurInterne;
+
+
+
+
 
 
 
@@ -229,7 +247,6 @@ LDC LDC_insererElement(LDC ldc, int pos, LDCElement e, LDCElementFree free){
 }
 
 
-
 /*
  * \fn LDCElement LDC_obtenirElement(LDC ldc, int pos)
  * \brief Insère l'élément e à la position voulue
@@ -243,6 +260,37 @@ LDCElement LDC_obtenirElement(LDC ldc, int pos){
 
 
 
+
+/**
+ \fn LDC LDC_obtenirPosition(LDC ldc, LDCElement e, LDCElementEgal egal)
+ \brief renvoie la position d'un élément, -1 si absent
+ */
+int LDC_obtenirPosition(LDC ldc, LDCElement e, LDCElementEgal egal){
+	LDCIterateur it;
+	
+	it = LDCIterateur_init(ldc, LDCITERATEUR_AVANT);
+	it = LDCIterateur_debut(it); 
+	
+	
+	while (!LDCIterateur_fin(it) && !egal(LDCIterateur_valeur(it), e))
+		it = LDCIterateur_avancer(it);
+	
+	
+	if (LDCIterateur_fin(it)){
+		LDCIterateur_libererMemoire(&it);
+		return -1;
+	}
+	
+	int pos = LDCIterateur_position(it);
+	LDCIterateur_libererMemoire(&it);
+	
+	return pos;	
+}
+		
+
+
+
+
 /*
  * \fn LDC LDC_enleverElement(LDC ldc, int pos)
  * \brief Insère l'élément e à la position voulue
@@ -251,9 +299,10 @@ LDCElement LDC_obtenirElement(LDC ldc, int pos){
  */
 LDC LDC_enleverElement(LDC ldc, int pos){
 	LDCCellule c = LDC_obtenirCellule(ldc, pos);
-	c->precedent = c->suivant;
-	c->suivant = c->precedent;
+	c->precedent->suivant = c->suivant;
+	c->suivant->precedent = c->precedent;
 	LDCCellule_libererMemoire(&c);
+	--ldc->taille;
 	return ldc;
 }
 
@@ -267,6 +316,76 @@ LDC LDC_enleverElement(LDC ldc, int pos){
  */
 int LDC_taille(LDC ldc){
 	return ldc->taille;
+}
+
+
+
+/*
+ * \fn      LDC LDC_fusion(LDC ldc1, LDC ldc2)
+ * \brief   Fusionne deux LDC
+ * \return  La ldc1 à laquelle on a ajouté les éléments de ldc2
+ * \note    ldc2 est supprimée lors de l'opération
+ */
+LDC LDC_fusion(LDC ldc1, LDC ldc2){
+	LDCIterateur it;
+	it = LDCIterateur_init(ldc2, LDCITERATEUR_AVANT);
+	for (it = LDCIterateur_debut(it); ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it)){
+		ldc1 = LDC_insererElement(ldc1, -1, it->c->valeur, it->c->free);
+		it->c->valeur = NULL;
+		it->c->free = NULL;
+	}
+	LDCIterateur_libererMemoire(&it);
+	LDC_libererMemoire(&ldc2);
+	return ldc1;
+}
+
+
+/*
+ * \fn      LDC LDC_fusion(LDC ldc1, LDC ldc2)
+ * \brief   Fusionne deux LDC sans doublons
+ * \return  La ldc1 à laquelle on a ajouté les éléments de ldc2 qui ne sont pas dans ldc1
+ * \note    ldc2 est supprimée lors de l'opération
+ * \pre     ldc1 ne contient pas de doublons
+ *
+ * \note    Ne peut pas être fait avec l'itérateur
+ */
+LDC LDC_fusionSansDoublons(LDC ldc1, LDC ldc2, LDCElementEgal egal){
+	LDCCellule c;
+	int pos;
+	
+	c = ldc2->sentinelle->suivant;
+	pos = 0;
+	
+	while (c != ldc2->sentinelle){
+		if (LDC_obtenirPosition(ldc1, c->valeur, egal) < 0){
+			ldc1 = LDC_insererElement(ldc1, -1, c->valeur, c->free);
+			c->valeur = NULL;
+			c->free = NULL;
+			c = c->suivant;
+			++pos;
+		}
+		else {
+			c = c->suivant;
+			ldc2 = LDC_enleverElement(ldc2, pos);
+		}
+	}
+	LDC_libererMemoire(&ldc2);
+	return ldc1;
+}
+
+
+
+/*
+*/
+void LDC_afficher(LDC ldc){
+	LDCIterateur it;
+	
+	it = LDCIterateur_init(ldc, LDCITERATEUR_AVANT);
+	for (it = LDCIterateur_debut(it); !LDCIterateur_fin(it); it = LDCIterateur_avancer(it))
+		printf("%4d ", (int) (unsigned long int) LDCIterateur_valeur(it) % 10000);
+	printf("\n");
+	
+	LDCIterateur_libererMemoire(&it);
 }
 
 
@@ -302,17 +421,6 @@ void LDC_libererMemoire(LDC * ldc){
 
 
 
-
-/*
- * \struct LDCIterateur
- * \brief Itérateur pour la LDC
- */
-typedef struct LDCIterateur {
-	LDC ldc;
-	LDCCellule c;
-	LDCCellule (*avancer)(LDCCellule);
-	int position;
-} LDCIterateurInterne;
 
 /*
  * \fn LDCIterateur LDCIterateur_init(LDC ldc, sens)
@@ -385,13 +493,11 @@ LDCElement LDCIterateur_valeur(LDCIterateur it){
 	return it->c->valeur;
 }
 
-
 /*
- * \fn int LDCIterateur_position(LDCIterateur it)
- * \brief Donne la valeur à la position de l'itérateur
+ * \fn int LDCIterateur_position(LDCiterateur it)
+ * \brief Avance d'une position
  */
 int LDCIterateur_position(LDCIterateur it){
 	return it->position;
 }
-
 

@@ -28,10 +28,10 @@ REP_IN=fichiers_in
 REP_OUT=fichiers_out/Partie
 
 # Dimension des grilles
-DIMENSIONS="10 20 30"
+DIMENSIONS="10 30"
 
 # Nombre de coups joués
-NB_COUPS_JOUES="1 100 400 900"
+NB_COUPS_JOUES="100 900"
 
 # Nombre de tests pour chacun de ces réglages
 NB_TESTS=1
@@ -106,6 +106,9 @@ mk_f_in="./mk_sauvegardes @1 1 @2 $f_in"
 # Pattern de la commande de test
 commande="./main_Partie -s `basename $f_in`"
 
+# Pattern de la commande de vérification
+verif="cmp $f_in $f_out" 
+
 
 ko=0
 
@@ -131,8 +134,7 @@ do
 	done
 	
 	# On lance la série de tests
-	./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "$f_out" "$commande" "$largeur" "$bcl2" "$bcl"
-	test $? -eq 0 || ko=`expr $ko + 1`
+	./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "" "" "$f_out" "$commande" "$verif" "$largeur" "$bcl2" "$bcl"
 done
 
 exit $ko

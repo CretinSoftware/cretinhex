@@ -51,6 +51,11 @@ main_LDC:        $(foreach f, LDC.o , $(DOS_CRETINLIB)/$(DOS_O)/$(f)) \
 	$(CC) $(C_OPT) $^ -o $@
 	
 	
+main_Graphe:     $(foreach f, LDC.o Graphe.o , $(DOS_CRETINLIB)/$(DOS_O)/$(f)) \
+                 $(foreach f, tests.o main_Graphe.o, $(DOS_O)/$(f))
+	$(CC) $(C_OPT) $^ -o $@
+	
+	
 main_Partie:     $(foreach f, LDC.o , $(DOS_CRETINLIB)/$(DOS_O)/$(f)) \
                  $(foreach f, Joueur.o Damier.o Partie.o , $(DOS_HEX)/$(DOS_O)/$(f)) \
                  $(foreach f, tests.o main_Partie.o, $(DOS_O)/$(f))

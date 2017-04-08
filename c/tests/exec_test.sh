@@ -2,14 +2,14 @@
 
 # Execute les tests
 #
-# usage: $0 [-v] fichier_in fichier_out "commande"
+# usage: $0 [-v] fichier_in fichier_out "commande" "verif"
 #
 # Renvoie 0 si tout est OK, 1 si certains tests échouent, 2 ou plus en cas d'erreur
 
 function erreur(){ 
 	case $1 in
 		usage)
-			echo "$0: usage: $0 [-v] fichier_in fichier_out \"commande\"" >&2
+			echo "$0: usage: $0 [-v] fichier_in fichier_in2 fichier_out \"commande\"" >&2
 			exit 2
 			;;
 		fichier)
@@ -45,15 +45,18 @@ fi
 
 
 
-# 3 parametres restants
-test $# -eq 3 || erreur usage
+# 4 parametres restants
+test $# -eq 5 || erreur usage
 
 f_in="$1"
-f_out="$2"
+f_in2="$2"
+f_out="$3"
 f_log="`dirname "$f_out"`/log_`basename "$f_out"`"
-commande="$3"
+commande="$4"
+verif="$5"
 
 test -f "$f_in" -a -r "$f_in" || erreur fichier "$f_in"
+test ! "$f_in2" || test -f "$f_in2" -a -r "$f_in" || erreur fichier "$f_in2"
 test ! -f "$f_out" -o -w "$f_out" || erreur fichier "$f_out"
 
 mkdir -p `dirname "$f_out"`
@@ -62,8 +65,8 @@ mkdir -p `dirname "$f_out"`
 
 
 
-# AFFICHAGE : nom du fichier_in
-echo -n "$f_in"
+# AFFICHAGE : commande
+echo -n "$f_in  "
 
 
 memOK=0
@@ -91,14 +94,14 @@ fi
 
 
 # Comparaison des fichiers entrée et sortie (résultat)
-cmp $f_in $f_out > /dev/null 2>&1
+$verif
 
 if test $? -eq 0
 then
 	echo -e "	resultat : $OK"
 	resOK=1
 else
-	echo -e "$	resultat : $KO"
+	echo -e "	resultat : $KO"
 fi
 
 test $resOK -eq 1 && test ! "$use_valgrind" -o $memOK -eq 1 && exit 0
