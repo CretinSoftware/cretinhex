@@ -1,12 +1,12 @@
 /**
- * 
+ * \class    ihm.console.PageChargement
+ * \author   François Mahé
+ * \date     samedi 1er avril 2017
+ *
+ * \todo     Cette page ne fonctionne pas !
  */
 package ihm.console;
 
-/**
- * @author François
- *
- */
 public class PageChargement extends Page{
 
 	public PageChargement() {

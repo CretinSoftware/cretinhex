@@ -1,21 +1,24 @@
+/**
+ * \class    noyau.Joueur
+ * \brief    Joueur désigne J1, J2, ou personne
+ * \author   Pierre Pomeret-Coquot
+ * \date     samedi 1er avril 2017
+ */
 package noyau;
 
 
 
-
-/**
- * \brief Joueur désigne J1, J2, ou personne
- */
-
 public enum Joueur {
-	J0 (0, '-', "Personne"),
-	J1 (1, 'O', "Joueur 1"),
-	J2 (2, '#', "Joueur 2");
+
+	/* Chacun des trois valeurs énumérée est rattachée à un entier, un char et une chaîne de caractère */
+	J0 (0, '-', "Personne"), /**< J0 : personne */
+	J1 (1, 'O', "Joueur 1"), /**< J1 : marqueur du joueur dit J1 */
+	J2 (2, '#', "Joueur 2"); /**< J2 : L'autre */
 
 	
-	private int intv;
-	private char charv;
-	private String stringv;
+	private int intv;        /**< Valeur entière associée au joueur */
+	private char charv;      /**< Caractère associé au joueur */
+	private String stringv;  /**< Chaîne de carcatère assicoée au joueur */
 	
 	
 	/**
