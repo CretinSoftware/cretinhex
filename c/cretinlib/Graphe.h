@@ -115,6 +115,8 @@ typedef struct GrapheNoeud * GrapheNoeud;                           /**< Noeud d
  */
 GrapheNoeud GrapheNoeud_init(GrapheElement e, GrapheElementFree free);
 
+void GrapheNoeud_afficher(GrapheNoeud n);
+
 
 /**
  * \brief   Récupère l'élément contenu dans un noeud
@@ -163,6 +165,7 @@ void GrapheNoeud_libererMemoire(GrapheNoeud * noeud);
  */
 Graphe Graphe_init(int nbPointsEntree);
 
+void Graphe_afficher(Graphe g);
 /**
  * \brief Donne ne nombre de points d'entrées (passé lors de l'initialisation)
  */
@@ -176,6 +179,31 @@ int Graphe_nbPointsEntree(Graphe g);
  * \req     0 &le; i &lt; Graphe_nbPointsEntree(g)
  */
 GrapheNoeud Graphe_pointEntree(Graphe g, int i);
+
+/*
+ * \brief   Récupère tous les points d'entrée
+ * \param   g Le graphe en question
+ * \param   i L'indice du point d'entrée
+ * \return  Tous les points d'entrées
+ * \req     
+ */
+LDC Graphe_pointsEntree(Graphe g, int i);
+
+/**
+ * \brief   Renvoie tous les noeuds du graphe
+ * \param   g    Le graphe à fouiller
+ * \return  Une LDC contenant tous les noeuds du graphe (mais pas les points d'entrée)
+ */
+LDC Graphe_tousLesNoeuds(Graphe g);
+
+/**
+ * \brief   Trouve un noeud dont l'élément est égal à celui recherché
+ * \param   g    Le graphe à fouiller
+ * \param   e    L'élément à comparer
+ * \param   egal Fonction pour comparer les éléments
+ * \return  Le noeud trouvé, ou NULL
+ */
+GrapheNoeud Graphe_trouverNoeud(Graphe g, GrapheElement e, GrapheElementEgal egal);
 
 /**
  * \brief   Renvoie tous les noeuds du graphe

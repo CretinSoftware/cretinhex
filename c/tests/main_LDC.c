@@ -13,6 +13,8 @@ void erreurUsage(char * argv[]){
 	fprintf(stderr, "%s: usage :\n", argv[0]);
 	fprintf(stderr, "	-c  dimension_n-uplet  nombre_n-uplets  fichier_source\n");
 	fprintf(stderr, "	-r  dimension_n-uplet  nombre_n-uplets  fichier_valeurs_à_rechercher  fichier_source\n");
+	fprintf(stderr, "	-f  dimension_n-uplet  nombre_n-uplets  fichier_ldc1  fichier_ldc2\n");
+	fprintf(stderr, "	-g  dimension_n-uplet  nombre_n-uplets  fichier_ldc1  fichier_ldc2\n");
 	exit(10);
 }
 
@@ -87,6 +89,24 @@ void test_construction(int dim, int nb, const char * fichier){
 
 
 
+/**
+ * \brief Test de fusion avec / sans doublons
+ */
+void test_fusion(int dim, int nb, const char * fichier1, const char * fichier2, int sansDoublons){
+	LDC ldc1, ldc2;
+	ldc1 = mkLDC(dim, nb, fichier1);
+	ldc2 = mkLDC(dim, nb, fichier2);
+	if (sansDoublons)
+		ldc1 = LDC_fusionSansDoublons(ldc1, ldc2, (LDCElementEgal) NUplet_egal);
+	else
+		ldc1 = LDC_fusion(ldc1, ldc2);
+	afficherLDC(ldc1);
+	LDC_libererMemoire(&ldc1);
+}
+
+
+
+
 
 
 /**
@@ -143,6 +163,14 @@ int main(int argc, char * argv[]){
 		case 'c':
 			if (argc != 5) erreurUsage(argv);
 			test_construction(atoi(argv[2]), atoi(argv[3]), argv[4]);
+			break;
+		case 'f':
+			if (argc != 6) erreurUsage(argv);
+			test_fusion(atoi(argv[2]), atoi(argv[3]), argv[4], argv[5], 0);
+			break;
+		case 'g':
+			if (argc != 6) erreurUsage(argv);
+			test_fusion(atoi(argv[2]), atoi(argv[3]), argv[4], argv[5], 1);
 			break;
 		case 'r':
 			if (argc != 6) erreurUsage(argv);

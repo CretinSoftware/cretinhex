@@ -11,6 +11,8 @@ function erreur(){
 		usage)
 			echo "$0: usage: $0 [-v] [TAILLE_DONNEES [NB_TESTS [DIMENSIONS]]]" >&2
 			echo "$0: usage: $0 -m fichier_donnees fichier_recherche taille_donnees dimension" >&2
+			echo "$0: usage: $0 -f fichier1 fichier2 fichier_fusion" >&2
+			echo "$0: usage: $0 -g fichier1 fichier2 fichier_fusionSansDoublons" >&2
 			exit 2
 			;;
 		fichier)
@@ -23,7 +25,7 @@ function erreur(){
 
 
 
-# Fabrique le fichier in de rechecher
+# Fabrique le fichier in de recherche
 mk_f_rech(){
 	test -f "$1" -a -r "$1" || erreur fichier "$1"
 	test ! -f "$2" -o -w "$2" || erreur fichier "$2"
@@ -36,6 +38,7 @@ mk_f_rech(){
 	
 	echo -n "" > tmp
 	echo -n "" > "$f_recherche"
+	sleep 1
 	./mk_n-uplets $dim $taille tmp
 	
 	
@@ -43,7 +46,7 @@ mk_f_rech(){
 	while read ligne
 	do
 		echo "$ligne " >> "$f_recherche"
-		cat "$f_donnees" | grep -e "^$ligne " > /dev/null
+		grep "^$ligne " "$f_donnees" > /dev/null
 		if test $? -eq 0
 		then
 			echo "true" >> "$f_recherche"
@@ -60,6 +63,43 @@ mk_f_rech(){
 
 
 
+verif_fusion(){
+	f1="$1"
+	f2="$2"
+	ff="$3"
+	
+	cat $f1 $f2 > tmp
+	cmp tmp $ff
+	code=$?
+	rm tmp
+	exit $code
+}
+
+
+
+verif_fusionSansDoublons(){
+	f1="$1"
+	f2="$2"
+	ff="$3"
+	ok="oui"
+	
+	while read ligne
+	do
+		grep -e "$ligne" $ff > /dev/null
+		test $? -ne 0 && ok=""
+	done < $f1
+	
+	while read ligne
+	do
+		grep -e "$ligne" $ff > /dev/null
+		test $? -ne 0 && ok=""
+	done < $f2
+	
+	test ok && exit 0
+	exit 1
+}
+
+
 
 
 
@@ -72,7 +112,7 @@ REP_OUT=fichiers_out/LDC
 TAILLE_DONNEES=1000
 
 # Dimension des n-uplets
-DIMENSIONS="1 3 5 7 9"
+DIMENSIONS=1
 
 # Nombre de tests pour une dimension donnée
 NB_TESTS=1
@@ -93,7 +133,19 @@ then
 		-m)
 			shift
 			test $# -eq 4 || erreur usage
-			mk_f_rech "$1" "$2" $3 $4
+			test -f $1 -a -f $2 || mk_f_rech "$1" "$2" $3 $4
+			exit $?
+			;;
+		-f)
+			shift
+			test $# -eq 3 || erreur usage
+			verif_fusion "$1" "$2" "$3"
+			exit $?
+			;;
+		-g)
+			shift
+			test $# -eq 3 || erreur usage
+			verif_fusionSansDoublons "$1" "$2" "$3"
 			exit $?
 			;;
 	esac
@@ -162,6 +214,7 @@ done
 
 
 # Construction / insertion 
+# -------------------------------------
 
 # Pattern du fichier en entree
 f_in="$REP_IN/n-uplets_@1x${TAILLE_DONNEES}_@2.txt"
@@ -175,9 +228,50 @@ mk_f_in="./mk_n-uplets @1 $TAILLE_DONNEES $f_in"
 # Pattern de la commande de test
 commande="./main_LDC -c @1 $TAILLE_DONNEES $f_in"
 
+# Pattern de la commande de vérification
+verif="cmp $f_in $f_out" 
 
-./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "" "" "$f_out" "$commande" "$DIMENSIONS" "$bcl"
 
+./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "" "" "$f_out" "$commande" "$verif" "$DIMENSIONS" "$bcl"
+
+test $? -eq 0 || exit 1
+
+
+
+
+# Fusion
+# -------------------------------------
+
+# Pattern des fichiers en entree
+f_in="$REP_IN/n-uplets_fusion_@1x${TAILLE_DONNEES}_@2_a.txt"
+f_in2="$REP_IN/n-uplets_fusion_@1x${TAILLE_DONNEES}_@2_b.txt"
+
+# Pattern du fichier en sortie
+f_out="$REP_OUT/n-uplets_fusion_@1x${TAILLE_DONNEES}_@2.txt"
+
+# Pattern des commandes pour créer les fichiers en entrée
+mk_f_in="./mk_n-uplets @1 $TAILLE_DONNEES $f_in"
+mk_f_in2="./mk_n-uplets @1 $TAILLE_DONNEES $f_in2"
+
+# Pattern de la commande de test
+commande="./main_LDC -f @1 $TAILLE_DONNEES $f_in $f_in2"
+
+# Pattern de la commande de vérification
+verif="$0 -f $f_in $f_in2 $f_out" 
+
+
+./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "$f_in2" "$mk_f_in2" "$f_out" "$commande" "$verif" "$DIMENSIONS" "$bcl"
+test $? -eq 0 || exit 1
+
+# Pattern de la commande de test
+commande="./main_LDC -g @1 $TAILLE_DONNEES $f_in $f_in2"
+
+# Pattern de la commande de vérification
+verif="$0 -g $f_in $f_in2 $f_out"
+
+
+./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "$f_in2" "$mk_f_in2" "$f_out" "$commande" "$verif" "$DIMENSIONS" "$bcl"
+test $? -eq 0 || exit 1
 
 
 
@@ -185,22 +279,23 @@ commande="./main_LDC -c @1 $TAILLE_DONNEES $f_in"
 
 
 # Recherche
+# -------------------------------------
 
-f_in2="$f_in"
+f_in2="$REP_IN/n-uplets_@1x${TAILLE_DONNEES}_@2.txt"
 mk_f_in2=""
 
 f_in="$REP_IN/n-uplets_@1x${TAILLE_DONNEES}_recherche_@2.txt"
 f_out="$REP_OUT/`basename $f_in`"
 
 mk_f_in="$0 -m $f_in2 $f_in $TAILLE_DONNEES @1"
-mk_f_in2="./mk_n-uplets @1 $TAILLE_DONNEES $f_in2"
+#mk_f_in2="./mk_n-uplets @1 $TAILLE_DONNEES $f_in2"
 
 commande="./main_LDC -r @1 $TAILLE_DONNEES $f_in $f_in2"
+verif="cmp $f_in $f_out" 
 
-./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "$f_in2" "$mk_f_in2" "$f_out" "$commande" "$DIMENSIONS" "$bcl" 
+./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "$f_in2" "$mk_f_in2" "$f_out" "$commande" "$verif" "$DIMENSIONS" "$bcl"
 
-
-
+test $? -eq 0 || exit 1
 
 
 

@@ -29,9 +29,9 @@ tests: $(SERIE_TESTS)
 memory_tests: tests_memoire
 tests_memoire: $(SERIE_TESTS_MEMOIRE)
 
-LDC: main_LDC mk_n-uplets
+LDC LDC_memoire: main_LDC mk_n-uplets
 
-Partie: main_Partie mk_sauvegardes
+Partie Partie_memoire: main_Partie mk_sauvegardes
 
 $(SERIE_TESTS):
 	./script_test_$@.sh
@@ -48,6 +48,11 @@ $(SERIE_TESTS_MEMOIRE):
 # Mains
 main_LDC:        $(foreach f, LDC.o , $(DOS_CRETINLIB)/$(DOS_O)/$(f)) \
                  $(foreach f, tests.o main_LDC.o, $(DOS_O)/$(f))
+	$(CC) $(C_OPT) $^ -o $@
+	
+	
+main_Graphe:     $(foreach f, LDC.o Graphe.o , $(DOS_CRETINLIB)/$(DOS_O)/$(f)) \
+                 $(foreach f, tests.o main_Graphe.o, $(DOS_O)/$(f))
 	$(CC) $(C_OPT) $^ -o $@
 	
 	

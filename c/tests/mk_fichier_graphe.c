@@ -40,7 +40,7 @@ int main(int argc, char * argv[]){
 		fprintf(f, "%d : ", i);
 		
 		/* Liens inférieurs */
-		for (j = 0; j < MIN(i, rand()%nbLiens); ++j){
+		for (j = 1; j < MIN(i, rand()%nbLiens); ++j){
 			r = rand() % i;
 			fprintf(f, "%d ", r);
 		}

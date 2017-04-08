@@ -4,8 +4,9 @@ import cretinplay.Application;
 import java.io.IOException;
 
 /**
- * @author Fran�ois
- * @author Pierre
+ * \class     Page
+ * \author    François Mahé
+ * \date      samedi 1er avril
  *
  */
 public abstract class Page implements InterfacePage{
@@ -13,10 +14,11 @@ public abstract class Page implements InterfacePage{
 	
 	
 
-	String titre;
+	String titre; /**< \brief Le titre de la page */
 	
-	/*
-	 * Constructeur de page
+	/**
+	 * \brief    Construit une page
+	 * \param    titre Le titre de la page
 	 */
 	public Page(String titre) 
 	{
@@ -25,21 +27,27 @@ public abstract class Page implements InterfacePage{
 			this.titre += " ";
 	}
 	
+	/**
+	 * \brief    Donne le titre d'une page
+	 */
 	public String getTitre(){
 		return this.titre;
 	}
 	
+	/** \brief Longueur du titre */
 	private int getTailleTitre()
 	{
 		return this.titre.length();
 	}
 
+	/** \todo   Ajouter une description */
 	private void decaler()
 	{
 		for(int i = 0; i < ((Application.LARGEUR_ECRAN-this.getTailleTitre())/2)-1; i++)
 			System.out.print(" ");
 	}
 	
+	/** \todo   Ajouter une description */
 	private void bordure()
 	{
 		for(int i = 0; i < Application.LARGEUR_ECRAN; i++ )
@@ -63,11 +71,10 @@ public abstract class Page implements InterfacePage{
 	{
 	}
 
-	
+
 	public void afficher_page() 
 	{
 		/* Efface la console :  */
-		
 		if (Application.SYSTEME.toUpperCase().equals("UNIX")){
 		    System.out.print("\033[H\033[2J");  
 		    System.out.flush();  
