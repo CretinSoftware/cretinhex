@@ -107,6 +107,8 @@ LDC LDC_init();
  * L'indexation des valeurs est habituelle (0 désigne le premier élément). 
  *
  * Il est aussi possible d'utiliser -1 pour désigner le dernier élément, -2 pour l'avant-dernier, etc.
+ *
+ * \pre 0 &le; pos &le; LDC_taille(ldc)  ou  -1 &ge; pos &ge; -1 - LDC_taille(ldc)
  * 
  * \attention Eviter les fuites de mémoires
  * Le LDCElement transmis est un pointeur (void *) vers ce que vous voulez.
@@ -162,6 +164,35 @@ LDC LDC_enleverElement(LDC ldc, int pos);
 int LDC_taille(LDC ldc);
 
 
+
+/**
+ * \fn      LDC LDC_fusion(LDC ldc1, LDC ldc2)
+ * \brief   Fusionne deux LDC
+ * \return  La ldc1 à laquelle on a ajouté les éléments de ldc2
+ * \note    ldc2 est supprimée lors de l'opération
+ */
+LDC LDC_fusion(LDC ldc1, LDC ldc2);
+
+
+
+/**
+ * \fn      LDC LDC_fusion(LDC ldc1, LDC ldc2)
+ * \brief   Fusionne deux LDC sans doublons
+ * \param   ldc1 La LDC qui reçoit
+ * \param   ldc2 La LDC à concatener à ldc1
+ * \param   egal Fonction déterminant l'égalité entre LDCElement
+ * \return  La ldc1 à laquelle on a ajouté les éléments de ldc2 qui ne sont pas dans ldc1
+ * \note    ldc2 est supprimée lors de l'opération
+ * \pre     ldc1 ne contient pas de doublons
+ */
+LDC LDC_fusionSansDoublons(LDC ldc1, LDC ldc2, LDCElementEgal egal);
+
+
+/*
+ * \fn      void LDC_afficher(LDC ldc)
+ * \brief   Affiche une LDC (les adresses de ses éléments)
+ */
+void LDC_afficher(LDC ldc);
 
 /**
  * \fn void LDC_libererMemoire(LDC ldc)

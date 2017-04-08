@@ -6,7 +6,7 @@
 
 #include "tests.h"
 
-#define BORNE 2000
+#define BORNE 20000
 
 
 int main(int argc, char * argv[]){

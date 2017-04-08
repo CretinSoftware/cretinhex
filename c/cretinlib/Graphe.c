@@ -112,6 +112,11 @@ GrapheNoeud GrapheNoeud_init(GrapheElement e, GrapheElementFree free){
 	return noeud;
 }
 
+void GrapheNoeud_afficher(GrapheNoeud n){
+/*	const char * espaces = "              "; */
+	printf("GrapheNoeud : %4d (élément %4d)\n", (int) (unsigned long int) n % 10000, (int) (unsigned long int) n->element % 10000);
+}
+
 
 /*
  * \brief Égalité de noeuds : même adresse
@@ -121,14 +126,16 @@ int GrapheNoeud_estEgal(GrapheNoeud n1, GrapheNoeud n2){
 }
 
 
+
 /*
  * \brief Ajoute un voisin et réciproquement.
  * \note  A double sens, modifie le voisin par effet de bord
  */
 GrapheNoeud GrapheNoeud_ajouterVoisin(GrapheNoeud noeud, GrapheNoeud voisin){
+	printf("ajouterVoisin : @ %d <--> @ %d\n", (int)(unsigned long int) noeud % 10000, (int) (unsigned long int) voisin % 10000);
 	if (LDC_obtenirPosition(noeud->voisins, voisin, (LDCElementEgal) GrapheNoeud_estEgal) < 0){
 		noeud->voisins = LDC_insererElement(noeud->voisins, -1, voisin, NULL);
-		voisin->voisins = LDC_insererElement(noeud->voisins, -1, noeud, NULL);
+		voisin->voisins = LDC_insererElement(voisin->voisins, -1, noeud, NULL);
 	}
 	return noeud;
 }
@@ -232,7 +239,19 @@ Graphe Graphe_init(int nbPointsEntree){
 	
 	g->nbNoeuds = 0;
 	
+	
 	return g;
+}
+
+void Graphe_afficher(Graphe g){
+	const char * espaces = "         ";
+	
+	/* Points d'entrée */
+	printf("Graphe : %d point(s) d'entrée : ", Graphe_nbPointsEntree(g));
+	LDC_afficher(g->pointsEntree);
+	
+	printf("%s%d noeud(s) ", espaces, g->nbNoeuds);
+	LDC_afficher(Graphe_tousLesNoeuds(g));
 }
 
 /*
@@ -246,11 +265,35 @@ int Graphe_nbPointsEntree(Graphe g){
  * \brief   Récupère un point d'entrée (un noeud sans valeur)
  * \param   g Le graphe en question
  * \param   i L'indice du point d'entrée
- * \return  Le graphe mis à jour
+ * \return  Le point d'entrée demandé
  * \req     0 &le; i &lt; Graphe_nbPointsEntree(g)
  */
 GrapheNoeud Graphe_pointEntree(Graphe g, int i){
 	return (GrapheNoeud) LDC_obtenirElement(g->pointsEntree, i);
+}
+
+
+/**
+ * \brief  Dit si un noeud est un point d'entrée
+ */
+int GrapheNoeud_estPointEntree(Graphe g, GrapheNoeud n){
+	LDCIterateur it;
+	int oui = 0;
+	it = LDCIterateur_init(g->pointsEntree, LDCITERATEUR_AVANT);
+	for(it = LDCIterateur_debut(it); !LDCIterateur_fin(it) && !oui; it = LDCIterateur_avancer(it))
+		oui =  (n == (GrapheNoeud) LDCIterateur_valeur(it));
+	return oui;
+}
+
+/*
+ * \brief   Récupère tous les points d'entrée
+ * \param   g Le graphe en question
+ * \param   i L'indice du point d'entrée
+ * \return  Tous les points d'entrées
+ * \req     
+ */
+LDC Graphe_pointsEntree(Graphe g, int i){
+	return g->pointsEntree;
 }
 
 
@@ -263,31 +306,39 @@ LDC Graphe_tousLesNoeuds(Graphe g){
 	LDC ldc;
 	LDCIterateur it1, it2;
 	GrapheNoeud n1, n2;
+	int ok;
 	
 	ldc = LDC_init();
 	
-	/* On ajoute tous les voisins des points d'entrée */
-	it1 = LDCIterateur_init(g->pointsEntree, LDCITERATEUR_AVANT);
+	/* On ajoute les voisins du point d'entrée 0 */
+	n1 = (GrapheNoeud) LDC_obtenirElement(g->pointsEntree, 0);
+	it1 = LDCIterateur_init(n1->voisins, LDCITERATEUR_AVANT);
 	for (it1 = LDCIterateur_debut(it1); !LDCIterateur_fin(it1); it1 = LDCIterateur_avancer(it1)){
-		
-		n1 = (GrapheNoeud) LDCIterateur_valeur(it1);
-		it2 = LDCIterateur_init(n1->voisins, LDCITERATEUR_AVANT);
-		for (it2 = LDCIterateur_debut(it2); !LDCIterateur_fin(it2); it2 = LDCIterateur_avancer(it2)){
-			
-			n2 = (GrapheNoeud) LDCIterateur_valeur(it2);
-			if (LDC_obtenirPosition(ldc, n2, (LDCElementEgal) GrapheNoeud_estEgal) < 0)
-				ldc = LDC_insererElement(ldc, -1, n2, NULL);
-		}
-		LDCIterateur_libererMemoire(&it2);
+		n2 = (GrapheNoeud) LDCIterateur_valeur(it1);
+		if (LDC_obtenirPosition(ldc, n2, (LDCElementEgal) GrapheNoeud_estEgal) < 0)
+			ldc = LDC_insererElement(ldc, -1, n2, NULL);
 	}
 	LDCIterateur_libererMemoire(&it1);
+	
 	
 	/* On parcourt la liste des voisins et on ajoute les voisins des voisins */
 	it1 = LDCIterateur_init(ldc, LDCITERATEUR_AVANT);
 	for (it1 = LDCIterateur_debut(it1); !LDCIterateur_fin(it1); it1 = LDCIterateur_avancer(it1)){
 	
+		printf("ldc : ");
+		LDC_afficher(ldc);
+	
+		ok = 1;
+	
 		n1 = (GrapheNoeud) LDCIterateur_valeur(it1);
-		if (LDC_obtenirPosition(ldc, n1, (LDCElementEgal) GrapheNoeud_estEgal) < 0)
+		
+		/* Si ce n'est pas un point d'entrée */
+		it2 = LDCIterateur_init(g->pointsEntree, LDCITERATEUR_AVANT);
+		for (it2 = LDCIterateur_debut(it2); !LDCIterateur_fin(it2); it2 = LDCIterateur_avancer(it2))
+			if (n1 == LDCIterateur_valeur(it2))
+				ok = 0;
+		
+		if (ok && LDC_obtenirPosition(ldc, n1, (LDCElementEgal) GrapheNoeud_estEgal) < 0)
 			ldc = LDC_insererElement(ldc, -1, n1, NULL);
 	}
 	LDCIterateur_libererMemoire(&it1);
@@ -307,17 +358,28 @@ GrapheNoeud Graphe_trouverNoeud(Graphe g, GrapheElement e, GrapheElementEgal ega
 	int trouve;
 	LDC tousLesNoeuds;
 	LDCIterateur it;
+	GrapheNoeud n;
 	
 	trouve = 0;
 	tousLesNoeuds = Graphe_tousLesNoeuds(g);
+	
 	it = LDCIterateur_init(tousLesNoeuds, LDCITERATEUR_AVANT);
 	
-	for (it = LDCIterateur_debut(it); !LDCIterateur_fin(it) && !trouve; it = LDCIterateur_avancer(it))
-		trouve = egal(  ((GrapheNoeud)LDCIterateur_valeur(it))->element, e);
+	printf("trouverNoeud : dans ");
+	LDC_afficher(tousLesNoeuds);
 	
-	if (trouve)
-		return (GrapheNoeud) LDCIterateur_valeur(it);
-	return NULL;
+	for (it = LDCIterateur_debut(it); !LDCIterateur_fin(it) && !trouve; it = LDCIterateur_avancer(it)){
+		n = (GrapheNoeud) LDCIterateur_valeur(it);
+		printf("trouverNoeud : voisin %d @ %d\n", *(int*) ((GrapheNoeud) n)->element, (int) (unsigned long int) n % 10000);
+		trouve = egal(n->element, e);
+	}
+	if (!trouve)/*
+		n = (GrapheNoeud) LDCIterateur_valeur(it);
+	else*/
+		n = NULL;
+	printf("trouverNoeud : trouve=%d  renvoi=%d\n", trouve, (int) (unsigned long int) n % 10000);
+	LDCIterateur_libererMemoire(&it);
+	return n;
 }
 
 /*
@@ -331,8 +393,14 @@ GrapheNoeud Graphe_trouverNoeud(Graphe g, GrapheElement e, GrapheElementEgal ega
  */
 Graphe Graphe_insererNoeud(Graphe g, GrapheNoeud noeud, GrapheNoeud * voisins, int nbVoisins){
 	int i;
-	for (i = 0; i < nbVoisins; ++i)
+	printf("%d voisin(s) dans @%d\n", nbVoisins, (int) (unsigned long int) voisins % 10000);
+	for (i = 0; i < nbVoisins; ++i){
+		printf("insererNoeud %d @%d\n", i, (int) (unsigned long int) voisins[i] % 10000);
+		assert(voisins[i] != NULL);
 		noeud = GrapheNoeud_ajouterVoisin(noeud, voisins[i]);
+		LDC_afficher(noeud->voisins);
+	}
+	++g->nbNoeuds;
 	return g;
 }
 
