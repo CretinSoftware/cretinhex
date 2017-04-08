@@ -16,7 +16,7 @@ public class PartieJNI {
 
 	
 	
-	/* Bibliothèque native */
+	/** \brief Bibliothèque native */
 	static {
 		//System.out.println("Java.library.path = " + System.getProperty("java.library.path"));
 		System.loadLibrary("cretinhex");
@@ -25,20 +25,23 @@ public class PartieJNI {
 
 
 	/* Attributs */
-	protected int tour;
-	protected int largeur;
-	protected Joueur j;
+	protected int tour;        /**< \brief Tour de jeu en cours. Utile ? */
+	protected int largeur;     /**< \brief Largeur du damier. Utile ? */
+	protected Joueur j;        /**< \brief aQuiDeJouer : utile ? */
 	
 	
 	
 	
 	
 	/**
-	 * Constructeur
+	 * \brief Constructeur simple. Attend des instructions par exemple charger)
 	 */
 	PartieJNI(){
 	}
 	
+	/**
+	 * \brief Constructeur de nouvelle partie.
+	 */
 	PartieJNI(int l, Joueur j){
 		this.cretinhexXinit(l, j.toInt());
 		

@@ -1,12 +1,16 @@
-
+/**
+ * \class    ihm.console.PageOptions
+ * \author   Pierre Pomeret-Coquot
+ * \date     samedi 1er avril 2017
+ *
+ * Permet de modifier le nom des joueurs
+ * \todo     Permettre de choisir les joueurs Humains / IA
+ */
 package ihm.console;
 import cretinplay.Application;
 import noyau.Utilisateur;
 
-/**
- * @author François
- *
- */
+
 public class PageOptions extends Page{
 
 	public PageOptions() {

@@ -1,12 +1,10 @@
 /**
- * 
+ * \class    ihm.console.PageSortie
+ * \author   François Mahé
+ * \date     samedi 1er avril 2017
  */
 package ihm.console;
 
-/**
- * @author Fran�ois
- *
- */
 public class PageSortie extends Page {
 
 	public PageSortie() {
@@ -19,7 +17,4 @@ public class PageSortie extends Page {
 		System.exit(0);
 		return null;
 	}
-	
-	//TODO : finir Page_sortie
-
 }
