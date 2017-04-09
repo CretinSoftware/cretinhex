@@ -7,8 +7,15 @@
 #include "tests.h"
 
 # define BORNE 2000
-# define MIN(x, y) (x > y ? y : x)
 
+
+int dansTas(int v, int tas[], int tailleTas){
+	int i;
+	for (i = 0; i < tailleTas; ++i)
+		if (tas[i] == v)
+			return 1;
+	return 0;
+}
 
 int main(int argc, char * argv[]){
 
@@ -30,6 +37,9 @@ int main(int argc, char * argv[]){
 	FILE * f;
 	int i, j, r;
 	
+	int tas[nbLiens];
+	int tailleTas;
+	
 	
 	if ( (f = fopen(argv[3], "w")) == NULL)
 		erreurUnix(argv[3], 2);
@@ -39,10 +49,17 @@ int main(int argc, char * argv[]){
 		/* Numéro du noeud */
 		fprintf(f, "%d : ", i);
 		
-		/* Liens inférieurs */
-		for (j = 1; j < MIN(i, rand()%nbLiens); ++j){
-			r = rand() % i;
-			fprintf(f, "%d ", r);
+		/* Liens vers valeurs inférieures */
+		if (i > 0){
+			tailleTas = 0;
+			for (j = 0; j < (rand()%nbLiens) + 1; ++j){
+				r = rand() % i;
+				if (! dansTas(r, tas, tailleTas)){
+					fprintf(f, "%d ", r);
+					tas[tailleTas] = r;
+					++tailleTas;
+				}
+			}
 		}
 		fprintf(f, "\n");
 	}

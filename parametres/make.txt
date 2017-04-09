@@ -51,7 +51,7 @@ C_TOUT               = $(C_CRETINLIB) $(C_HEX) $(C_TESTS)
 
 # Compilation C
 CC                   = gcc
-C_OPT                = -Wall -Werror -ansi -fPIC
+C_OPT                = -Wall -Werror -ansi -fPIC -g
 JNI_OPT              = -I$(JAVA_HOME)/include/ -I$(JAVA_HOME)/include/linux
 DOS_O                = obj
 DOS_D                = dep

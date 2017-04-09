@@ -19,7 +19,8 @@ void erreur(const char * str, int CE);
 void erreurUnix(const char * str, int CE);
 
 
-
+/* int */
+int int_egal(int * a, int * b);
 
 /* n-uplet */
 typedef struct s_NUplet * NUplet;

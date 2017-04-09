@@ -33,18 +33,22 @@ int scanStr(char * str, const char * format, int * adrv){
 
 
 
-
-int fn_egal(int * a, int * b){
-	printf("fn_egal(%d, %d)\n", *a, *b);
-	return (*a == *b);
+void afficherTab(void * e[], int lg){
+	int i;
+	printf("tab @%4d : ", (int) (unsigned long int) e % 10000);
+	for (i = 0; i < lg; ++i)
+		printf("%4d ", (int) (unsigned long int) e[i] % 10000);
+	printf("\n");
 }
+
+
 
 /**
  * \brief Construction d'un graphe depuis un fichier 
  */
-Graphe construireDepuisFichier(int nbLiens, const char * fichier){
+Graphe construireDepuisFichier(int nbNoeuds, int nbLiens, const char * fichier){
 	FILE * f;
-	int v;
+	int v, i;
 	char str[256], debut[256], format[256];
 
 	GrapheNoeud n;	
@@ -59,14 +63,17 @@ Graphe construireDepuisFichier(int nbLiens, const char * fichier){
 	g = Graphe_init(1);
 	Graphe_afficher(g);
 
-	while (fgets(str, sizeof(str), f) != NULL){
+	i = 0;
+	while (fgets(str, sizeof(str), f) != NULL && i < nbNoeuds){
 	
 		printf("\n%s-----------------\n", str);
 		
+		/* Allocation mémoire de l'élément */
 		e = (int *) malloc(sizeof(int));
 		
 		printf("Elément : %4d ", (int) (unsigned long int) e % 10000);
 	
+		/* Lecture de la valeur + fomat pour la lecture des liens */
 		sscanf(str, "%d :", e);
 		sprintf(debut, "%d : ", *e);
 		sprintf(format, "%s%%d", debut);
@@ -75,27 +82,27 @@ Graphe construireDepuisFichier(int nbLiens, const char * fichier){
 		
 		lg = 0;
 		while (sscanf(str, format, &v) == 1){
+			/* Lecture du lien + format pour la lecture suivante */
 			sprintf(debut, "%s%d ", debut, v);
 			sprintf(format, "%s%%d", debut);
-			tab[lg++] = Graphe_trouverNoeud(g, &v, (GrapheElementEgal) fn_egal);
+			tab[lg++] = Graphe_trouverNoeud(g, &v, (GrapheElementEgal) int_egal);
+		}
+		if (lg == 0){
+			tab[lg++] = Graphe_pointEntree(g, 0);
 		}
 		
 		n = GrapheNoeud_init(e, (GrapheElementFree) free);
-		if (lg == 0)
-			tab[lg++] = Graphe_pointEntree(g, 0);
 		
 		GrapheNoeud_afficher(n);
-/*		printf("1er voisin : @%d\n", (int) (unsigned long int) tab[0]);
-		printf("Dans @%d\n", (int) (unsigned long int) tab);
-*/
+		afficherTab((void **) tab, lg);
+		
 		printf("\nAjout du noeud\n");
 		g = Graphe_insererNoeud(g, n, tab, lg);
 		Graphe_afficher(g);
+		++i;
 		
 	}
 	fclose(f);
-	printf("n   @%d\n", (int) (unsigned long int) n);
-	printf("tab @%d\n", (int) (unsigned long int) tab);
 	return g;
 
 }
@@ -107,7 +114,7 @@ Graphe construireDepuisFichier(int nbLiens, const char * fichier){
 void test_construction(int nbNoeuds, int nbLiens, const char * fichier){
 	Graphe g;
 	
-	g = construireDepuisFichier(nbNoeuds, fichier);
+	g = construireDepuisFichier(nbNoeuds, nbLiens, fichier);
 	
 	Graphe_libererMemoire(&g);
 }

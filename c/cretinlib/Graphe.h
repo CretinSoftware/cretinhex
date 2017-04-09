@@ -176,7 +176,7 @@ int Graphe_nbPointsEntree(Graphe g);
  * \param   g Le graphe en question
  * \param   i L'indice du point d'entrée
  * \return  Le graphe mis à jour
- * \req     0 &le; i &lt; Graphe_nbPointsEntree(g)
+ * \pre     0 &le; i &lt; Graphe_nbPointsEntree(g)
  */
 GrapheNoeud Graphe_pointEntree(Graphe g, int i);
 
@@ -224,7 +224,8 @@ GrapheNoeud Graphe_trouverNoeud(Graphe g, GrapheElement e, GrapheElementEgal ega
 /**
  * \brief   Insertion d'un noeud
  * \param   noeud Le noeud à insérer, correctement initialisé
- * \param   voisins Une LDC contenant les noeuds voisins
+ * \param   voisins Les noeuds voisins
+ * \param   nbVoisins Le nombre de voisins
  * \return  Le graphe mis à jour
  * \todo    Faire la fonction Graphe_insererNoeud()
  */

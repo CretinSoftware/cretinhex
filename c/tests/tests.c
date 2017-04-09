@@ -13,6 +13,14 @@ void erreurUnix(const char * str, int CE){
 
 
 
+/* int */
+
+int int_egal(int * a, int * b){
+	return (*a == *b);
+}
+
+
+
 
 /* n-uplet */
 typedef struct s_NUplet {
