@@ -41,7 +41,7 @@ typedef struct Damier {
 
 
 
-/*
+/**
  * \fn Damier Damier_init(int l)
  * \param l Largeur du damier
  * \return Le damier
@@ -66,7 +66,7 @@ Damier Damier_init(int l){
 
 
 
-/*
+/**
  * \fn Damier Damier_modifierCase(Damier d, Joueur j, int x, int y)
  * \param d Le damier à modifier
  * \param j La valeur à entrer
@@ -89,7 +89,7 @@ Damier Damier_modifierCase(Damier d, Joueur j, int x, int y){
 
 
 
-/*
+/**
  * \fn Joueur Damier_obtenirCase(Damier d, int x, int y)
  * \param d Le damier à consulter
  * \param x Première coordonnée
@@ -110,7 +110,7 @@ Joueur Damier_obtenirCase(Damier d, int x, int y){
 
 
 
-/*
+/**
  * \fn int Damier_obtenirLargeur(Damier d)
  * \param d Le damier à consulter
  * \return La largeur du damier (qui est aussi sa longueur)
@@ -123,7 +123,7 @@ int Damier_obtenirLargeur(Damier d){
 
 
 
-/*
+/**
  * \fn Joueur * Damier_obtenirDamier(Damier d)
  * \param d Le damier à consulter
  * \return Un tableau linéaire de joueur
@@ -146,7 +146,7 @@ Joueur * Damier_obtenirDamier(Damier d){
 
 
 
-/*
+/**
  * \fn void Damier_libererMemoire(Damier d)
  * \param d Le damier à enlever
  *

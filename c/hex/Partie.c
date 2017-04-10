@@ -33,7 +33,7 @@
 
 
 /** 
- * \defgroup pack_hex_ElemHistp ElemHisto
+ * \defgroup pack_hex_ElemHisto ElemHisto
  * \ingroup pack_hex
  * \brief Element de l'historique d'une partie.
  * @{
