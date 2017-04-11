@@ -23,7 +23,7 @@ JNIEXPORT jintArray JNICALL Java_noyau_IA0_randombotXjouer
 		y = rand() % largeur;
 		printf("IA0 : x=%d, y=%d\n", (int) x, (int) y);
 	}
-    while (cases[x + 8*y] != 0);
+    while (cases[x + largeur*y] != 0);
     
     
 	(*jEnv)->ReleaseIntArrayElements(jEnv, plateau, cases, 0);
