@@ -48,6 +48,20 @@
 
 
 
+/**
+ * @{
+ */
+
+# define   LDC_chercher(ldc, e, egal)      LDC_obtenirPosition(ldc, e, egal)
+# define   LDC_inserer(ldc, pos, e, free)  LDC_insererElement(ldc, pos, e, free)
+# define   LDC_obtenir(ldc, pos)           LDC_obtenirElement(ldc, pos)
+# define   LDC_enlever(ldc, pos)           LDC_enleverElement(ldc, pos)
+# define   LDC_free(ldc)                   LDC_libererMemoire(ldc)
+
+/** @} */
+
+
+
 
 
 
@@ -141,7 +155,7 @@ LDCElement LDC_obtenirElement(LDC ldc, int pos);
  \fn int LDC_obtenirPosition(LDC ldc, LDCElement e, LDCElementEgal egal)
  \brief renvoie la position d'un élément, -1 si absent
  */
-int LDC_obtenirPosition(LDC ldc, LDCElement e, LDCElementEgal egal); 
+int LDC_obtenirPosition(LDC ldc, LDCElement e, LDCElementEgal egal);
 
 
 
@@ -151,7 +165,7 @@ int LDC_obtenirPosition(LDC ldc, LDCElement e, LDCElementEgal egal);
  * \return La LDC
  *
  */
-LDC LDC_enleverElement(LDC ldc, int pos);
+LDC LDC_enleverElement(LDC ldc, int pos); 
 
 
 
