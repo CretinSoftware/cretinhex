@@ -65,7 +65,7 @@ LDC mkLDC(int dim, int n, const char * fichier){
 			fscanf(f, "%d", &v);
 			NUplet_set(nuplet, j, v);
 		}
-		ldc = LDC_insererElement(ldc, i, (LDCElement) nuplet, (LDCElementFree) NUplet_libererMemoire);
+		ldc = LDC_inserer(ldc, i, (LDCElement) nuplet, (LDCElementFree) NUplet_libererMemoire);
 	}
 	
 	fclose(f);
@@ -83,7 +83,7 @@ void test_construction(int dim, int nb, const char * fichier){
 	LDC ldc;
 	ldc = mkLDC(dim, nb, fichier);
 	afficherLDC(ldc);
-	LDC_libererMemoire(&ldc);
+	LDC_free(&ldc);
 }
 
 
@@ -101,7 +101,7 @@ void test_fusion(int dim, int nb, const char * fichier1, const char * fichier2, 
 	else
 		ldc1 = LDC_fusion(ldc1, ldc2);
 	afficherLDC(ldc1);
-	LDC_libererMemoire(&ldc1);
+	LDC_free(&ldc1);
 }
 
 
@@ -148,7 +148,7 @@ void test_recherche(int dim, int nb, const char * f_valeurs, const char * f_src)
 	} while (!feof(f_rech));
 	
 	fclose(f_rech);	
-	LDC_libererMemoire(&ldc);
+	LDC_free(&ldc);
 }
 
 
