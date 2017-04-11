@@ -1,0 +1,14 @@
+!.gitignore
+doc/
+mon_premier_programme
+java/bin
+c/*.so
+c/*/dep
+c/*/obj
+
+
+# Dossiers de tests : tout sauf les .c .h .sh
+c/tests/*
+!c/tests/*.c
+!c/tests/*.h
+!c/tests/*.sh

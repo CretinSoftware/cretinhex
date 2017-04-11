@@ -65,7 +65,7 @@ LDC mkLDC(int dim, int n, const char * fichier){
 			fscanf(f, "%d", &v);
 			NUplet_set(nuplet, j, v);
 		}
-		ldc = LDC_insererElement(ldc, i, (LDCElement) nuplet, (LDCElementFree) NUplet_libererMemoire);
+		ldc = LDC_inserer(ldc, i, (LDCElement) nuplet, (LDCElementFree) NUplet_libererMemoire);
 	}
 	
 	fclose(f);
@@ -83,7 +83,25 @@ void test_construction(int dim, int nb, const char * fichier){
 	LDC ldc;
 	ldc = mkLDC(dim, nb, fichier);
 	afficherLDC(ldc);
-	LDC_libererMemoire(&ldc);
+	LDC_free(&ldc);
+}
+
+
+
+
+/**
+ * \brief Test de fusion avec / sans doublons
+ */
+void test_fusion(int dim, int nb, const char * fichier1, const char * fichier2, int sansDoublons){
+	LDC ldc1, ldc2;
+	ldc1 = mkLDC(dim, nb, fichier1);
+	ldc2 = mkLDC(dim, nb, fichier2);
+	if (sansDoublons)
+		ldc1 = LDC_fusionSansDoublons(ldc1, ldc2, (LDCElementEgal) NUplet_egal);
+	else
+		ldc1 = LDC_fusion(ldc1, ldc2);
+	afficherLDC(ldc1);
+	LDC_free(&ldc1);
 }
 
 
@@ -148,7 +166,7 @@ void test_recherche(int dim, int nb, const char * f_valeurs, const char * f_src)
 	} while (!feof(f_rech));
 	
 	fclose(f_rech);	
-	LDC_libererMemoire(&ldc);
+	LDC_free(&ldc);
 }
 
 
