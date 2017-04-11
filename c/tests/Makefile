@@ -4,7 +4,7 @@ include ../../parametres/make.txt
 
 
 # Séries de tests
-SERIE_TESTS   = LDC Partie
+SERIE_TESTS   = LDC Graphe Partie
 SERIE_TESTS_MEMOIRE =  $(foreach t,$(SERIE_TESTS), $(t)_memoire)
 
 
@@ -33,11 +33,13 @@ LDC LDC_memoire: main_LDC mk_n-uplets
 
 Partie Partie_memoire: main_Partie mk_sauvegardes
 
+Graphe Graphe_memoire: main_Graphe mk_fichier_graphe
+
 $(SERIE_TESTS):
-	./script_test_$@.sh
+	-./script_test_$@.sh
 
 $(SERIE_TESTS_MEMOIRE):
-	./script_test_$(subst _memoire,,$@).sh --valgrind
+	-./script_test_$(subst _memoire,,$@).sh --valgrind
 	
 	
 
@@ -51,7 +53,7 @@ main_LDC:        $(foreach f, LDC.o , $(DOS_CRETINLIB)/$(DOS_O)/$(f)) \
 	$(CC) $(C_OPT) $^ -o $@
 	
 	
-main_Graphe:     $(foreach f, LDC.o Graphe.o , $(DOS_CRETINLIB)/$(DOS_O)/$(f)) \
+main_Graphe:     $(foreach f, LDC.o Graphe.o utile.o, $(DOS_CRETINLIB)/$(DOS_O)/$(f)) \
                  $(foreach f, tests.o main_Graphe.o, $(DOS_O)/$(f))
 	$(CC) $(C_OPT) $^ -o $@
 	

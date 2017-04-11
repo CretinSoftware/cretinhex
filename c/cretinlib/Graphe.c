@@ -115,12 +115,12 @@ GrapheNoeud GrapheNoeud_init(GrapheElement e, GrapheElementFree free){
 void GrapheNoeud_afficher(GrapheNoeud n){
 	/*const char * espaces = "              ";*/
 	LDCIterateur it;
-	printf("GrapheNoeud : %4d ( élément=%4d, voisins=", (int) (unsigned long int) n % 10000, (int) (unsigned long int) n->element % 10000);
+	printf("GrapheNoeud : %4d ( élément=%4d, free=%4d, voisins=", adresse(n), adresse(n->element), adresse(n->free));
 	
 	it = LDCIterateur_init(n->voisins, LDCITERATEUR_AVANT);
 	
 	for (it = LDCIterateur_debut(it); ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it))
-		printf("%4d ", (int) (unsigned long int) LDCIterateur_valeur(it) % 10000);
+		printf("%4d ", adresse(LDCIterateur_valeur(it)));
 	printf(")\n");
 	
 	LDCIterateur_libererMemoire(&it);
@@ -206,8 +206,8 @@ GrapheNoeud GrapheNoeud_fusionner(GrapheNoeud n1, GrapheNoeud n2){
  * \note    Libère aussi la mémoire allouée à l'élément avec la fonction GrapheElementFree fournit à l'initialisation, si différente de NULL
  */
 void GrapheNoeud_libererMemoire(GrapheNoeud * noeud){
-	printf("Suppression noeud : ");
-	GrapheNoeud_afficher(*noeud);
+	/*printf("Suppression noeud : ");
+	GrapheNoeud_afficher(*noeud);*/
 	
 	if ((*noeud)->free != NULL)
 		(*noeud)->free(&((*noeud)->element));
@@ -260,6 +260,7 @@ Graphe Graphe_init(int nbPointsEntree){
 void Graphe_afficher(Graphe g){
 	const char * espaces = "         ";
 	LDCIterateur it;
+	LDC tousLesNoeuds;
 	
 	/* Points d'entrée */
 	printf("Graphe : %d point(s) d'entrée : \n", Graphe_nbPointsEntree(g));
@@ -271,11 +272,13 @@ void Graphe_afficher(Graphe g){
 	LDCIterateur_libererMemoire(&it);
 	
 	printf("%s%d noeud(s) :\n", espaces, g->nbNoeuds);
-	it = LDCIterateur_init(Graphe_tousLesNoeuds(g), LDCITERATEUR_AVANT);
+	tousLesNoeuds = Graphe_tousLesNoeuds(g);
+	it = LDCIterateur_init(tousLesNoeuds, LDCITERATEUR_AVANT);
 	for (it = LDCIterateur_debut(it); ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it)){
 		printf("%s  ", espaces);
 		GrapheNoeud_afficher((GrapheNoeud) LDCIterateur_valeur(it));
 	}
+	LDC_libererMemoire(&tousLesNoeuds);
 	LDCIterateur_libererMemoire(&it);
 }
 

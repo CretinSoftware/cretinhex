@@ -10,6 +10,7 @@
 # define __CRETIN_GRAPHE__
 
 # include "LDC.h"
+# include "utile.h"
 
 
 
@@ -188,6 +189,11 @@ GrapheNoeud Graphe_pointEntree(Graphe g, int i);
  * \req     
  */
 LDC Graphe_pointsEntree(Graphe g, int i);
+
+/**
+ * \brief  Dit si un noeud est un point d'entrée
+ */
+int Graphe_estPointEntree(Graphe g, GrapheNoeud n);
 
 /**
  * \brief   Renvoie tous les noeuds du graphe

@@ -33,14 +33,87 @@ int scanStr(char * str, const char * format, int * adrv){
 
 
 
-void afficherTab(void * e[], int lg){
-	int i;
-	printf("tab @%4d : ", (int) (unsigned long int) e % 10000);
-	for (i = 0; i < lg; ++i)
-		printf("%4d ", (int) (unsigned long int) e[i] % 10000);
-	printf("\n");
+
+
+
+
+
+void swap(int * a, int * b){
+	int tmp;
+	tmp = *a;
+	*a = *b;
+	*b = tmp;
 }
 
+/** \brief Tri rapide */
+void trierTab(int tab[], int deb, int fin){
+	if (deb < fin){
+		int iPiv = deb;
+		int iCur = deb + 1;
+		int iFin = fin;
+	
+		while (iCur <= iFin){
+			if (tab[iCur] < tab[iPiv]){
+				swap(&tab[iCur], &tab[iPiv]);
+				++iCur;
+			}
+			else{
+				swap(&tab[iCur], &tab[iFin]);
+				--iFin;
+			}
+		}
+		trierTab(tab, deb, iPiv - 1);
+		trierTab(tab, iPiv + 1, fin);
+	}
+}
+
+/**
+ * \brief Affiche le graphe pour matcher les résultats : valeur du noeud et valeurs triées de ses voisins
+ */
+void afficherGraphe(Graphe g){
+	LDC tousLesNoeuds;
+	LDCIterateur it, it2;
+	GrapheNoeud n, n2;
+	
+	tousLesNoeuds = Graphe_tousLesNoeuds(g);
+	it = LDCIterateur_init(tousLesNoeuds, LDCITERATEUR_AVANT);
+	
+	
+	int valeursVoisins[LDC_taille(tousLesNoeuds)];
+	int i, nbVoisins;
+	
+	
+	
+	for (it = LDCIterateur_debut(it); ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it)){
+		n = (GrapheNoeud) LDCIterateur_valeur(it);
+		printf("%d : ", * (int*) GrapheNoeud_obtenirElement(n));
+		it2 = LDCIterateur_init(GrapheNoeud_obtenirVoisins(n), LDCITERATEUR_AVANT);
+		
+		nbVoisins = 0;
+		for (it2 = LDCIterateur_debut(it2); ! LDCIterateur_fin(it2); it2 = LDCIterateur_avancer(it2)){
+			n2 = (GrapheNoeud) LDCIterateur_valeur(it2);
+			if (! Graphe_estPointEntree(g, n2))
+				valeursVoisins[nbVoisins++] = * (int*) GrapheNoeud_obtenirElement(n2);
+		}
+		
+		trierTab(valeursVoisins, 0, nbVoisins - 1);
+		for (i = 0; i < nbVoisins; ++i)
+			printf("%d ", valeursVoisins[i]);		
+		printf("\n");
+		
+		LDCIterateur_libererMemoire(&it2);
+	}
+	LDCIterateur_libererMemoire(&it);
+	LDC_libererMemoire(&tousLesNoeuds);
+}
+
+
+
+/** \brief Supprime un pointeur d'entier */
+void int_free(int ** ptr){
+	free(*ptr);
+	*ptr = NULL;
+}
 
 
 /**
@@ -59,26 +132,18 @@ Graphe construireDepuisFichier(int nbNoeuds, int nbLiens, const char * fichier){
 	
 	f = fopen(fichier, "r");
 
-	printf("\nInit\n");
 	g = Graphe_init(1);
-	Graphe_afficher(g);
 
 	i = 0;
 	while (fgets(str, sizeof(str), f) != NULL && i < nbNoeuds){
 	
-		printf("\n%s-----------------\n", str);
-		
 		/* Allocation mémoire de l'élément */
 		e = (int *) malloc(sizeof(int));
 		
-		printf("Elément : %4d ", (int) (unsigned long int) e % 10000);
-	
 		/* Lecture de la valeur + fomat pour la lecture des liens */
 		sscanf(str, "%d :", e);
 		sprintf(debut, "%d : ", *e);
 		sprintf(format, "%s%%d", debut);
-		
-		printf("(valeur %d)\n", *e);
 		
 		lg = 0;
 		while (sscanf(str, format, &v) == 1){
@@ -87,18 +152,12 @@ Graphe construireDepuisFichier(int nbNoeuds, int nbLiens, const char * fichier){
 			sprintf(format, "%s%%d", debut);
 			tab[lg++] = Graphe_trouverNoeud(g, &v, (GrapheElementEgal) int_egal);
 		}
-		if (lg == 0){
+		if (lg == 0)
 			tab[lg++] = Graphe_pointEntree(g, 0);
-		}
 		
-		n = GrapheNoeud_init(e, (GrapheElementFree) free);
+		n = GrapheNoeud_init(e, (GrapheElementFree) int_free);
 		
-		GrapheNoeud_afficher(n);
-		afficherTab((void **) tab, lg);
-		
-		printf("\nAjout du noeud\n");
 		g = Graphe_insererNoeud(g, n, tab, lg);
-		Graphe_afficher(g);
 		++i;
 		
 	}
@@ -115,6 +174,8 @@ void test_construction(int nbNoeuds, int nbLiens, const char * fichier){
 	Graphe g;
 	
 	g = construireDepuisFichier(nbNoeuds, nbLiens, fichier);
+	
+	afficherGraphe(g);
 	
 	Graphe_libererMemoire(&g);
 }
