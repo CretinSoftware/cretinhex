@@ -29,6 +29,8 @@ public class Humain implements Utilisateur {
 	
 	public void actualiser(int x, int y){
 	}
+	
+	public void quitter(){}
 
 
 	public String getNom(){

@@ -61,7 +61,7 @@ $(C)/%:
 
 
 # Génère le raccourci
-$(EXE): $(JAVA)/$(JAVA_APP) $(foreach lib, $(LIB_CRETINHEX), $(JAVA)/$(JAVA_BIN)/lib$(lib))
+$(EXE): $(JAVA)/$(JAVA_APP) $(foreach lib, $(LIB_CRETINHEX) $(LIB_IA0), $(JAVA)/$(JAVA_BIN)/lib$(lib))
 	echo "(cd \"$(CURDIR)/$(JAVA)/$(JAVA_BIN)\" && java -Djava.library.path=./ $(JAVA_CLASS_APP) \$$@)" > $(EXE) && chmod 751 $(EXE)
 
 

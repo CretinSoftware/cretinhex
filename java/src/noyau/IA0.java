@@ -1,6 +1,6 @@
 /**
- * \class     noyau.Humain
- * \brief     L'humain qui est assis derrière l'écran...
+ * \class     noyau.IA0
+ * \brief     IA qui joue au hasard.
  * \author    Pierre Pomeret-Coquot
  * \date      dimanche 2 avril 2017
  */
@@ -10,18 +10,17 @@ import cretinplay.Application;
 public class IA0 implements Utilisateur {
 
 
-	private String nom;     /**< \brief Nom de l'IA*/
-	private Joueur j;       /**< \brief Joueur (i.e J1 ou J2) */
-	
+	private String nom;     /**< \brief Nom de l'IA*/	
 	
 	static { System.loadLibrary("cretinhex_randombot"); }
 
-	private native int[] randombotXjouer(int[] damier);
+	private native int[] randombotXjouer(int[] damier, int tailleDamier);
+	private native void randombotXinit();
 
 	/** \brief Constructeur d'après un nom et un joueur (J1 ou J2) */
-	public IA0(String nom, Joueur j){
-		this.nom = nom;
-		this.j = j;
+	public IA0(){
+		this.nom = "RandomBot";
+		randombotXinit();
 	}
 
 	public int[] jouer(Partie p){
@@ -30,6 +29,9 @@ public class IA0 implements Utilisateur {
 	}
 	
 	public void actualiser(int x, int y){
+	}
+	
+	public void quitter(){
 	}
 
 

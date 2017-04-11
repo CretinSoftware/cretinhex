@@ -8,7 +8,7 @@
  */
 package ihm.console;
 import cretinplay.Application;
-import noyau.Utilisateur;
+import noyau.*;
 
 
 public class PageOptions extends Page{
@@ -21,11 +21,29 @@ public class PageOptions extends Page{
 	{
 		String str;
 		
-		str = new Menu("Nom du joueur 1").obtenirString();
-		Application.j1.setNom(str);
+		switch(new Menu("Quel existance pour le joueur 1 ?", "Humain", "Randombot").obtenirInt()){
+			case 1:
+				str = new Menu("Nom du joueur 1").obtenirString();
+				Application.j1 = new Humain(str, Joueur.J1);
+				break;
+			case 2:
+				Application.j1 = new IA0();
+				break;
+			default:
+				System.err.println("Un soucis dans le choix de l'IA...");
+		}
 		
-		str = new Menu("Nom du joueur 2").obtenirString();
-		Application.j2.setNom(str);
+		switch(new Menu("Quel existance pour le joueur 2 ?", "Humain", "Randombot").obtenirInt()){
+			case 1:
+				str = new Menu("Nom du joueur 1").obtenirString();
+				Application.j2 = new Humain(str, Joueur.J2);
+				break;
+			case 2:
+				Application.j2 = new IA0();
+				break;
+			default:
+				System.err.println("Un soucis dans le choix de l'IA...");
+		}
 		
 		
 		return new PageAccueil();

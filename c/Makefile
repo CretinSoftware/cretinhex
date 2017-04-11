@@ -50,7 +50,7 @@ doc: $(C_DOC)/html/index.html
 $(LIB_CRETINHEX_SO): $(C_FICHIERS_O)
 	gcc -shared $(C_OPT) $^ -o $@
 	
-$(LIB_IA0_SO): $(C_IA0/$(DOS_0)/*.o
+$(LIB_IA0_SO): $(C_IA0)/$(DOS_O)/*.o
 	gcc -shared $(C_OPT) $^ -o $@
 	
 	

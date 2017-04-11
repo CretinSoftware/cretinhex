@@ -10,10 +10,18 @@ extern "C" {
 /*
  * Class:     noyau_IA0
  * Method:    randombotXjouer
- * Signature: ([I)[I
+ * Signature: ([II)[I
  */
 JNIEXPORT jintArray JNICALL Java_noyau_IA0_randombotXjouer
-  (JNIEnv *, jobject, jintArray);
+  (JNIEnv *, jobject, jintArray, jint);
+
+/*
+ * Class:     noyau_IA0
+ * Method:    randombotXinit
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_noyau_IA0_randombotXinit
+  (JNIEnv *, jobject);
 
 #ifdef __cplusplus
 }
