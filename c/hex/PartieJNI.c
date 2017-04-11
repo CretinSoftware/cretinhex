@@ -23,7 +23,7 @@
  * La variable globale PARTIE_GLOBALE stocke la partie en cours
  * \todo Trouver comment stocker la partie en mémoire / la transmettre à java
  */
-Partie PARTIE_GLOBALE;
+Partie PARTIE_GLOBALE = NULL;
 
 
 
@@ -111,7 +111,7 @@ JNIEXPORT jintArray JNICALL Java_noyau_PartieJNI_cretinhexXobtenirDamier
 	/* Création d'entiers java dans temp */
 	jint temp[l*l];
 	int i;
-	Joueur * damier = Partie_obtenirDamier(PARTIE_GLOBALE);
+	Joueur * damier = Partie_obtenirTabJoueurs(PARTIE_GLOBALE);
 	for (i = 0; i < l*l; ++i)
 		temp[i] = (jint) damier[i];
 	free(damier);
@@ -138,7 +138,7 @@ JNIEXPORT jintArray JNICALL Java_noyau_PartieJNI_cretinhexXobtenirDamierHisto
 	/* Création d'entiers java dans temp */
 	jint temp[l*l];
 	int i;
-	Joueur * damier = Partie_obtenirDamierHisto(PARTIE_GLOBALE, n);
+	Joueur * damier = Partie_obtenirTabJoueursHisto(PARTIE_GLOBALE, n);
 	for (i = 0; i < l*l; ++i)
 		temp[i] = (jint) damier[i];
 	free(damier);

@@ -220,7 +220,7 @@ Joueur Partie_obtenirCase(Partie p, int x, int y){
 
 
 /*
- * \fn Joueur * Partie_obtenirDamier(Partie p)
+ * \fn Damier Partie_obtenirDamier(Partie p)
  * \param p La partie en cours
  * \return Le damier
  *
@@ -230,14 +230,33 @@ Joueur Partie_obtenirCase(Partie p, int x, int y){
  *  - y = ligne
  *  - la case (x, y) est à l'indice (y*Partie_largeurDamier(p) + x)
  */
-Joueur * Partie_obtenirDamier(Partie p){
-	return Damier_obtenirDamier(p->damier);
+Damier Partie_obtenirDamier(Partie p){
+	return p->damier;
+}
+
+
+
+
+
+/*
+ * \fn Joueur * Partie_obtenirTabJoueurs(Partie p)
+ * \param p La partie en cours
+ * \return Le damier
+ *
+ * \brief Le damier est représenté comme un tableau linéaire
+ * Pour rappel :
+ *  - x = colonne
+ *  - y = ligne
+ *  - la case (x, y) est à l'indice (y*Partie_largeurDamier(p) + x)
+ */
+Joueur * Partie_obtenirTabJoueurs(Partie p){
+	return Damier_obtenirTabJoueurs(p->damier);
 }
 
 
 
 /**
- * \fn Joueur * Partie_obtenirDamierHisto(Partie p)
+ * \fn Joueur * Partie_obtenirTabJoueursHisto(Partie p)
  * \brief Le damier tel qu'il était au tour n
  * \param p La partie en cours
  * \param n Le tour demandé
@@ -247,7 +266,7 @@ Joueur * Partie_obtenirDamier(Partie p){
  *
  * \todo Travailler avec un itérateur !
  */
-Joueur * Partie_obtenirDamierHisto(Partie p, int n){
+Joueur * Partie_obtenirTabJoueursHisto(Partie p, int n){
 	Damier d = Damier_init(Damier_obtenirLargeur(p->damier));
 	LDCIterateur it = LDCIterateur_init(p->historique, LDCITERATEUR_AVANT);
 	ElemHisto eh;
@@ -256,7 +275,7 @@ Joueur * Partie_obtenirDamierHisto(Partie p, int n){
 		d = Damier_modifierCase(d, eh->joueur, eh->x, eh->y);
 	}
 	LDCIterateur_libererMemoire(&it);
-	return Damier_obtenirDamier(d);
+	return Damier_obtenirTabJoueurs(d);
 }
 	
 
@@ -317,7 +336,7 @@ int Partie_sauvegarder(Partie p, const char * nomFichier){
 	FILE * f;
 	int i;
 	int l = Damier_obtenirLargeur(p->damier);
-	Joueur * damier = Damier_obtenirDamier(p->damier);
+	Joueur * damier = Damier_obtenirTabJoueurs(p->damier);
 	
 	/* Ouverture du fichier */
 	f = fopen(nomFichier, "w");
