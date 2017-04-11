@@ -160,11 +160,17 @@ public class Menu
 		while (!ok){
 			String str = this.obtenirString().toUpperCase();
 			char c = str.charAt(0);
-			if (c >= 'A' && c <= 'Z'){
-				coords[1] = (int) c - (int) 'A';
-				ok = coords[0] > 0 && coords[0] < taille && coords[1] > 0 && coords[1] < taille;
+			
+			if (str.equals("0")){
+				coords[0] = -1;
+				coords[1] = -1;
+				ok = true;
 			}
-			ok = true;
+			else if (c >= 'A' && c <= 'Z'){
+				coords[1] = (int) c - (int) 'A';
+				coords[0] = Integer.parseInt(str.substring(1)) - 1;
+				ok = (coords[0] >= 0 && coords[0] < taille && coords[1] >= 0 && coords[1] < taille);
+			}
 		}
 		return coords;
 	}

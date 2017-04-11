@@ -24,8 +24,7 @@ public class IA0 implements Utilisateur {
 	}
 
 	public int[] jouer(Partie p){
-		int[] i = {-1, -1};
-		return i;
+		return randombotXjouer(p.obtenirDamierInt(), p.largeurDamier());
 	}
 	
 	public void actualiser(int x, int y){
