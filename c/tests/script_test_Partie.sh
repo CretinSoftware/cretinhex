@@ -93,6 +93,7 @@ mkdir -p $REP_OUT
 
 
 
+
 # Pattern du fichier en entree
 f_in="$REP_IN/sauv_@1x@2_@3.txt"
 
@@ -109,6 +110,7 @@ commande="./main_Partie -s `basename $f_in`"
 verif="cmp $f_in $f_out" 
 
 
+ko=0
 
 
 # On crée la boucle pour les tests identiques
@@ -119,6 +121,7 @@ do
 	bcl="$bcl $i"
 	i=`expr $i + 1`
 done
+
 
 
 # On limite la boucle du nombre de coups joues
@@ -133,6 +136,8 @@ do
 	# On lance la série de tests
 	./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "" "" "$f_out" "$commande" "$verif" "$largeur" "$bcl2" "$bcl"
 done
+
+exit $ko
 
 
 

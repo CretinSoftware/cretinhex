@@ -12,11 +12,11 @@ import java.util.Scanner;
  */
 public class Menu 
 {
-	private String question;
-	private String[] reponses;
-	private Page[] redirections;
+	private String question;                        /**< \brief La question qui est donc le titre du menu */
+	private String[] reponses;                      /**< \brief La liste des solutions, au format texte */
+	private Page[] redirections;                    /**< \brief La liste des redirections, pour une menu de page \todo Faut-il plutôt une classe fille ? */
 	
-	private Scanner scan = new Scanner(System.in);
+	private Scanner scan = new Scanner(System.in);  /**< \brief L'outil pour lire les réponses de l'utilisateur */
 	
 	
 	
@@ -25,6 +25,12 @@ public class Menu
 	 * 
 	 * La première phrase est la question posée.
 	 * Les suivantes, si présentes, seront affichées comme des propositions précédées d'un nombre
+	 * @{
+	 */
+	 
+	/**
+	 * \brief    Menu sans propositions
+	 * \param    question La question qui sera posée
 	 */
 	public Menu (String question)
 	{
@@ -33,15 +39,22 @@ public class Menu
 		this.redirections = new Page[0];
 	}
 	
-	
-	
+	/**
+	 * \brief    Menu avec propositions
+	 * \param    question La question qui sera posée
+	 * \param    reponses La liste des réponses possibles
+	 */
 	public Menu (String question, String... reponses)
 	{
 		this.question = question;
 		this.reponses = Arrays.copyOf(reponses, reponses.length);
 	}
 	
-	
+	/**
+	 * \brief    Menu de page avec propositions
+	 * \param    question      La question qui sera posée
+	 * \param    redirections  La liste des redirection (pages) possibles
+	 */
 	public Menu(String question, Page... redirections){
 		this.question = question;
 		this.redirections = Arrays.copyOf(redirections, redirections.length);

@@ -11,6 +11,7 @@
  *  - Placement de pions sur le plateau
  *  - Sauvegarde et restauration de fichiers parties.txt
  *  - Conservation et consultation de l'historique des coups joués
+ *  - Détermination du vainqueur
  *
  */
 

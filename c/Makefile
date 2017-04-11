@@ -16,10 +16,11 @@
 
 
 
-include ../parametres/make.txt
 
 
 # Réglages 
+include ../parametres/make.txt
+
 C_SRC                = $(C_CRETINLIB) $(C_HEX)
 C_DOC                = ../$(DOC)/c
 C_FICHIERS_C        := $(foreach dos, $(C_SRC), $(wildcard $(dos)/*.c))

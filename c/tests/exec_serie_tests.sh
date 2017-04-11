@@ -59,6 +59,9 @@ shift
 
 
 
+ok=0
+ko=0
+
 # Boucle par défaut = un élément unique (par exemple : 1)
 test $# -le 0 && set 1
 test $# -le 1 && set "$1" 1
@@ -107,12 +110,24 @@ do
 			
 			./exec_test.sh $use_valgrind "$f_in" "$f_in2" "$f_out" "$commande" "$verif"
 			
-			
+			if test $? -eq 0
+			then
+				ok=`expr $ok + 1`
+			else
+				ko=`expr $ko + 1`
+			fi			
 		done
 	done
 done
 
+#if test $ko -eq 0
+#then
+#	echo -e "\x1B[1;32mTests OK : $ok / `expr $ok + $ko`\x1B[0m"
+#else
+#	echo -e "\x1B[1;31mTests OK : $ok / `expr $ok + $ko`\x1B[0m"
+#fi
 
+exit $ko
 
 
 

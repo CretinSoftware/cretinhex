@@ -1,28 +1,37 @@
+/**
+ * \class   cretinplay.Application
+ * \brief   Main + lecture de la commande passée
+ * \author  Pierre Pomeret-Coquot
+ * \date    samedi 1er avril 2017
+ * 
+ * \par     Description
+ * Application eest la première classe appelée. Elle contient le main,
+ * gère les paramètres passés en ligne de commande, et appelle la fonction
+ * ihm.play() qui lance l'interface (ligne de commande, graphique, etc.)
+ *
+ */
+
 package cretinplay;
 import ihm.*;
 import noyau.*;
 
-/**
- * @author François
- * @author Pierre
- *
- */
+
 public class Application {
 
 
-	public static IHM ihm = new IHMConsole();
+	public static IHM ihm = new IHMConsole();       /**< \brief Interface utilisateur utilisée */
+	public static Utilisateur j1;                   /**< \brief Caractériqtiques du joueur 1 */
+	public static Utilisateur j2;                   /**< \brief Caractéristiques du joueur 2 */
 	
-	public static String SYSTEME = "Non spécifié";
-	public static int LARGEUR_ECRAN = 80;
+	public static String SYSTEME = "Non spécifié";  /**< \brief Sysème d'exploitation sur lesuel tourne l'application */
+	public static int LARGEUR_ECRAN = 80;           /**< \brief Largeur de l'écran en nombre de caractères */
 	
-	public static Utilisateur j1;
-	public static Utilisateur j2;
 
 
 	
 	
 	/**
-	 * Affiche l'usage des commandes et termine l'exécution du programme
+	 * \brief Affiche l'usage des commandes et termine l'exécution du programme
 	 */
 	private static void erreurUsage(){
 		System.err.println("Options autorisées : ");
@@ -33,7 +42,9 @@ public class Application {
 
 
 	/**
-	 * @param args Arguments (-l -sys)
+	 * \param args Arguments 
+	 *         - -l x : largeur de x caractères pour l'ihm console
+	 *         - -sys x : définit le système comme étant x (x=unix permet une fioriture pour l'affichage ihm console)
 	 */
 	
 	public static void main(String[] args) 

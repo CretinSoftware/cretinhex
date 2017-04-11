@@ -11,28 +11,30 @@ package noyau;
 public class Partie extends PartieJNI {
 
 
-	public static final int TAILLE_PAR_DEFAUT = 11;
+	public static final int TAILLE_PAR_DEFAUT = 11;   /**< Taille par défaut du damier */
 
 	
-	/**
-	 * Constructeurs
-	 */
+	/** \brief Constructeur pour une nouvelle partie par défaut */
 	public Partie(){
 		super(TAILLE_PAR_DEFAUT, Joueur.J1);
 	}
 	
+	/** \brief Constructeur pour une nouvelle partie de taille l */
 	public Partie(int l){
 		super(l, Joueur.J1);
 	}
 	
+	/** \brief Constructeur pour une nouvelle partie de taille l où j commence */
 	public Partie(int l, Joueur j){
 		super(l, j);
 	}
 	
+	/** \brief Constructeur pour une partie par défaut où j commence */
 	public Partie(Joueur j){
 		super(TAILLE_PAR_DEFAUT, j);
 	}	
 	
+	/** \brief Constructeur pour une partie d'après le fichier de sauvegarde nomFichier */
 	public Partie(String nomFichier){
 		super();
 		this.charger(nomFichier);
