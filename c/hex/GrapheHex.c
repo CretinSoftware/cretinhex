@@ -40,6 +40,7 @@ typedef struct GrapheHex {
 
 
 /**
+ * \fn       GrapheHex GrapheHex_init(Damier d)
  * \brief    Initialise un GrapheHex
  * \param    d Le damier à représenter
  *
@@ -55,29 +56,36 @@ typedef struct GrapheHex {
  *    # # # #
  *     # # # #
  * </pre>
- * \todo Confirmer le sens du damier
+ * @{
  */
+
+void free_Joueur(Joueur ** ptr){
+	free(*ptr);
+	*ptr = NULL;
+}
+
 GrapheHex GrapheHex_init(Damier d){
 	GrapheHex g;
 	GrapheNoeud noeud;
 	GrapheNoeud voisins[4];    /*< Dans l'algo qui suit, on ajoute les noeuds par 4 maximum */
 	Joueur * ptJ;
-	int n, x, y, l;
+	int n, x, y;
 	
 	/* Allocation mémoire */
 	g = (GrapheHex) malloc(sizeof(GrapheHexInterne));
 	assert(g != NULL);
+	g->graphe = Graphe_init(4);
 	
-	l = Damier_obtenirLargeur(d);
-	g->metagraphe = (GrapheNoeud *) malloc(sizeof(GrapheNoeud) * l);
+	g->largeurDamier = Damier_obtenirLargeur(d);
+	
+	g->metagraphe = (GrapheNoeud *) malloc(sizeof(GrapheNoeud) * g->largeurDamier * g->largeurDamier);
 	assert(g->metagraphe != NULL);
 	
-	g->graphe = Graphe_init(4);
 	
 	
 	/* Placement des noeuds */
-	for (y = 0; y < l; ++y){
-		for (x = 0; x < l; ++x){
+	for (y = 0; y < g->largeurDamier; ++y){
+		for (x = 0; x < g->largeurDamier; ++x){
 			
 			/* Nombre de noeuds */
 			n = 0;
@@ -87,9 +95,9 @@ GrapheHex GrapheHex_init(Damier d){
 			assert(ptJ != NULL);
 			*ptJ = Damier_obtenirCase(d, x, y);
 			
-			noeud = GrapheNoeud_init(ptJ, (GrapheElementFree) free);
+			noeud = GrapheNoeud_init(ptJ, (GrapheElementFree) free_Joueur);
 			
-			g->metagraphe[y*l + x] = noeud;
+			g->metagraphe[y*g->largeurDamier + x] = noeud;
 			
 			/* Première ligne : ajout de NORD */
 			if (y == 0){
@@ -97,7 +105,7 @@ GrapheHex GrapheHex_init(Damier d){
 			}
 			/* Autres lignes : ajout du voisin de dessus (en haut à gauche) */
 			else {
-				voisins[n++] = g->metagraphe[(y-1)*l + x];
+				voisins[n++] = g->metagraphe[(y-1)*g->largeurDamier + x];
 			}
 			/* Première colonne : ajout OUEST */
 			if (x == 0){
@@ -105,19 +113,19 @@ GrapheHex GrapheHex_init(Damier d){
 			}
 			/* Autres colonnes : ajout du voisin de gauche */
 			else {
-				voisins[n++] = g->metagraphe[y*l + x - 1];
+				voisins[n++] = g->metagraphe[y*g->largeurDamier + x - 1];
 			}
 			/* Dernière ligne, ajout de SUD */
-			if (y == l-1){
+			if (y == g->largeurDamier-1){
 				voisins[n++] = Graphe_pointEntree(g->graphe, SUD);
 			}
 			/* Dernière colonne, ajout de EST */
-			if (x == l-1){
+			if (x == g->largeurDamier-1){
 				voisins[n++] = Graphe_pointEntree(g->graphe, EST);
 			}
 			/* Autres colonnes, sauf la première ligne : ajout du voisin de dessus (en haut à droite) */
 			else if (y != 0){
-				voisins[n++] = g->metagraphe[(y-1)*l + x + 1];
+				voisins[n++] = g->metagraphe[(y-1)*g->largeurDamier + x + 1];
 			}
 			
 			g->graphe = Graphe_insererNoeud(g->graphe, noeud, voisins, n);
@@ -126,6 +134,7 @@ GrapheHex GrapheHex_init(Damier d){
 	
 	return g;
 }
+/** @} */
 
 
 /**
@@ -147,9 +156,9 @@ void GrapheHex_libererMemoire(GrapheHex * g){
  * \param    j La valeur (de type Joueur) à placer dans la case
  */
 GrapheHex GrapheHex_modifierCase(GrapheHex g, int x, int y, Joueur j){
-	GrapheNoeud noeud, voisin;
+	GrapheNoeud noeud/*, voisin*/;
 	Joueur * ptJ;
-	LDCIterateur it;
+	/*LDCIterateur it;*/
 	
 	/* Noeud d'après le métagraphe */
 	noeud = g->metagraphe[y * g->largeurDamier + x];
@@ -159,13 +168,14 @@ GrapheHex GrapheHex_modifierCase(GrapheHex g, int x, int y, Joueur j){
 	*ptJ = j;
 	
 	/* Fusion avec les voisins */
-	it = LDCIterateur_init(GrapheNoeud_obtenirVoisins(noeud), LDCITERATEUR_AVANT);
+	/*it = LDCIterateur_init(GrapheNoeud_obtenirVoisins(noeud), LDCITERATEUR_AVANT);
 	for (it = LDCIterateur_debut(it); ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it)){
 		voisin = (GrapheNoeud) LDCIterateur_valeur(it);
 		if (  * (Joueur *) GrapheNoeud_obtenirElement(voisin) == j )
 			noeud = GrapheNoeud_fusionner(noeud, voisin);
 	}
-	LDCIterateur_libererMemoire(&it);
+	LDCIterateur_libererMemoire(&it);*/
+	
 	return g;
 }
 

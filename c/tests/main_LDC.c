@@ -107,24 +107,6 @@ void test_fusion(int dim, int nb, const char * fichier1, const char * fichier2, 
 
 
 
-/**
- * \brief Test de fusion avec / sans doublons
- */
-void test_fusion(int dim, int nb, const char * fichier1, const char * fichier2, int sansDoublons){
-	LDC ldc1, ldc2;
-	ldc1 = mkLDC(dim, nb, fichier1);
-	ldc2 = mkLDC(dim, nb, fichier2);
-	if (sansDoublons)
-		ldc1 = LDC_fusionSansDoublons(ldc1, ldc2, (LDCElementEgal) NUplet_egal);
-	else
-		ldc1 = LDC_fusion(ldc1, ldc2);
-	afficherLDC(ldc1);
-	LDC_libererMemoire(&ldc1);
-}
-
-
-
-
 
 
 /**
