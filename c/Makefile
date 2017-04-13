@@ -36,7 +36,7 @@ all: c
 headers: 
 	make headers -C ../$(JAVA)
 
-c: $(LIB_CRETINHEX)
+c: $(LIB_CRETINHEX) $(LIB_IA0)
 
 doc: $(C_DOC)/html/index.html
 
@@ -48,13 +48,20 @@ doc: $(C_DOC)/html/index.html
 
 # Bibliothèque cretinhex
 $(LIB_CRETINHEX_SO): $(C_FICHIERS_O)
-	echo $^
-	gcc -shared $(C_OPT) $(C_FICHIERS_O) -o $(LIB_CRETINHEX_SO)
+	gcc -shared $(C_OPT) $^ -o $@
 	
-$(LIB_CRETINHEX_DLL): 
+$(LIB_IA0_SO): $(C_IA0)/$(DOS_O)/*.o
+	gcc -shared $(C_OPT) $^ -o $@
+	
+	
+
+# Windows : le fera-t'on ?
+$(LIB_CRETINHEX_DLL) $(LIB_IA0_DLL): 
 	@echo "Pas de compilation pour windows actuellement"
-
-
+	
+	
+	
+	
 # Appelle les makes pour fournir les .o
 %.o: 
 #	make $(C_OBJ)/$(notdir $@) -C $(subst $(C_OBJ)/,,$(dir $@))

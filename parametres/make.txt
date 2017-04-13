@@ -9,7 +9,7 @@
 # Paramètres utilisateur
 # JAVA_HOME          = /usr/lib/jvm/java-7-openjdk-amd64
 JAVA_HOME            = $(subst /jre,,$(shell jrunscript -e 'java.lang.System.out.println(java.lang.System.getProperty("java.home"));'))
-SYSTEME              = linux
+SYSTEME              = unix
 
 
 # Executable
@@ -19,11 +19,15 @@ EXE                  = mon_premier_programme
 # Bibliothèques
 LIB_CRETINHEX_SO     = cretinhex.so
 LIB_CRETINHEX_DLL    = cretinhex.dll
+LIB_IA0_SO           = cretinhex_randombot.so
+LIB_IA0_DLL          = cretinhex_randombot.dll
 
 ifeq ($(SYSTEME), windows)
-	LIB_CRETINHEX        = $(LIB_CRETINHEX_DLL)
+	LIB_CRETINHEX    = $(LIB_CRETINHEX_DLL)
+	LIB_IA0          = $(LIB_IA0_DLL)
 else
-	LIB_CRETINHEX        = $(LIB_CRETINHEX_SO)
+	LIB_CRETINHEX    = $(LIB_CRETINHEX_SO)
+	LIB_IA0          = $(LIB_IA0_SO)
 endif
 
 
@@ -40,13 +44,15 @@ JAVA_BIN             = bin
 JAVA_APP             = $(JAVA_BIN)/cretinplay/Application.class
 JAVA_CLASS_APP       = cretinplay.Application
 JAVA_CLASS_PARTIEJNI = noyau.PartieJNI
+JAVA_CLASS_IA0       = noyau.IA0
 
 
 # Dossiers C
 C_CRETINLIB          = cretinlib
 C_HEX                = hex
+C_IA0                = ia_randombot
 C_TESTS              = tests
-C_TOUT               = $(C_CRETINLIB) $(C_HEX) $(C_TESTS)
+C_TOUT               = $(C_CRETINLIB) $(C_HEX) $(C_IA0) $(C_TESTS)
 
 
 # Compilation C
@@ -59,6 +65,7 @@ DOS_D                = dep
 
 # JNI
 C_HEADER_PARTIEJNI   = $(C_HEX)/PartieJNI.h
+C_HEADER_IA0         = $(C_IA0)/randombot.h
 
 
 

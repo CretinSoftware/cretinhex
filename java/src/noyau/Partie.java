@@ -123,6 +123,10 @@ public class Partie extends PartieJNI {
 			
 		return damierJ;
 	}
+	
+	public int[] obtenirDamierInt(){
+		return super.cretinhexXobtenirDamier();
+	}
 		
 	
 
@@ -228,7 +232,7 @@ public class Partie extends PartieJNI {
 	 * Affichage du damier actuel
 	 */
 	public void afficher(){
-		System.out.println("\nTour " + this.obtenirTour() + ", à " + this.j.toString() + " de jouer");
+		System.out.println("\nTour " + this.obtenirTour() + ", c'est à " + this.j.toString());
 		Joueur damier[] = this.obtenirDamier();
 		this.afficherDamier(damier);
 	}
