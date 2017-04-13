@@ -124,7 +124,7 @@ int Damier_obtenirLargeur(Damier d){
 
 
 /*
- * \fn Joueur * Damier_obtenirDamier(Damier d)
+ * \fn Joueur * Damier_obtenirTabJoueurs(Damier d)
  * \param d Le damier à consulter
  * \return Un tableau linéaire de joueur
  *
@@ -134,7 +134,7 @@ int Damier_obtenirLargeur(Damier d){
  *  - y = ligne
  *  - La case (x, y) est à l'indice (Damier_obtenirLargeur(d)*y + x)
  */
-Joueur * Damier_obtenirDamier(Damier d){
+Joueur * Damier_obtenirTabJoueurs(Damier d){
 	Joueur * tab = (Joueur *) malloc(sizeof(Joueur) * d->largeur * d->largeur);
 	assert(tab != NULL);
 	int i;

@@ -26,7 +26,7 @@ JAVA_DOC             = ../$(DOC)/java
 
 # MAKES
 all: $(JAVA_APP)
-headers: header_PartieJNI
+headers: header_PartieJNI header_IA0
 doc: $(JAVA_DOC)/html/index.html
 
 
@@ -41,10 +41,14 @@ $(JAVA_APP): $(FICHIERS_JAVA) | $(JAVA_BIN)
 
 
 
-# Crée le header de la bibliothèque native (c)
+# Crée le header des bibliothèques natives (c)
 header_PartieJNI:
 	rm -f ../$(C)/$(C_HEADER_PARTIEJNI)
 	javah  -sourcepath $(JAVA_SRC) -o ../$(C)/$(C_HEADER_PARTIEJNI) $(JAVA_CLASS_PARTIEJNI)
+	
+header_IA0:
+	rm -f ../$(C)/$(C_HEADER_IA0)
+	javah  -sourcepath $(JAVA_SRC) -o ../$(C)/$(C_HEADER_IA0) $(JAVA_CLASS_IA0)
 
 
 
@@ -80,5 +84,5 @@ doc-clean:
 maxclean: clean	
 
 
-.PHONY: all java doc javadoc clean maxclean maxmaxclean
+.PHONY: all java doc javadoc headers header_PartieJNI header_IA0 clean maxclean maxmaxclean
 
