@@ -2,8 +2,8 @@
  * \file Graphe.h
  * \brief Fichier header du type Graphe.
  * \author Pierre POMERET-COQUOT
- * \version 1.0
- * \date 3 avril 2017
+ * \version 2
+ * \date 13 avril 2017
  *
  */
 # ifndef __CRETIN_GRAPHE__
@@ -20,26 +20,17 @@
  * \defgroup pack_cretinlib_Graphe Graphe
  * \ingroup pack_cretinlib
  * \author Pierre POMERET-COQUOT
- * \version 1.0
- * \date 3 avril 2017
  *
  * \par Description
- * \todo Rapide description
+ * Permet la manipulation de graphe (noeuds et liens entre les noeuds)
+ * depuis leurs points d'entrée/
  *
+ * La structure manipule et renvoie des LDC. D'une manière générale, la libération de la mémoire
+ * se fait naturellement grâce aux fonctions spécifiques à cette structure.
+ * Néanmoins, il faut parfois libérer manuellement la mémoire (avec Graphe_tousLesNoeuds par exemple).
  *
- * \par Type abstrait de données
+ * Merci de consulter la documentation des fonctions en question
  *
- * <pre style="line-height:1.1em;">
- * Sorte :            Graphe
- * 
- * Utilise :          GrapheNoeud, LDC
- *
- * Constructeurs :    init :                            pointsEntree[] → Graphe
- *                    insererNoeud :       GrapheNoeud x GrapheNoeud[] → Graphe
- *
- * Opérateurs :       libererMemoire :                          Graphe → __
- *
- * </pre>
  *
  * @{               
  */
@@ -127,6 +118,7 @@ GrapheElement GrapheNoeud_obtenirElement(GrapheNoeud noeud);
 
 /**
  * \brief   Donne la liste des noeuds voisins
+ * \note    Il ne faut pas libérer la mémoire de la LDC renvoyée
  */
 LDC GrapheNoeud_obtenirVoisins(GrapheNoeud noeud);
 
@@ -161,10 +153,10 @@ void GrapheNoeud_libererMemoire(GrapheNoeud * noeud);
 /* Graphe */
 
 /**
- * \param   nbPointsEntree  Le nombre de points d'entrée du graphe
+ * \param   pointsEntree  Les points d'entrée sous forme d'une LDC de GrapheNoeud
  * \return  Un graphe initialisé
  */
-Graphe Graphe_init(int nbPointsEntree);
+Graphe Graphe_init(LDC pointsEntree);
 
 void Graphe_afficher(Graphe g);
 /**
@@ -186,7 +178,7 @@ GrapheNoeud Graphe_pointEntree(Graphe g, int i);
  * \param   g Le graphe en question
  * \param   i L'indice du point d'entrée
  * \return  Tous les points d'entrées
- * \req     
+ * \note    Il ne faut pas libérer la mémoire de la LDC renvoyée.
  */
 LDC Graphe_pointsEntree(Graphe g, int i);
 
@@ -215,6 +207,7 @@ GrapheNoeud Graphe_trouverNoeud(Graphe g, GrapheElement e, GrapheElementEgal ega
  * \brief   Renvoie tous les noeuds du graphe
  * \param   g    Le graphe à fouiller
  * \return  Une LDC contenant tous les noeuds du graphe (mais pas les points d'entrée)
+ * \note    Il faut libérer manuellement la mémoire de la LDC renvoyée.
  */
 LDC Graphe_tousLesNoeuds(Graphe g);
 
@@ -229,13 +222,18 @@ GrapheNoeud Graphe_trouverNoeud(Graphe g, GrapheElement e, GrapheElementEgal ega
 
 /**
  * \brief   Insertion d'un noeud
+ * \param   g Le graphe dans lequel insérer
  * \param   noeud Le noeud à insérer, correctement initialisé
  * \param   voisins Les noeuds voisins
  * \param   nbVoisins Le nombre de voisins
  * \return  Le graphe mis à jour
- * \todo    Faire la fonction Graphe_insererNoeud()
  */
 Graphe Graphe_insererNoeud(Graphe g, GrapheNoeud noeud, GrapheNoeud * voisins, int nbVoisins);
+
+/**
+ * \brief   Fusionne deux noeuds dans le graphe
+ */
+Graphe Graphe_fusionner(Graphe g, GrapheNoeud n1, GrapheNoeud n2);
 
 /**
  * \brief   Libère la mémoire allouée à un Graphe

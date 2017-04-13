@@ -2,8 +2,8 @@
  * \file Graphe.c
  * \brief Implémentation du type Graphe.
  * \author Pierre POMERET-COQUOT
- * \version 1.0
- * \date 3 avril 2017
+ * \version 2
+ * \date 13 avril 2017
  *
  */
  
@@ -18,8 +18,6 @@
  * \defgroup pack_cretinlib_Graphe Graphe
  * \ingroup pack_cretinlib
  * \author Pierre POMERET-COQUOT
- * \version 1.0
- * \date 3 avril 2017
  *
  * \par Description
  * \todo Rapide description
@@ -178,20 +176,27 @@ GrapheNoeud GrapheNoeud_fusionner(GrapheNoeud n1, GrapheNoeud n2){
 	LDCIterateur it;
 	
 	
+	/* n2 n'est plus voisin de n1 */
+	i = LDC_obtenirPosition(n1->voisins, n2, (LDCElementEgal) GrapheNoeud_estEgal);
+	assert(i >= 0);
+	n1->voisins = LDC_enleverElement(n1->voisins, i);
+	
+	
 	/* Pour chacun des voisins de n2 */
 	it = LDCIterateur_init(n2->voisins, LDCITERATEUR_AVANT);
 	for (it = LDCIterateur_debut(it); ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it)){
-		n3 = LDCIterateur_valeur(it);
+		n3 = (GrapheNoeud) LDCIterateur_valeur(it);
 		
-		/* On débranche n2 : n3 ne le voit plus */
-		i = LDC_obtenirPosition(n3->voisins, n2, (LDCElementEgal) GrapheNoeud_estEgal);
-		assert(i >= 0);
-		n3->voisins = LDC_enleverElement(n3->voisins, i);
+		if (n1 != n3){
+			/* On débranche n2 : n3 ne le voit plus */
+			i = LDC_obtenirPosition(n3->voisins, n2, (LDCElementEgal) GrapheNoeud_estEgal);
+			assert(i >= 0);
+			n3->voisins = LDC_enleverElement(n3->voisins, i);
 		
-		/* Crée un lien entre n1 et n3, si absent */
-		n1 = GrapheNoeud_ajouterVoisin(n1, n3);
+			/* Crée un lien entre n1 et n3, si absent */
+			n1 = GrapheNoeud_ajouterVoisin(n1, n3);
+		}
 	}
-	
 	/* n2 est seul, on le supprime */
 	GrapheNoeud_libererMemoire(&n2);
 	
@@ -206,14 +211,10 @@ GrapheNoeud GrapheNoeud_fusionner(GrapheNoeud n1, GrapheNoeud n2){
  * \note    Libère aussi la mémoire allouée à l'élément avec la fonction GrapheElementFree fournit à l'initialisation, si différente de NULL
  */
 void GrapheNoeud_libererMemoire(GrapheNoeud * noeud){
-	/*printf("Suppression noeud : ");
-	GrapheNoeud_afficher(*noeud);*/
 	
 	if ((*noeud)->free != NULL)
 		(*noeud)->free(&((*noeud)->element));
-	/*printf("Suppression LDC\n");*/
 	LDC_libererMemoire(&((*noeud)->voisins));
-	/*printf("Suppression noeud\n");*/
 	free(*noeud);
 	noeud = NULL;
 }
@@ -240,18 +241,15 @@ void GrapheNoeud_libererMemoire(GrapheNoeud * noeud){
  * \param   nbPointsEntree  La taille de ce tableau
  * \return  Un graphe initialisé
  */
-Graphe Graphe_init(int nbPointsEntree){
+Graphe Graphe_init(LDC pointsEntree){
 	Graphe g;
-	int i;
 
 	g = (Graphe) malloc(sizeof(GrapheInterne));
 	assert(g != NULL);
 
-	g->pointsEntree = LDC_init();
-	for (i = 0; i < nbPointsEntree; ++i)
-		g->pointsEntree = LDC_insererElement(g->pointsEntree, -1, GrapheNoeud_init(NULL, NULL), (LDCElementFree) GrapheNoeud_libererMemoire);
+	g->pointsEntree = pointsEntree;
 	
-	g->nbNoeuds = 0;
+	g->nbNoeuds = LDC_taille(pointsEntree);
 	
 	
 	return g;
@@ -338,23 +336,17 @@ LDC Graphe_tousLesNoeuds(Graphe g){
 	
 	ldc = LDC_init();
 	
-	/* On ajoute tous les voisins des points d'entrée */
+	/* On ajoute tous les points d'entrée */
 	it1 = LDCIterateur_init(g->pointsEntree, LDCITERATEUR_AVANT);
 	for (it1 = LDCIterateur_debut(it1); !LDCIterateur_fin(it1); it1 = LDCIterateur_avancer(it1)){
 		
 		n1 = (GrapheNoeud) LDCIterateur_valeur(it1);
-		it2 = LDCIterateur_init(n1->voisins, LDCITERATEUR_AVANT);
-		for (it2 = LDCIterateur_debut(it2); !LDCIterateur_fin(it2); it2 = LDCIterateur_avancer(it2)){
-			
-			n2 = (GrapheNoeud) LDCIterateur_valeur(it2);
-			if (LDC_obtenirPosition(ldc, n2, (LDCElementEgal) GrapheNoeud_estEgal) < 0)
-				ldc = LDC_insererElement(ldc, -1, n2, NULL);
-		}
-		LDCIterateur_libererMemoire(&it2);
+		if (LDC_obtenirPosition(ldc, n1, (LDCElementEgal) GrapheNoeud_estEgal) < 0)
+			ldc = LDC_insererElement(ldc, -1, n1, NULL);
 	}
 	LDCIterateur_libererMemoire(&it1);
 	
-
+	
 	/* On parcourt la liste des voisins et on ajoute les voisins des voisins */
 	it1 = LDCIterateur_init(ldc, LDCITERATEUR_AVANT);
 	for (it1 = LDCIterateur_debut(it1); !LDCIterateur_fin(it1); it1 = LDCIterateur_avancer(it1)){
@@ -364,9 +356,8 @@ LDC Graphe_tousLesNoeuds(Graphe g){
 		for (it2 = LDCIterateur_debut(it2); !LDCIterateur_fin(it2); it2 = LDCIterateur_avancer(it2)){
 			
 			n2 = (GrapheNoeud) LDCIterateur_valeur(it2);
-			if (! Graphe_estPointEntree(g, n2))
-				if (LDC_obtenirPosition(ldc, n2, (LDCElementEgal) GrapheNoeud_estEgal) < 0)	
-					ldc = LDC_insererElement(ldc, -1, n2, NULL);
+			if (LDC_obtenirPosition(ldc, n2, (LDCElementEgal) GrapheNoeud_estEgal) < 0)	
+				ldc = LDC_insererElement(ldc, -1, n2, NULL);
 		}
 		LDCIterateur_libererMemoire(&it2);
 	}
@@ -432,6 +423,39 @@ Graphe Graphe_insererNoeud(Graphe g, GrapheNoeud noeud, GrapheNoeud * voisins, i
 }
 
 /*
+ * \brief   Fusionne deux noeuds dans le graphe
+ */
+Graphe Graphe_fusionner(Graphe g, GrapheNoeud n1, GrapheNoeud n2){
+	void * adr1, * adr2;
+	int pos;
+	
+	/* On garde les adresses des noeuds à fusionner */
+	adr1 = n1;
+	adr2 = n2;
+	
+	/* On les fusionne */
+	n1 = GrapheNoeud_fusionner(n1, n2);
+	
+	/* On met à jour les points d'entrée */
+	if ( (pos = LDC_obtenirPosition(g->pointsEntree, adr1, (LDCElementEgal) GrapheNoeud_estEgal)) >= 0){
+		g->pointsEntree = LDC_enleverElement(g->pointsEntree, pos);
+		g->pointsEntree = LDC_insererElement(g->pointsEntree, pos, n1, NULL);
+	}
+	if ( (pos = LDC_obtenirPosition(g->pointsEntree, adr2, (LDCElementEgal) GrapheNoeud_estEgal)) >= 0){
+		g->pointsEntree = LDC_enleverElement(g->pointsEntree, pos);
+		g->pointsEntree = LDC_insererElement(g->pointsEntree, pos, n1, NULL);
+	}
+	
+	--g->nbNoeuds;
+	
+	
+		
+		
+	return g;
+}
+
+
+/*
  * \brief   Libère la mémoire allouée à un Graphe
  */
 void Graphe_libererMemoire(Graphe * g){
@@ -439,6 +463,7 @@ void Graphe_libererMemoire(Graphe * g){
 	LDC tousLesNoeuds;
 	LDCIterateur it;
 	
+	/* Suppresion des noeuds (y compris points d'entrée) */
 	tousLesNoeuds = Graphe_tousLesNoeuds(*g);
 	it = LDCIterateur_init(tousLesNoeuds, LDCITERATEUR_AVANT);
 	
@@ -451,6 +476,7 @@ void Graphe_libererMemoire(Graphe * g){
 	
 	
 	LDC_libererMemoire(&((*g)->pointsEntree));
+
 	free(*g);
 	*g = NULL;
 }

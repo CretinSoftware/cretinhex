@@ -86,14 +86,14 @@ void afficherGraphe(Graphe g){
 	
 	for (it = LDCIterateur_debut(it); ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it)){
 		n = (GrapheNoeud) LDCIterateur_valeur(it);
-		printf("%d : ", * (int*) GrapheNoeud_obtenirElement(n));
 		it2 = LDCIterateur_init(GrapheNoeud_obtenirVoisins(n), LDCITERATEUR_AVANT);
+		
+		printf("%d : ", * (int*) GrapheNoeud_obtenirElement(n));
 		
 		nbVoisins = 0;
 		for (it2 = LDCIterateur_debut(it2); ! LDCIterateur_fin(it2); it2 = LDCIterateur_avancer(it2)){
 			n2 = (GrapheNoeud) LDCIterateur_valeur(it2);
-			if (! Graphe_estPointEntree(g, n2))
-				valeursVoisins[nbVoisins++] = * (int*) GrapheNoeud_obtenirElement(n2);
+			valeursVoisins[nbVoisins++] = * (int*) GrapheNoeud_obtenirElement(n2);
 		}
 		
 		trierTab(valeursVoisins, 0, nbVoisins - 1);
@@ -103,6 +103,7 @@ void afficherGraphe(Graphe g){
 		
 		LDCIterateur_libererMemoire(&it2);
 	}
+	
 	LDCIterateur_libererMemoire(&it);
 	LDC_libererMemoire(&tousLesNoeuds);
 }
@@ -131,8 +132,7 @@ Graphe construireDepuisFichier(int nbNoeuds, int nbLiens, const char * fichier){
 	int * e;
 	
 	f = fopen(fichier, "r");
-
-	g = Graphe_init(1);
+	
 
 	i = 0;
 	while (fgets(str, sizeof(str), f) != NULL && i < nbNoeuds){
@@ -152,16 +152,25 @@ Graphe construireDepuisFichier(int nbNoeuds, int nbLiens, const char * fichier){
 			sprintf(format, "%s%%d", debut);
 			tab[lg++] = Graphe_trouverNoeud(g, &v, (GrapheElementEgal) int_egal);
 		}
-		if (lg == 0)
-			tab[lg++] = Graphe_pointEntree(g, 0);
+		
 		
 		n = GrapheNoeud_init(e, (GrapheElementFree) int_free);
-		
-		g = Graphe_insererNoeud(g, n, tab, lg);
+
+		if (lg == 0){
+			LDC pointsEntree = LDC_init();
+			pointsEntree = LDC_inserer(pointsEntree, -1, n, NULL);
+
+			g = Graphe_init(pointsEntree);
+		}
+		else {
+			g = Graphe_insererNoeud(g, n, tab, lg);
+		}
 		++i;
+		
 		
 	}
 	fclose(f);
+	
 	return g;
 
 }
@@ -181,6 +190,31 @@ void test_construction(int nbNoeuds, int nbLiens, const char * fichier){
 }
 
 
+/**
+ * \brief Test de fusion
+ */
+void test_fusion(int nbNoeuds, int nbLiens, const char * fichier){
+	Graphe g;
+	GrapheNoeud n1, n2;
+	
+	
+	g = construireDepuisFichier(nbNoeuds, nbLiens, fichier);
+	
+	afficherGraphe(g);
+	
+	n1 = Graphe_pointEntree(g, 0);
+	n2 = (GrapheNoeud) LDC_obtenir(GrapheNoeud_obtenirVoisins(n1), -1);
+	
+	printf("Fusion : %d et %d\n", * (int*) GrapheNoeud_obtenirElement(n1), * (int*) GrapheNoeud_obtenirElement(n2));
+	
+	g = Graphe_fusionner(g, n1, n2);
+	
+	afficherGraphe(g);
+	
+	Graphe_libererMemoire(&g);
+}
+
+
 
 int main(int argc, char * argv[]){
 
@@ -191,6 +225,11 @@ int main(int argc, char * argv[]){
 		case 'c':
 			if (argc != 5) erreurUsage(argv);
 			test_construction(atoi(argv[2]), atoi(argv[3]), argv[4]);
+			break;
+		/* Fusion */
+		case 'f':
+			if (argc != 5) erreurUsage(argv);
+			test_fusion(atoi(argv[2]), atoi(argv[3]), argv[4]);
 			break;
 		
 		default:

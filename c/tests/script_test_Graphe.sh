@@ -1,7 +1,7 @@
 #! /bin/bash
 
 
-# Test de la LDC sur des NUplets d'entiers
+# Test du Graphe
 
 
 
@@ -89,14 +89,14 @@ compare(){
 REP_IN=fichiers_in
 REP_OUT=fichiers_out/Graphe
 
-# Nombre de n-uplets à traiter par défaut
+# Nombre de noeuds à traiter par défaut
 TAILLE_DONNEES=25
 
-# Dimension des n-uplets
+# Nombre de liens par noeud
 NB_LIENS=10
 
-# Nombre de tests pour une dimension donnée
-NB_TESTS=2
+# Nombre de tests par taille / nbliens
+NB_TESTS=3
 
 
 
