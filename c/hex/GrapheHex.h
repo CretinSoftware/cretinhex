@@ -22,6 +22,7 @@
 /**
  * \defgroup pack_hex_GrapheHex GrapheHex
  * \ingroup pack_hex
+ * \brief   Représente le graphe simplifié à 4 points d'entrée
  * \author Pierre POMERET-COQUOT
  *
  * \par Description

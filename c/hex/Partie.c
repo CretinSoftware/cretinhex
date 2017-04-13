@@ -22,6 +22,7 @@
  */
 
 # include "Partie.h"
+# include "GrapheHex.h"
 # include <stdlib.h>
 # include <stdio.h>
 # include <assert.h>
@@ -83,11 +84,12 @@ void ElemHisto_libererMemoire(ElemHisto * eh){
  * @{
  */
 typedef struct Partie {
-	Joueur premierJoueur;    /**< Le joueur qui à commencé la partie (différent de J0) */
-	Joueur aQuiDeJouer;      /**< Le joueur qui doit faire le prochain mouvement (différent de J0) */
-	Damier damier;           /**< L'occupation de toutes les cases */
-	int tour;                /**< Compteur de tour */
-	LDC historique;          /**< Historique : tous les movements joués */
+	Joueur premierJoueur;    /**< \brief Le joueur qui à commencé la partie (différent de J0) */
+	Joueur aQuiDeJouer;      /**< \brief Le joueur qui doit faire le prochain mouvement (différent de J0) */
+	Damier damier;           /**< \brief L'occupation de toutes les cases */
+	int tour;                /**< \brief Compteur de tour */
+	LDC historique;          /**< \brief Historique : tous les movements joués */
+	GrapheHex graphehex;     /**< \brief GrapheHex : le graphe simplifié */
 } PartieInterne;
 
 /** @} */
@@ -114,6 +116,7 @@ Partie Partie_init(int l, Joueur j){
 	p->aQuiDeJouer = j;
 	p->damier = Damier_init(l);
 	p->historique = LDC_init();
+	p->graphehex = GrapheHex_init(p->damier);
 	
 	return p;
 }
@@ -184,6 +187,7 @@ Partie Partie_placerPion(Partie p, int x, int y){
 	assert(Damier_obtenirCase(p->damier, x, y) == J0);
 	/* Placement du pion */
 	p->damier = Damier_modifierCase(p->damier, p->aQuiDeJouer, x, y);
+	p->graphehex = GrapheHex_modifierCase(p->graphehex, x, y, p->aQuiDeJouer);
 	
 	/* Ajoute à l'historique */
 	ElemHisto eh = ElemHisto_init(p->aQuiDeJouer, x, y);
@@ -292,7 +296,7 @@ Joueur * Partie_obtenirTabJoueursHisto(Partie p, int n){
  * \brief Donne le gagnant d'une partie terminée, J0 sinon
  */
 Joueur Partie_quiGagne(Partie p){
-	return J0;
+	return GrapheHex_quiGagne(p->graphehex);
 }
 
 
@@ -483,6 +487,7 @@ Partie Partie_charger(const char * nomFichier){
 void Partie_libererMemoire(Partie * p){
 	Damier_libererMemoire(&((*p)->damier));
 	LDC_libererMemoire(&((*p)->historique));
+	GrapheHex_libererMemoire(&((*p)->graphehex));
 	free(*p);
 	*p = NULL;
 }

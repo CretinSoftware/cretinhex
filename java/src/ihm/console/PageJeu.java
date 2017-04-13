@@ -61,7 +61,7 @@ public class PageJeu extends Page{
 		int coords[];
 		
 		onJoue = true;
-		while (onJoue){
+		while (onJoue && this.partie.quiGagne() == Joueur.J0){
 			aLuiDeJouer = user(this.partie.aQuiDeJouer());
 			
 			System.out.println("C'est à " + aLuiDeJouer.getNom() + " de jouer.");
@@ -73,6 +73,11 @@ public class PageJeu extends Page{
 			else
 				this.partie.placerPion(coords[0], coords[1]);		
 		}
+
+
+		System.out.println("\n#!!!!!!!!!!!!!!!!!!!!!!\n");		
+		this.partie.afficher();
+		System.out.println("\nGagnant : " + this.partie.quiGagne().toString() + "\n");
 		
 		
 		this.partie.libererMemoire();
