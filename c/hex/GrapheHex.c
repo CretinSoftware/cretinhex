@@ -30,11 +30,13 @@
  * @{
  */
 
+
 typedef struct GrapheHex {
 	Graphe graphe;                /**< Graphe : le support */
 	GrapheNoeud * metagraphe;     /**< Métagraphe : tableau de pointeurs vers les noeuds */
 	int largeurDamier;            /**< La largeur du métagraphe */
 } GrapheHexInterne;
+
 /** @} */
 
 
@@ -59,22 +61,59 @@ typedef struct GrapheHex {
  * @{
  */
 
-void free_Joueur(Joueur ** ptr){
-	free(*ptr);
-	*ptr = NULL;
+
+GHElement GHElement_init(Joueur j){
+	GHElement e = (GHElement) malloc(sizeof(Joueur));
+	assert(e != NULL);
+	
+	* (Joueur*) e = j;
+	return e;
 }
+
+Joueur GHElement_valeur(GHElement e){
+	return * (Joueur *) e;
+}
+
+int GHElement_memeJoueur(GHElement e1, GHElement e2){
+	return * (Joueur *) e1 == * (Joueur *) e2 && * (Joueur *) e1 != J0;
+}
+
+int GrapheNoeud_memeJoueur(GrapheNoeud n1, GrapheNoeud n2){
+	return GHElement_memeJoueur((GHElement) GrapheNoeud_obtenirElement(n1), (GHElement) GrapheNoeud_obtenirElement(n2));
+}
+
+void GHElement_libererMemoire(GHElement * e){
+	free(*e);
+	*e = NULL;
+}
+
+
 
 GrapheHex GrapheHex_init(Damier d){
 	GrapheHex g;
 	GrapheNoeud noeud;
 	GrapheNoeud voisins[4];    /*< Dans l'algo qui suit, on ajoute les noeuds par 4 maximum */
-	Joueur * ptJ;
+	GHElement e;
 	int n, x, y;
 	
 	/* Allocation mémoire */
 	g = (GrapheHex) malloc(sizeof(GrapheHexInterne));
 	assert(g != NULL);
-	g->graphe = Graphe_init(4);
+	
+	
+	/* Graphe : Points d'entrée dans l'ordre : N S E O */
+	LDC pointsEntree = LDC_init();
+	/* N et S */
+	pointsEntree = LDC_insererElement(pointsEntree, -1, (LDCElement) GrapheNoeud_init(GHElement_init(J1), (GrapheElementFree) GHElement_libererMemoire), NULL);
+	pointsEntree = LDC_insererElement(pointsEntree, -1, (LDCElement) GrapheNoeud_init(GHElement_init(J1), (GrapheElementFree) GHElement_libererMemoire), NULL);
+	/* E et O */
+	pointsEntree = LDC_insererElement(pointsEntree, -1, (LDCElement) GrapheNoeud_init(GHElement_init(J2), (GrapheElementFree) GHElement_libererMemoire), NULL);
+	pointsEntree = LDC_insererElement(pointsEntree, -1, (LDCElement) GrapheNoeud_init(GHElement_init(J2), (GrapheElementFree) GHElement_libererMemoire), NULL);
+	
+	/* Graphe : init */
+	g->graphe = Graphe_init(pointsEntree);
+	
+	
 	
 	g->largeurDamier = Damier_obtenirLargeur(d);
 	
@@ -83,7 +122,7 @@ GrapheHex GrapheHex_init(Damier d){
 	
 	
 	
-	/* Placement des noeuds */
+	/* Placement des noeuds dans le métagraphe et dans le graphe */
 	for (y = 0; y < g->largeurDamier; ++y){
 		for (x = 0; x < g->largeurDamier; ++x){
 			
@@ -91,11 +130,9 @@ GrapheHex GrapheHex_init(Damier d){
 			n = 0;
 			
 			/* Allocation mémoire */
-			ptJ = (Joueur *) malloc(sizeof(Joueur));
-			assert(ptJ != NULL);
-			*ptJ = Damier_obtenirCase(d, x, y);
+			e = GHElement_init(Damier_obtenirCase(d, x, y));
 			
-			noeud = GrapheNoeud_init(ptJ, (GrapheElementFree) free_Joueur);
+			noeud = GrapheNoeud_init(e, (GrapheElementFree) GHElement_libererMemoire);
 			
 			g->metagraphe[y*g->largeurDamier + x] = noeud;
 			
@@ -132,12 +169,105 @@ GrapheHex GrapheHex_init(Damier d){
 		}
 	}
 	
+	g = GrapheHex_simplifier(g);
+	
 	return g;
 }
 /** @} */
 
 
-/**
+/*
+ * \brief   Donne le métagraphe associé.
+ */
+GrapheNoeud * GrapheHex_obtenirMetagraphe(GrapheHex g){
+	return g->metagraphe;
+}
+
+
+/*
+ * \brief   Donne la largeur du damier associé
+ */
+int GrapheHex_largeurDamier(GrapheHex g){
+	return g->largeurDamier;
+}
+
+
+/*
+ * \brief    Simplifie tout le graphe (regroupe les J1 contigus, et les J2)
+ */
+GrapheHex GrapheHex_simplifier(GrapheHex g){
+	int estSimplifie, pos;
+	LDC tousLesNoeuds, voisins;
+	LDCIterateur it;
+	GrapheNoeud n1, n2;
+	
+	estSimplifie = 0;
+	while (! estSimplifie){
+		estSimplifie = 1;
+		
+		
+		tousLesNoeuds = Graphe_tousLesNoeuds(g->graphe);
+		it = LDCIterateur_init(tousLesNoeuds, LDCITERATEUR_AVANT);
+		
+		for (it = LDCIterateur_debut(it); estSimplifie && ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it)){
+			n1 = (GrapheNoeud) LDCIterateur_valeur(it);
+			voisins = GrapheNoeud_obtenirVoisins(n1);
+			
+			if ( (pos = LDC_obtenirPosition(voisins, n1, (LDCElementEgal) GrapheNoeud_memeJoueur)) >= 0){
+				n2 = (GrapheNoeud) LDC_obtenirElement(voisins, pos);
+				g = GrapheHex_fusionnerNoeuds(g, n1, n2);				
+				estSimplifie = 0;
+			}
+		}
+		LDCIterateur_libererMemoire(&it);
+		LDC_libererMemoire(&tousLesNoeuds);
+		
+	}
+
+	return g;
+}
+
+
+
+GrapheHex GrapheHex_fusionnerNoeuds(GrapheHex g, GrapheNoeud n1, GrapheNoeud n2){
+	int i;
+	
+	/* On corrige les cases du metagraphe pointant vers n2 */
+	for (i = 0; i < g->largeurDamier * g->largeurDamier; ++i)
+		if (g->metagraphe[i] == n2)
+			g->metagraphe[i] = n1;
+	
+	/* On fusionne les noeuds du graphe */
+	g->graphe = Graphe_fusionner(g->graphe, n1, n2);
+	
+	return g;
+}
+
+
+
+
+/*
+ * \brief   Donne les noeuds d'un joueur
+ */
+LDC GrapheHex_groupes(GrapheHex g, Joueur j){
+	LDC tousLesNoeuds, resultat;
+	LDCIterateur it;
+
+	resultat = LDC_init();	
+	tousLesNoeuds = Graphe_tousLesNoeuds(g->graphe);
+	it = LDCIterateur_init(tousLesNoeuds, LDCITERATEUR_AVANT);
+	
+	for (it = LDCIterateur_debut(it); ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it))
+		if (GHElement_valeur((GHElement) GrapheNoeud_obtenirElement((GrapheNoeud) LDCIterateur_valeur(it))) == j)
+			resultat = LDC_insererElement(resultat, -1, LDCIterateur_valeur(it), NULL);
+	
+	LDCIterateur_libererMemoire(&it);
+	LDC_libererMemoire(&tousLesNoeuds);
+	return resultat;
+}
+
+
+/*
  * \brief    Libère la mémoire allouée à un GrapheHex
  */
 void GrapheHex_libererMemoire(GrapheHex * g){
@@ -156,25 +286,14 @@ void GrapheHex_libererMemoire(GrapheHex * g){
  * \param    j La valeur (de type Joueur) à placer dans la case
  */
 GrapheHex GrapheHex_modifierCase(GrapheHex g, int x, int y, Joueur j){
-	GrapheNoeud noeud/*, voisin*/;
-	Joueur * ptJ;
-	/*LDCIterateur it;*/
 	
-	/* Noeud d'après le métagraphe */
-	noeud = g->metagraphe[y * g->largeurDamier + x];
+	GHElement e;
 	
-	/* Modification de la valeur */
-	ptJ = (Joueur *) GrapheNoeud_obtenirElement(noeud);
-	*ptJ = j;
+	e = (GHElement) GrapheNoeud_obtenirElement(g->metagraphe[y*g->largeurDamier + x]);
 	
-	/* Fusion avec les voisins */
-	/*it = LDCIterateur_init(GrapheNoeud_obtenirVoisins(noeud), LDCITERATEUR_AVANT);
-	for (it = LDCIterateur_debut(it); ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it)){
-		voisin = (GrapheNoeud) LDCIterateur_valeur(it);
-		if (  * (Joueur *) GrapheNoeud_obtenirElement(voisin) == j )
-			noeud = GrapheNoeud_fusionner(noeud, voisin);
-	}
-	LDCIterateur_libererMemoire(&it);*/
+	* (Joueur *) e = j;
+	
+	g = GrapheHex_simplifier(g);
 	
 	return g;
 }
@@ -189,6 +308,22 @@ GrapheHex GrapheHex_modifierCase(GrapheHex g, int x, int y, Joueur j){
 GrapheNoeud GrapheHex_obtenirNoeud(GrapheHex g, int x, int y){
 	return g->metagraphe[y * g->largeurDamier + x];
 }
+
+/*
+ * \ brief Donne le vainqueur d'après les points d'entrées opposés identiques
+ */
+Joueur GrapheHex_quiGagne(GrapheHex g){
+	LDC pointsEntree;
+	
+	pointsEntree = Graphe_pointsEntree(g->graphe);
+	
+	if (LDC_obtenirElement(pointsEntree, 0) == LDC_obtenirElement(pointsEntree, 1))
+		return J1;
+	if (LDC_obtenirElement(pointsEntree, 2) == LDC_obtenirElement(pointsEntree, 3))
+		return J2;
+	return J0;
+}
+	
 
 
 

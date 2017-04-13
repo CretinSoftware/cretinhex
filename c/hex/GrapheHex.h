@@ -2,8 +2,8 @@
  * \file Graphe.h
  * \brief Fichier header du type GrapheHex.
  * \author Pierre POMERET-COQUOT
- * \version 1.0
- * \date 5 avril 2017
+ * \version 1.2
+ * \date 13 avril 2017
  *
  */
 
@@ -19,26 +19,35 @@
 # include <assert.h>
 
 
-
 /**
  * \defgroup pack_hex_GrapheHex GrapheHex
  * \ingroup pack_hex
  * \author Pierre POMERET-COQUOT
- * \version 1.0
- * \date 4 avril 2017
  *
  * \par Description
  * GrapheHex est un Graphe particulier adapté à la gestion / résolution de parties de Hex.
- * Il dispose de 4 points d'entrée (les bords) appelés N, S, E et O.
+ * Il dispose de 4 points d'entrée (les bords) appelés ici N, S, E et O.
  * Sa taille étant contrainte par la taille du damier, un tableau servira de méta-graphe.
  *
  *
- * \par Type abstrait de données
- * \todo TAD
  *
  *
  * @{
  */
+ 
+ 
+ 
+typedef Joueur * GHElement;
+
+GHElement GHElement_init(Joueur j);
+
+Joueur GHElement_valeur(GHElement e);
+
+int GHElement_memeJoueur(GHElement e1, GHElement e2);
+
+int GrapheNoeud_memeJoueur(GrapheNoeud n1, GrapheNoeud n2);
+
+void GHElement_libererMemoire(GHElement * e);
 
 
 
@@ -54,6 +63,18 @@ typedef struct GrapheHex * GrapheHex;
  * tous les liens reliant les noeuds du graphe.
  */
 GrapheHex GrapheHex_init(Damier d);
+
+
+/**
+ * \brief   Donne le métagraphe associé.
+ */
+GrapheNoeud * GrapheHex_obtenirMetagraphe(GrapheHex g);
+
+
+/**
+ * \brief   Donne la largeur du damier associé
+ */
+int GrapheHex_largeurDamier(GrapheHex g);
 
 
 /**
@@ -81,7 +102,28 @@ GrapheHex GrapheHex_modifierCase(GrapheHex g, int x, int y, Joueur j);
 GrapheNoeud GrapheHex_obtenirNoeud(GrapheHex g, int x, int y);
 
 
+/**
+ * \brief    Fusionne deux noeuds en prenant soin du métagraphe
+ */
+GrapheHex GrapheHex_fusionnerNoeuds(GrapheHex g, GrapheNoeud n1, GrapheNoeud n2);
 
+
+/**
+ * \brief   Donne les noeuds d'un joueur
+ * \note    La gestion de la mémoire de la LDC renvoyée est à votre charge.
+ */
+LDC GrapheHex_groupes(GrapheHex g, Joueur j);
+
+
+/**
+ * \brief    Simplifie tout le graphe (regroupe les J1 contigus, et les J2)
+ */
+GrapheHex GrapheHex_simplifier(GrapheHex g);
+
+/**
+ * \ brief Donne le vainqueur d'après les points d'entrées opposés identiques
+ */
+Joueur GrapheHex_quiGagne(GrapheHex g);
 
 
 

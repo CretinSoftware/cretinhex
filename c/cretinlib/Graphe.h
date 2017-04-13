@@ -173,14 +173,13 @@ int Graphe_nbPointsEntree(Graphe g);
  */
 GrapheNoeud Graphe_pointEntree(Graphe g, int i);
 
-/*
+/**
  * \brief   Récupère tous les points d'entrée
  * \param   g Le graphe en question
- * \param   i L'indice du point d'entrée
  * \return  Tous les points d'entrées
  * \note    Il ne faut pas libérer la mémoire de la LDC renvoyée.
  */
-LDC Graphe_pointsEntree(Graphe g, int i);
+LDC Graphe_pointsEntree(Graphe g);
 
 /**
  * \brief  Dit si un noeud est un point d'entrée

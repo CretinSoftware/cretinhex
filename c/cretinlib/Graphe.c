@@ -319,7 +319,7 @@ int Graphe_estPointEntree(Graphe g, GrapheNoeud n){
  * \return  Tous les points d'entrées
  * \req     
  */
-LDC Graphe_pointsEntree(Graphe g, int i){
+LDC Graphe_pointsEntree(Graphe g){
 	return g->pointsEntree;
 }
 

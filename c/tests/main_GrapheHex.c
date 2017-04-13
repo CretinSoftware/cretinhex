@@ -3,7 +3,7 @@
 
 
 # include "../hex/Partie.h"
-# include "../hex/GrapheHex.c"
+# include "../hex/GrapheHex.h"
 
 
 
@@ -14,7 +14,81 @@
 void erreurUsage(char * argv[]){
 	fprintf(stderr, "%s: usage :\n", argv[0]);
 	fprintf(stderr, "	-c  fichier_sauvegarde\n");
+	fprintf(stderr, "	-g  fichier_sauvegarde\n");
 	exit(10);
+}
+
+
+
+
+/**
+ * \brief    Affiche un damier d'après le GrapheHex
+ */
+void afficherGrapheHex(GrapheHex g){
+	int i, lgDamier;
+	GrapheNoeud * metagraphe;
+	
+	lgDamier = GrapheHex_largeurDamier(g);
+	metagraphe = GrapheHex_obtenirMetagraphe(g);
+	
+	for (i = 0; i < lgDamier * lgDamier; ++i){
+		switch (GHElement_valeur(GrapheNoeud_obtenirElement(metagraphe[i]))){
+			case 1:  printf("o");  break;
+			case 2:  printf("*");  break;
+			default: printf(".");  break;
+		}
+		if ( (i+1) % lgDamier == 0)
+			printf("\n");
+		else 
+			printf(" ");
+	}
+}
+
+
+
+
+/**
+ * \brief    Affiche les pions d'un joueur d'après les groupes du grapheHex
+ */
+void afficherGroupes(GrapheHex g, Joueur j){
+	int i, lgDamier;
+	int cpt;
+	LDC groupes;
+	LDCIterateur it;
+	GrapheNoeud * metagraphe;
+	
+	lgDamier = GrapheHex_largeurDamier(g);
+	metagraphe = GrapheHex_obtenirMetagraphe(g);
+	
+	char affichage[lgDamier*lgDamier];
+	for (i = 0; i < lgDamier * lgDamier; ++i)
+		affichage[i] = 0;
+	
+	groupes = GrapheHex_groupes(g, j);
+	it = LDCIterateur_init(groupes, LDCITERATEUR_AVANT);
+	cpt = 1;
+	
+	for(it = LDCIterateur_debut(it); ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it)){		
+		for (i = 0; i < lgDamier * lgDamier; ++i)
+			if (LDCIterateur_valeur(it) == metagraphe[i])
+				affichage[i] = cpt;
+		++cpt;
+	}
+	
+	LDCIterateur_libererMemoire(&it);
+	LDC_libererMemoire(&groupes);
+	
+	for (i = 0; i < lgDamier * lgDamier; ++i){
+		if (affichage[i] > 0)
+			printf("%d", affichage[i]); 
+		else
+			printf(".");
+			
+		if ( (i+1) % lgDamier == 0)
+			printf("\n");
+		else 
+			printf(" ");
+	}
 }
 
 
@@ -32,6 +106,7 @@ GrapheHex construireDepuisFichier(const char * fichier){
 	
 	Partie_libererMemoire(&p);
 	
+	
 	return gh;
 
 }
@@ -45,7 +120,23 @@ void test_construction(const char * fichier){
 	
 	gh = construireDepuisFichier(fichier);
 	
-	Graphe_afficher(gh->graphe);
+	afficherGrapheHex(gh);
+	
+	GrapheHex_libererMemoire(&gh);
+}
+
+
+/**
+ * \brief Test des groupes
+ */
+void test_groupes(const char * fichier){
+	GrapheHex gh;
+	
+	gh = construireDepuisFichier(fichier);
+	
+	afficherGroupes(gh, 0);
+	afficherGroupes(gh, 1);
+	afficherGroupes(gh, 2);
 	
 	GrapheHex_libererMemoire(&gh);
 }
@@ -61,6 +152,11 @@ int main(int argc, char * argv[]){
 		case 'c':
 			if (argc != 3) erreurUsage(argv);
 			test_construction(argv[2]);
+			break;
+		/* Groupes */
+		case 'g':
+			if (argc != 3) erreurUsage(argv);
+			test_groupes(argv[2]);
 			break;
 		
 		default:

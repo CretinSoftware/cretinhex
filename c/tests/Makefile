@@ -35,6 +35,8 @@ Partie Partie_memoire: main_Partie mk_sauvegardes
 
 Graphe Graphe_memoire: main_Graphe mk_fichier_graphe
 
+GrapheHex GrapheHex_memoire: main_GrapheHex mk_sauvegardes
+
 $(SERIE_TESTS):
 	-./script_test_$@.sh
 
@@ -64,8 +66,8 @@ main_GrapheHex:  $(foreach f, LDC.o Graphe.o utile.o, $(DOS_CRETINLIB)/$(DOS_O)/
 	$(CC) $(C_OPT) $^ -o $@
 	
 	
-main_Partie:     $(foreach f, LDC.o , $(DOS_CRETINLIB)/$(DOS_O)/$(f)) \
-                 $(foreach f, Joueur.o Damier.o Partie.o , $(DOS_HEX)/$(DOS_O)/$(f)) \
+main_Partie:     $(foreach f, LDC.o Graphe.o utile.o , $(DOS_CRETINLIB)/$(DOS_O)/$(f)) \
+                 $(foreach f, Joueur.o Damier.o GrapheHex.o Partie.o , $(DOS_HEX)/$(DOS_O)/$(f)) \
                  $(foreach f, tests.o main_Partie.o, $(DOS_O)/$(f))
 	$(CC) $(C_OPT) $^ -o $@
 	
@@ -77,8 +79,8 @@ main_Partie:     $(foreach f, LDC.o , $(DOS_CRETINLIB)/$(DOS_O)/$(f)) \
 
 
 # Générateurs
-mk_sauvegardes:  $(foreach f, LDC.o , $(DOS_CRETINLIB)/$(DOS_O)/$(f)) \
-                 $(foreach f, Joueur.o Damier.o Partie.o , $(DOS_HEX)/$(DOS_O)/$(f)) \
+mk_sauvegardes:  $(foreach f, LDC.o Graphe.o utile.o , $(DOS_CRETINLIB)/$(DOS_O)/$(f)) \
+                 $(foreach f, Joueur.o Damier.o GrapheHex.o Partie.o , $(DOS_HEX)/$(DOS_O)/$(f)) \
                  $(foreach f, tests.o mk_sauvegardes.o, $(DOS_O)/$(f))
 	$(CC) $(C_OPT) $^ -o $@
 
