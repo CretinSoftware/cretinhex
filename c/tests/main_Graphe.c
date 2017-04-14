@@ -1,3 +1,10 @@
+/**
+ * \file     main_Graphe.c
+ * \brief    TESTS : Construction de graphe d'après un fichier
+ * \ingroup  pack_cretinlib_Graphe
+ */
+
+
 # include "tests.h"
 # include <string.h>
 

@@ -1,4 +1,12 @@
-
+/**
+ * \file     mk_fichier_graphe.c
+ * \brief    TESTS : Création de fichiers de construction de Graphe
+ * \ingroup  pack_cretinlib_Graphe
+ *
+ * \par      Commande : 
+ * <pre> ./mk_fichier_graphe nb_noeuds nb_liens_inferieurs fichier</pre>
+ */
+ 
 #include <stdio.h>
 #include <assert.h>
 #include <stdlib.h>

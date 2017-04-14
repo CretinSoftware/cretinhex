@@ -1,3 +1,8 @@
+/**
+ * \file     main_GrapheHex.c
+ * \brief    TESTS : Construction de GrapheHex d'après une sauvegarde
+ * \ingroup  pack_hex_GrapheHex
+ */
 # include "tests.h"
 # include <string.h>
 
