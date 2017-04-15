@@ -98,13 +98,13 @@ mkdir -p $REP_OUT
 f_in="$REP_IN/sauv_@1x@2_@3.txt"
 
 # Pattern du fichier en sortie
-f_out="$REP_OUT/`basename $f_in`"
+f_out="$REP_OUT/sauvegarde_@1x@2_@3.txt"
 
 # Pattern de la commande pour créer le fichier en entrée
 mk_f_in="./mk_sauvegardes @1 1 @2 $f_in"
 
 # Pattern de la commande de test
-commande="./main_Partie -s `basename $f_in`"
+commande="./main_Partie -s $f_in $f_out"
 
 # Pattern de la commande de vérification
 verif="cmp $f_in $f_out" 
