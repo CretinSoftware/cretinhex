@@ -60,7 +60,7 @@ C_HEX                = hex
 C_IA0                = ia_randombot
 C_BRIDGEBOT          = ia_bridgebot
 C_TESTS              = tests
-C_TOUT               = $(C_CRETINLIB) $(C_HEX) $(C_IA0) $(C_TESTS)
+C_TOUT               = $(C_CRETINLIB) $(C_HEX) $(C_IA0) $(C_BRIDGEBOT) $(C_TESTS)
 
 
 # Compilation C

@@ -1,11 +1,27 @@
+/** 
+ * \file     randombot.c
+ * \brief    Implémentation du randombot en JNI
+ * \author   Pierre Pomeret-Coquot
+ * \version  1.1
+ * \date     10 avril 2017
+ */
+
 # include <stdlib.h>
 # include <time.h>
 # include "randombot.h"
 
-/*
- * Class:     noyau_IA0
- * Method:    randombotXjouer
- * Signature: ([I)[I
+/**
+ * \defgroup c_pack_ia_randombot IA0 : randombot
+ * \ingroup  c_pack_ia
+ * \brief    IA jouant des coups valides aléatoires
+ * \author   Pierre Pomeret-Coquot
+ * \version  1.1
+ * \date     13 avril 2017
+ * @{
+ */
+
+/**
+ * \brief Renvoie un couple (x,y) correspondant à un couple valide
  */
 JNIEXPORT jintArray JNICALL Java_noyau_IA0_randombotXjouer
   (JNIEnv * jEnv, jobject jObject, jintArray plateau, jint largeur){
@@ -21,7 +37,6 @@ JNIEXPORT jintArray JNICALL Java_noyau_IA0_randombotXjouer
 	do {
 		x = rand() % largeur;
 		y = rand() % largeur;
-		printf("IA0 : x=%d, y=%d\n", (int) x, (int) y);
 	}
     while (cases[x + largeur*y] != 0);
     
@@ -42,14 +57,16 @@ JNIEXPORT jintArray JNICALL Java_noyau_IA0_randombotXjouer
 }
 
 
-/*
- * Class:     noyau_IA0
- * Method:    randombotXinit
- * Signature: ()V
+/**
+ * \brief Initialise le randombot
+ *
+ * Initialise la série aléatoire du randombot
  */
 JNIEXPORT void JNICALL Java_noyau_IA0_randombotXinit
   (JNIEnv * jEnv, jobject jObject){
 	srand(time(NULL)); 
 }
 
+
+/** @} */
 
