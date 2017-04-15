@@ -6,7 +6,7 @@
 #
 # Renvoie 0 si tout est OK, 1 si certains tests échouent, 2 ou plus en cas d'erreur
 
-function erreur(){ 
+erreur(){ 
 	case $1 in
 		usage)
 			echo "$0: usage: $0 [-v] fichier_in fichier_in2 fichier_out \"commande\"" >&2
@@ -24,6 +24,45 @@ function erreur(){
 # Facilité d'écriture
 OK="[\x1B[1;32mOK\x1B[0m]"
 KO="[\x1B[1;31mKO\x1B[0m]"
+
+# donne une taille en o / ko / Mo
+echo_taille(){
+	u="o"
+	taille=$1
+	
+	# Divise par 1024
+	if test $taille -ge 1024
+	then
+		u="ko"
+		taille=`expr $taille / 1024`
+	fi
+	
+	# Et encore...
+	if test $taille -ge 1024
+	then
+		u="Mo"
+		taille=`expr $taille / 1024`
+	fi
+	
+	chaine="$taille $u"
+	
+	# Ajoute des espaces pour la présentation
+	cpt=`expr length "$chaine"`
+	while test $cpt -lt 7
+	do
+		chaine="$chaine "
+		cpt=`expr $cpt + 1`
+	done
+	
+	# Affichage
+	echo -n "$chaine"
+	return 0
+}
+
+# Affiche un temps
+echo_tps(){
+	echo -n "(tps: $1)"
+}
 
 
 
@@ -65,8 +104,8 @@ mkdir -p `dirname "$f_out"`
 
 
 
-# AFFICHAGE : commande
-echo -n "$f_in  "
+# AFFICHAGE : fichier en sortie
+echo -n "$f_out"
 
 
 memOK=0
@@ -75,7 +114,9 @@ resOK=0
 # Execution
 if test "$use_valgrind"
 then
+	tps_dep=`date +%s.%N`
 	valgrind --log-file="$f_log" $commande > "$f_out"
+	tps_fin=`date +%s.%N`
 
 	# Recherche de la ligne qui fait plaisir dans le log valgrind
 	grep "in use at exit: 0 bytes in 0 blocks" "$f_log" > /dev/null 2>&1
@@ -85,23 +126,42 @@ then
 	then
 		echo -ne "	mémoire : $OK"
 		memOK=1
+		# Mémoire utilisée
+		echo -n " (utilisé: "
+		echo_taille `grep "total heap usage" "$f_log" | tr -s " " | cut -d  " " -f 9 | tr -d ","`
+		echo -n ")"
 	else
 		echo -ne "	mémoire : $KO"
+		# Mémoire utilisée
+		echo -n " (utilisé: "
+		echo_taille `grep "total heap usage" "$f_log" | tr -s " " | cut -d  " " -f 9 | tr -d ","`
+		echo -n ", perdu: "
+		echo_taille `grep "in use at exit" "$f_log" | tr -s " " | cut -d  " " -f 6 | tr -d ","`
+		echo -n ")"
 	fi
+	
+	
 else
+	tps_dep=`date +%s.%N`
 	$commande > "$f_out"
+	tps_fin=`date +%s.%N`
 fi
 
+
+
+tps=$(echo "$tps_fin - $tps_dep" | bc)
+test "`echo $tps|cut -c 1`" = "." && tps="0$tps"
+tps=`echo $tps | head -c 5`
 
 # Comparaison des fichiers entrée et sortie (résultat)
 $verif
 
 if test $? -eq 0
 then
-	echo -e "	resultat : $OK"
+	echo -e "	resultat : $OK   (tps: $tps s)"
 	resOK=1
 else
-	echo -e "	resultat : $KO"
+	echo -e "	resultat : $KO   (tps: $tps s)"
 fi
 
 test $resOK -eq 1 && test ! "$use_valgrind" -o $memOK -eq 1 && exit 0

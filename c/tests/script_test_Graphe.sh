@@ -201,7 +201,7 @@ f_in="$REP_IN/graphe_${TAILLE_DONNEES}x${NB_LIENS}_@1.txt"
 f_in2="$REP_IN/graphe_results_${TAILLE_DONNEES}x${NB_LIENS}_@1.txt"
 
 # Pattern du fichier en sortie
-f_out="$REP_OUT/`basename $f_in`"
+f_out="$REP_OUT/constr_${TAILLE_DONNEES}x${NB_LIENS}_@1.txt"
 
 # Pattern de la commande pour créer le fichier en entrée
 mk_f_in="./mk_fichier_graphe $TAILLE_DONNEES $NB_LIENS $f_in"
