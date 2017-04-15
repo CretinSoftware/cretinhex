@@ -376,6 +376,29 @@ LDC LDC_fusionSansDoublons(LDC ldc1, LDC ldc2, LDCElementEgal egal){
 
 
 /*
+ * \fn      LDC LDC_copier(LDC ldc)
+ * \brief   Copier une LDC à l'identique
+ * \note    Les éléments ne sont pas dupliqués, et le champ 'free' est mis à NULL
+ */
+LDC LDC_copier(LDC ldc){
+	LDC retour;
+	LDCIterateur it;
+	
+	retour = LDC_init();
+	it = LDCIterateur_init(ldc, LDCITERATEUR_AVANT);
+	
+	for (it = LDCIterateur_debut(it); ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it))
+		retour = LDC_insererElement(retour, -1, LDCIterateur_valeur(it), NULL);
+	
+	LDCIterateur_libererMemoire(&it);
+	
+	return retour;
+}
+
+
+
+
+/*
 */
 void LDC_afficher(LDC ldc){
 	LDCIterateur it;
