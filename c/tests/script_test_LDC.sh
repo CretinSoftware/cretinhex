@@ -209,7 +209,7 @@ done
 
 # On lance les séries de tests
 
-
+ko=0
 
 
 
@@ -234,7 +234,32 @@ verif="cmp $f_in $f_out"
 
 ./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "" "" "$f_out" "$commande" "$verif" "$DIMENSIONS" "$bcl"
 
-test $? -eq 0 || exit 1
+test $? -eq 0 || ko=`expr $ko + 1`
+
+
+
+# Duplication
+# -------------------------------------
+
+# Pattern du fichier en entree
+f_in="$REP_IN/n-uplets_@1x${TAILLE_DONNEES}_@2.txt"
+
+# Pattern du fichier en sortie
+f_out="$REP_OUT/`basename $f_in`"
+
+# Pattern de la commande pour créer le fichier en entrée
+mk_f_in="./mk_n-uplets @1 $TAILLE_DONNEES $f_in"
+
+# Pattern de la commande de test
+commande="./main_LDC -d @1 $TAILLE_DONNEES $f_in"
+
+# Pattern de la commande de vérification
+verif="cmp $f_in $f_out" 
+
+
+./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "" "" "$f_out" "$commande" "$verif" "$DIMENSIONS" "$bcl"
+
+test $? -eq 0 || ko=`expr $ko + 1`
 
 
 
@@ -261,7 +286,14 @@ verif="$0 -f $f_in $f_in2 $f_out"
 
 
 ./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "$f_in2" "$mk_f_in2" "$f_out" "$commande" "$verif" "$DIMENSIONS" "$bcl"
-test $? -eq 0 || exit 1
+
+test $? -eq 0 || ko=`expr $ko + 1`
+
+
+
+
+# Fusion sans doublons
+# -------------------------------------
 
 # Pattern de la commande de test
 commande="./main_LDC -g @1 $TAILLE_DONNEES $f_in $f_in2"
@@ -295,7 +327,15 @@ verif="cmp $f_in $f_out"
 
 ./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "$f_in2" "$mk_f_in2" "$f_out" "$commande" "$verif" "$DIMENSIONS" "$bcl"
 
-test $? -eq 0 || exit 1
+test $? -eq 0 || ko=`expr $ko + 1`
+
+
+
+
+
+
+
+exit $ko
 
 
 

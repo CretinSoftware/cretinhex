@@ -12,17 +12,22 @@ public class IA0 implements Utilisateur {
 
 	private String nom;     /**< \brief Nom de l'IA*/	
 	
+	/** \brief Chargement de la bibliothèque native de l'IA */
 	static { System.loadLibrary("cretinhex_randombot"); }
 
-	private native int[] randombotXjouer(int[] damier, int tailleDamier);
+	/** \brief Initialise le randombot */
 	private native void randombotXinit();
-
+	
+	/** \brief Renvoie un couple (x,y) aléatoire correspondant à un coup valide */
+	private native int[] randombotXjouer(int[] damier, int tailleDamier);
+	
 	/** \brief Constructeur d'après un nom et un joueur (J1 ou J2) */
 	public IA0(){
 		this.nom = "RandomBot";
 		randombotXinit();
 	}
 
+	/** \brief Renvoie un couple (x,y) aléatoire correspondant à un coup valide */
 	public int[] jouer(Partie p){
 		return randombotXjouer(p.obtenirDamierInt(), p.largeurDamier());
 	}
