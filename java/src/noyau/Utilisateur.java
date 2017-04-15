@@ -15,6 +15,7 @@ public interface Utilisateur
 	/** \brief Définir le nom de l'utilisateur */
 	public void setNom(String nom);
 	
+	
 	/** 
 	 * \brief   Faire jouer un coup à l'utilisateur
 	 * \param   p L'état actuel de la partie
@@ -33,4 +34,9 @@ public interface Utilisateur
 	 * \todo    Void si c'est vraiment nécessaire (on lui passe déjà la partie, et donc l'historique)
 	 */
 	public void actualiser(int x, int y);
+	
+	/**
+	 * \brief   Désallouer la mémoire (surtout pour les ia)
+	 */
+	public void quitter();
 }

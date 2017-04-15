@@ -28,7 +28,7 @@
  * 
  * OPERATEURS :       Damier_obtenirLargeur                      Damier -> int
  *                    Damier_obtenirCase               Damier, int, int -> Joueur
- *                    Damier_obtenirDamier                       Damier -> Joueur[]
+ *                    Damier_obtenirTabJoueurs                   Damier -> Joueur[]
  *                    Damier_libererMemoire                      Damier -> _____
  *                    
  * PRECONDITIONS :    Damier_modifierCase( d, x, y )  =>   x >= 0
@@ -144,7 +144,7 @@ int Damier_obtenirLargeur(Damier d);
 
 
 /**
- * \fn Joueur * Damier_obtenirDamier(Damier d)
+ * \fn Joueur * Damier_obtenirTabJoueurs(Damier d)
  * \param d Le damier à consulter
  * \return Un tableau linéaire de joueur
  *
@@ -154,7 +154,7 @@ int Damier_obtenirLargeur(Damier d);
  *
  * Le pointeur retourné désigne un tableau de taille Damier_obtenirLargeur(d) ^ 2 
  */
-Joueur * Damier_obtenirDamier(Damier d);
+Joueur * Damier_obtenirTabJoueurs(Damier d);
 
 
 
