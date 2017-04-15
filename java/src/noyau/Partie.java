@@ -124,6 +124,9 @@ public class Partie extends PartieJNI {
 		return damierJ;
 	}
 	
+	/**
+	 * \brief  Renvoie le damier sous forme d'entier
+	 */
 	public int[] obtenirDamierInt(){
 		return super.cretinhexXobtenirDamier();
 	}
