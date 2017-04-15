@@ -109,7 +109,7 @@ REP_IN=fichiers_in
 REP_OUT=fichiers_out/LDC
 
 # Nombre de n-uplets à traiter par défaut
-TAILLE_DONNEES=1000
+TAILLE_DONNEES="100 1000"
 
 # Dimension des n-uplets
 DIMENSIONS=1
@@ -217,22 +217,22 @@ ko=0
 # -------------------------------------
 
 # Pattern du fichier en entree
-f_in="$REP_IN/n-uplets_@1x${TAILLE_DONNEES}_@2.txt"
+f_in="$REP_IN/n-uplets_@1x@2_@3.txt"
 
 # Pattern du fichier en sortie
-f_out="$REP_OUT/`basename $f_in`"
+f_out="$REP_OUT/constr_@1x@2_@3.txt"
 
 # Pattern de la commande pour créer le fichier en entrée
-mk_f_in="./mk_n-uplets @1 $TAILLE_DONNEES $f_in"
+mk_f_in="./mk_n-uplets @1 @2 $f_in"
 
 # Pattern de la commande de test
-commande="./main_LDC -c @1 $TAILLE_DONNEES $f_in"
+commande="./main_LDC -c @1 @2 $f_in"
 
 # Pattern de la commande de vérification
 verif="cmp $f_in $f_out" 
 
 
-./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "" "" "$f_out" "$commande" "$verif" "$DIMENSIONS" "$bcl"
+./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "" "" "$f_out" "$commande" "$verif" "$DIMENSIONS" "$TAILLE_DONNEES" "$bcl"
 
 test $? -eq 0 || ko=`expr $ko + 1`
 
@@ -242,22 +242,22 @@ test $? -eq 0 || ko=`expr $ko + 1`
 # -------------------------------------
 
 # Pattern du fichier en entree
-f_in="$REP_IN/n-uplets_@1x${TAILLE_DONNEES}_@2.txt"
+f_in="$REP_IN/n-uplets_@1x@2_@3.txt"
 
 # Pattern du fichier en sortie
-f_out="$REP_OUT/`basename $f_in`"
+f_out="$REP_OUT/dupli_@1x@2_@3.txt"
 
 # Pattern de la commande pour créer le fichier en entrée
-mk_f_in="./mk_n-uplets @1 $TAILLE_DONNEES $f_in"
+mk_f_in="./mk_n-uplets @1 @2 $f_in"
 
 # Pattern de la commande de test
-commande="./main_LDC -d @1 $TAILLE_DONNEES $f_in"
+commande="./main_LDC -d @1 @2 $f_in"
 
 # Pattern de la commande de vérification
 verif="cmp $f_in $f_out" 
 
 
-./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "" "" "$f_out" "$commande" "$verif" "$DIMENSIONS" "$bcl"
+./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "" "" "$f_out" "$commande" "$verif" "$DIMENSIONS" "$TAILLE_DONNEES" "$bcl"
 
 test $? -eq 0 || ko=`expr $ko + 1`
 
@@ -268,24 +268,24 @@ test $? -eq 0 || ko=`expr $ko + 1`
 # -------------------------------------
 
 # Pattern des fichiers en entree
-f_in="$REP_IN/n-uplets_fusion_@1x${TAILLE_DONNEES}_@2_a.txt"
-f_in2="$REP_IN/n-uplets_fusion_@1x${TAILLE_DONNEES}_@2_b.txt"
+f_in="$REP_IN/n-uplets_fusion_@1x@2_@3_a.txt"
+f_in2="$REP_IN/fusion_@1x@2_@3_b.txt"
 
 # Pattern du fichier en sortie
-f_out="$REP_OUT/n-uplets_fusion_@1x${TAILLE_DONNEES}_@2.txt"
+f_out="$REP_OUT/fusion_@1x@2_@3.txt"
 
 # Pattern des commandes pour créer les fichiers en entrée
-mk_f_in="./mk_n-uplets @1 $TAILLE_DONNEES $f_in"
-mk_f_in2="./mk_n-uplets @1 $TAILLE_DONNEES $f_in2"
+mk_f_in="./mk_n-uplets @1 @2 $f_in"
+mk_f_in2="./mk_n-uplets @1 @2 $f_in2"
 
 # Pattern de la commande de test
-commande="./main_LDC -f @1 $TAILLE_DONNEES $f_in $f_in2"
+commande="./main_LDC -f @1 @2 $f_in $f_in2"
 
 # Pattern de la commande de vérification
 verif="$0 -f $f_in $f_in2 $f_out" 
 
 
-./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "$f_in2" "$mk_f_in2" "$f_out" "$commande" "$verif" "$DIMENSIONS" "$bcl"
+./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "$f_in2" "$mk_f_in2" "$f_out" "$commande" "$verif" "$DIMENSIONS" "$TAILLE_DONNEES" "$bcl"
 
 test $? -eq 0 || ko=`expr $ko + 1`
 
@@ -295,14 +295,17 @@ test $? -eq 0 || ko=`expr $ko + 1`
 # Fusion sans doublons
 # -------------------------------------
 
+# Pattern du fichier en sortie
+f_out="$REP_OUT/fusionSD_@1x@2_@3.txt"
+
 # Pattern de la commande de test
-commande="./main_LDC -g @1 $TAILLE_DONNEES $f_in $f_in2"
+commande="./main_LDC -g @1 @2 $f_in $f_in2"
 
 # Pattern de la commande de vérification
 verif="$0 -g $f_in $f_in2 $f_out"
 
 
-./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "$f_in2" "$mk_f_in2" "$f_out" "$commande" "$verif" "$DIMENSIONS" "$bcl"
+./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "$f_in2" "$mk_f_in2" "$f_out" "$commande" "$verif" "$DIMENSIONS" "$TAILLE_DONNEES" "$bcl"
 test $? -eq 0 || exit 1
 
 
@@ -313,19 +316,19 @@ test $? -eq 0 || exit 1
 # Recherche
 # -------------------------------------
 
-f_in2="$REP_IN/n-uplets_@1x${TAILLE_DONNEES}_@2.txt"
+f_in2="$REP_IN/n-uplets_@1x@2_@3.txt"
 mk_f_in2=""
 
-f_in="$REP_IN/n-uplets_@1x${TAILLE_DONNEES}_recherche_@2.txt"
-f_out="$REP_OUT/`basename $f_in`"
+f_in="$REP_IN/n-uplets_@1x@2_recherche_@3.txt"
+f_out="$REP_OUT/recherche_@1x@2_@3.txt"
 
-mk_f_in="$0 -m $f_in2 $f_in $TAILLE_DONNEES @1"
-#mk_f_in2="./mk_n-uplets @1 $TAILLE_DONNEES $f_in2"
+mk_f_in="$0 -m $f_in2 $f_in @2 @1"
+#mk_f_in2="./mk_n-uplets @1 @2 $f_in2"
 
-commande="./main_LDC -r @1 $TAILLE_DONNEES $f_in $f_in2"
+commande="./main_LDC -r @1 @2 $f_in $f_in2"
 verif="cmp $f_in $f_out" 
 
-./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "$f_in2" "$mk_f_in2" "$f_out" "$commande" "$verif" "$DIMENSIONS" "$bcl"
+./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "$f_in2" "$mk_f_in2" "$f_out" "$commande" "$verif" "$DIMENSIONS" "$TAILLE_DONNEES" "$bcl"
 
 test $? -eq 0 || ko=`expr $ko + 1`
 

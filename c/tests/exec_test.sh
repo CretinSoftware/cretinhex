@@ -6,7 +6,7 @@
 #
 # Renvoie 0 si tout est OK, 1 si certains tests échouent, 2 ou plus en cas d'erreur
 
-function erreur(){ 
+erreur(){ 
 	case $1 in
 		usage)
 			echo "$0: usage: $0 [-v] fichier_in fichier_in2 fichier_out \"commande\"" >&2
@@ -24,6 +24,27 @@ function erreur(){
 # Facilité d'écriture
 OK="[\x1B[1;32mOK\x1B[0m]"
 KO="[\x1B[1;31mKO\x1B[0m]"
+
+# donne une taille en o / ko / Mo
+echo_taille(){
+	u="o"
+	taille=$1
+	
+	if test $taille -ge 1024
+	then
+		u="ko"
+		taille=`expr $taille / 1024`
+	fi
+	
+	if test $taille -ge 1024
+	then
+		u="Mo"
+		taille=`expr $taille / 1024`
+	fi
+	
+	echo -n "$taille $u"
+	return 0
+}
 
 
 
@@ -65,8 +86,8 @@ mkdir -p `dirname "$f_out"`
 
 
 
-# AFFICHAGE : commande
-echo -n "$f_in  "
+# AFFICHAGE : fichier en sortie
+echo -n "$f_out"
 
 
 memOK=0
@@ -85,9 +106,21 @@ then
 	then
 		echo -ne "	mémoire : $OK"
 		memOK=1
+		# Mémoire utilisée
+		echo -n " (utilisé: "
+		echo_taille `grep "total heap usage" "$f_log" | tr -s " " | cut -d  " " -f 9 | tr -d ","`
+		echo -n ")"
 	else
 		echo -ne "	mémoire : $KO"
+		# Mémoire utilisée
+		echo -n " (utilisé: "
+		echo_taille `grep "total heap usage" "$f_log" | tr -s " " | cut -d  " " -f 9 | tr -d ","`
+		echo -n ", perdu: "
+		echo_taille `grep "in use at exit" "$f_log" | tr -s " " | cut -d  " " -f 6 | tr -d ","`
+		echo -n ")"
 	fi
+	
+	
 else
 	$commande > "$f_out"
 fi
