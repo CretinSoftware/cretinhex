@@ -36,7 +36,7 @@ all: c
 headers: 
 	make headers -C ../$(JAVA)
 
-c: $(LIB_CRETINHEX) $(LIB_IA0)
+c: $(TOUTES_LIB)
 
 doc: $(C_DOC)/html/index.html
 
@@ -50,7 +50,10 @@ doc: $(C_DOC)/html/index.html
 $(LIB_CRETINHEX_SO): $(C_FICHIERS_O)
 	gcc -shared $(C_OPT) $^ -o $@
 	
-$(LIB_IA0_SO): $(C_IA0)/$(DOS_O)/*.o
+$(LIB_IA0_SO):  $(patsubst $(C_IA0)/%.c, $(C_IA0)/$(DOS_O)/%.o, $(wildcard $(C_IA0)/*.c))
+	gcc -shared $(C_OPT) $^ -o $@
+	
+$(LIB_BRIDGEBOT_SO): $(C_FICHIERS_O) $(patsubst $(C_BRIDGEBOT)/%.c, $(C_BRIDGEBOT)/$(DOS_O)/%.o, $(wildcard $(C_BRIDGEBOT)/*.c))
 	gcc -shared $(C_OPT) $^ -o $@
 	
 	
@@ -65,6 +68,7 @@ $(LIB_CRETINHEX_DLL) $(LIB_IA0_DLL):
 # Appelle les makes pour fournir les .o
 %.o: 
 #	make $(C_OBJ)/$(notdir $@) -C $(subst $(C_OBJ)/,,$(dir $@))
+	echo $@
 	make -C $(subst $(DOS_O)/,,$(dir $@))
 
 
@@ -99,7 +103,7 @@ doc-clean:
 # Efface tout ce qui peut être regénéré
 maxclean: 
 	@$(foreach dos, $(C_TOUT), make maxclean -C $(dos); )
-	rm -f $(LIB_CRETINHEX)
+	rm -f $(TOUTES_LIB)
 	
 	
 

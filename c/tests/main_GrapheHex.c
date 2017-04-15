@@ -20,6 +20,7 @@ void erreurUsage(char * argv[]){
 	fprintf(stderr, "%s: usage :\n", argv[0]);
 	fprintf(stderr, "	-c  fichier_sauvegarde\n");
 	fprintf(stderr, "	-g  fichier_sauvegarde\n");
+	fprintf(stderr, "	-p  fichier_sauvegarde\n");
 	exit(10);
 }
 
@@ -97,6 +98,28 @@ void afficherGroupes(GrapheHex g, Joueur j){
 }
 
 
+/**
+ * \brief affiche le chemin
+ */
+void afficherChemins(LDC chemins){
+	LDCIterateur it1, it2;
+	
+	printf("%d chemins\n", LDC_taille(chemins));
+	
+	it1 = LDCIterateur_init(chemins, LDCITERATEUR_AVANT);
+	for(it1 = LDCIterateur_debut(it1); ! LDCIterateur_fin(it1); it1 = LDCIterateur_avancer(it1)){
+		printf("  Chemin n° %d : \n", LDCIterateur_position(it1) + 1);
+		it2 = LDCIterateur_init((LDC) LDCIterateur_valeur(it1), LDCITERATEUR_AVANT);
+		for(it2 = LDCIterateur_debut(it2); ! LDCIterateur_fin(it2); it2 = LDCIterateur_avancer(it2)){
+			printf("    ");
+			GrapheNoeud_afficher((GrapheNoeud) LDCIterateur_valeur(it2));
+		}
+		printf("\n");
+		LDCIterateur_libererMemoire(&it2);
+	}
+	LDCIterateur_libererMemoire(&it1);
+}
+
 
 /**
  * \brief Construction d'un graphe depuis un fichier 
@@ -147,6 +170,30 @@ void test_groupes(const char * fichier){
 }
 
 
+/**
+ * \brief Test des chemins
+ */
+void test_chemins(const char * fichier){
+	GrapheHex gh;
+	LDC chemins;
+	
+	gh = construireDepuisFichier(fichier);
+	
+	/*GrapheHex_afficher(gh);*/
+	
+	chemins = GrapheHex_plusCourtsChemins(gh, GrapheHex_nord(gh), GrapheHex_sud(gh), J1);
+	afficherChemins(chemins);
+	LDC_libererMemoire(&chemins);
+	
+	chemins = GrapheHex_plusCourtsChemins(gh, GrapheHex_est(gh), GrapheHex_ouest(gh), J2);
+	afficherChemins(chemins);
+	LDC_libererMemoire(&chemins);
+	
+	
+	GrapheHex_libererMemoire(&gh);
+}
+
+
 
 int main(int argc, char * argv[]){
 
@@ -162,6 +209,11 @@ int main(int argc, char * argv[]){
 		case 'g':
 			if (argc != 3) erreurUsage(argv);
 			test_groupes(argv[2]);
+			break;
+		/* Chemins */
+		case 'p':
+			if (argc != 3) erreurUsage(argv);
+			test_chemins(argv[2]);
 			break;
 		
 		default:

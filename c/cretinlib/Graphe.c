@@ -260,6 +260,8 @@ void Graphe_afficher(Graphe g){
 	LDCIterateur it;
 	LDC tousLesNoeuds;
 	
+	printf("coucou\n");
+	
 	/* Points d'entrée */
 	printf("Graphe : %d point(s) d'entrée : \n", Graphe_nbPointsEntree(g));
 	it = LDCIterateur_init(g->pointsEntree, LDCITERATEUR_AVANT);

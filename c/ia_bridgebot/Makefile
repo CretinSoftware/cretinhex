@@ -1,6 +1,6 @@
-# MAKEFILE DE HEX
+# MAKEFILE DE BridgeBot
 # \author Pierre Pomeret-Coquot
-# \version 1.2
+# \version 0
 
 
 
@@ -26,9 +26,9 @@ all: $(foreach f, $(FICHIERS_C:.c=.o), $(DOS_O)/$(f))
 
 
 # Fichier(s) utilisant JNI
-$(DOS_O)/randombot.o: randombot.c | $(DOS_O) $(DOS_D)
+$(DOS_O)/bridgebotJNI.o: bridgebotJNI.c | $(DOS_O) $(DOS_D)
 	$(CC) $(C_OPT) $(JNI_OPT) -c $< -o $@
-	$(CC) -MM -MP $< -o $(DOS_D)/randombot.d -MT $@ 
+	$(CC) -MM -MP $< -o $(DOS_D)/bridgebotJNI.d -MT $@ 
 	
 	
 # Standard

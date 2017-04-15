@@ -66,10 +66,31 @@ typedef struct GrapheHex * GrapheHex;
 GrapheHex GrapheHex_init(Damier d);
 
 
+
+
+/*
+ * \brief   Affiche un GrapheHex
+ */
+void GrapheHex_afficher(GrapheHex g);
+
+
+
+
+GrapheNoeud GrapheHex_nord(GrapheHex g);
+GrapheNoeud GrapheHex_sud(GrapheHex g);
+GrapheNoeud GrapheHex_est(GrapheHex g);
+GrapheNoeud GrapheHex_ouest(GrapheHex g);
+
+
 /**
  * \brief   Donne le métagraphe associé.
  */
 GrapheNoeud * GrapheHex_obtenirMetagraphe(GrapheHex g);
+
+/*
+ * \brief   Donne le Graphe associé.
+ */
+Graphe GrapheHex_obtenirGraphe(GrapheHex g);
 
 
 /**
@@ -122,10 +143,16 @@ LDC GrapheHex_groupes(GrapheHex g, Joueur j);
 GrapheHex GrapheHex_simplifier(GrapheHex g);
 
 /**
- * \ brief Donne le vainqueur d'après les points d'entrées opposés identiques
+ * \brief    Donne le vainqueur d'après les points d'entrées opposés identiques
  */
 Joueur GrapheHex_quiGagne(GrapheHex g);
 
+
+/**
+ * \brief    Donne le(s) plus court(s) chemin(s) pour aller des points d'entrée A vers B
+ * \note     La fonction renvoie une LDC de LDC (LDC à deux dimensions). Sa désallocation mémoire est à votre charge.
+ */
+LDC GrapheHex_plusCourtsChemins(GrapheHex g, GrapheNoeud depart, GrapheNoeud arrivee, Joueur j);
 
 
 

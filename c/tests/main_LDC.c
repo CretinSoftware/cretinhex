@@ -87,6 +87,17 @@ void test_construction(int dim, int nb, const char * fichier){
 }
 
 
+/**
+ * \brief Test de duplication
+ */
+void test_duplication(int dim, int nb, const char * fichier){
+	LDC ldc1, ldc2;
+	ldc1 = mkLDC(dim, nb, fichier);
+	ldc2 = LDC_copier(ldc1);
+	afficherLDC(ldc2);
+	LDC_free(&ldc1);
+	LDC_free(&ldc2);
+}
 
 
 /**
@@ -160,18 +171,27 @@ int main(int argc, char * argv[]){
 	if (argc < 2) erreurUsage(argv);
 	
 	switch (argv[1][1]){
+		/* Construction */
 		case 'c':
 			if (argc != 5) erreurUsage(argv);
 			test_construction(atoi(argv[2]), atoi(argv[3]), argv[4]);
 			break;
+		/* Duplication */
+		case 'd':
+			if (argc != 5) erreurUsage(argv);
+			test_duplication(atoi(argv[2]), atoi(argv[3]), argv[4]);
+			break;
+		/* Fusion */
 		case 'f':
 			if (argc != 6) erreurUsage(argv);
 			test_fusion(atoi(argv[2]), atoi(argv[3]), argv[4], argv[5], 0);
 			break;
+		/* Fusion sans doublons */
 		case 'g':
 			if (argc != 6) erreurUsage(argv);
 			test_fusion(atoi(argv[2]), atoi(argv[3]), argv[4], argv[5], 1);
 			break;
+		/* Recherche */
 		case 'r':
 			if (argc != 6) erreurUsage(argv);
 			test_recherche(atoi(argv[2]), atoi(argv[3]), argv[4], argv[5]);

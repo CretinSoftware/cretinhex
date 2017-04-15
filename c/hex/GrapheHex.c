@@ -176,11 +176,34 @@ GrapheHex GrapheHex_init(Damier d){
 /** @} */
 
 
+
+
+GrapheNoeud GrapheHex_nord(GrapheHex g){   return Graphe_pointEntree(g->graphe, 0);   }
+GrapheNoeud GrapheHex_sud(GrapheHex g){    return Graphe_pointEntree(g->graphe, 1);   }
+GrapheNoeud GrapheHex_est(GrapheHex g){    return Graphe_pointEntree(g->graphe, 2);   }
+GrapheNoeud GrapheHex_ouest(GrapheHex g){  return Graphe_pointEntree(g->graphe, 3);   }
+
+
+
+/*
+ * \brief   Affiche un GrapheHex
+ */
+void GrapheHex_afficher(GrapheHex g){
+	Graphe_afficher(g->graphe);
+}
+
 /*
  * \brief   Donne le métagraphe associé.
  */
 GrapheNoeud * GrapheHex_obtenirMetagraphe(GrapheHex g){
 	return g->metagraphe;
+}
+
+/*
+ * \brief   Donne le Graphe associé.
+ */
+Graphe GrapheHex_obtenirGraphe(GrapheHex g){
+	return g->graphe;
 }
 
 
@@ -323,6 +346,127 @@ Joueur GrapheHex_quiGagne(GrapheHex g){
 		return J2;
 	return J0;
 }
+
+
+
+
+/**
+ * \brief  Donne toutes les façons d'avancer sur un chemin sans revenir sur ses pas ni aller sur une case adverse 
+ */
+LDC GrapheHex_avancerSurChemin(GrapheHex g, LDC cheminEnCours, Joueur j){
+	GrapheNoeud noeud, voisin;
+	LDC cheminsPossibles;
+	LDC nouveauChemin;
+	LDCIterateur it;
+	Joueur valeurVoisin;
+	
+	cheminsPossibles = LDC_init();
+	
+	noeud = (GrapheNoeud) LDC_obtenirElement(cheminEnCours, -1);
+	
+	it = LDCIterateur_init(GrapheNoeud_obtenirVoisins(noeud), LDCITERATEUR_AVANT);
+	
+	for (it = LDCIterateur_debut(it); ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it)){
+		voisin = (GrapheNoeud) LDCIterateur_valeur(it);
+		valeurVoisin = GHElement_valeur((GHElement) GrapheNoeud_obtenirElement(voisin));
+		if (valeurVoisin == j || valeurVoisin == J0){
+			if (LDC_obtenirPosition(cheminEnCours, voisin, (LDCElementEgal) GrapheNoeud_estEgal) < 0){
+				nouveauChemin = LDC_copier(cheminEnCours);
+				nouveauChemin = LDC_insererElement(nouveauChemin, -1, voisin, NULL);
+				cheminsPossibles = LDC_insererElement(cheminsPossibles, -1, nouveauChemin, NULL);
+			}
+		}
+	}
+	
+	LDCIterateur_libererMemoire(&it);
+	
+	return cheminsPossibles;
+}
+
+
+void LDC_freeElements(LDC ldc, LDCElementFree fn_free){
+	LDCIterateur it;
+	void * e;
+	
+	it = LDCIterateur_init(ldc, LDCITERATEUR_AVANT);
+	for (it = LDCIterateur_debut(it); ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it)){
+		e =  LDCIterateur_valeur(it);
+		fn_free(&e);
+	}
+	LDCIterateur_libererMemoire(&it);
+}
+
+/*
+ * \brief    Donne le(s) plus court(s) chemin(s) pour aller des points d'entrée A vers B
+ * \note     La fonction renvoie une LDC de LDC (LDC à deux dimensions). Sa désallocation mémoire est à votre charge.
+ */
+LDC GrapheHex_plusCourtsChemins(GrapheHex g, GrapheNoeud depart, GrapheNoeud arrivee, Joueur j){
+	LDC chemins, tmp, chem;
+	LDCIterateur it;
+	
+	int pos, termine;
+	
+	/* Chemins au départ : le premier noeud */
+	chemins = LDC_init();
+	chemins = LDC_insererElement(chemins, -1, LDC_insererElement(LDC_init(), -1, depart, NULL), NULL);
+	
+	termine = 0;
+	while (! termine){
+	
+		/* On trouve tous les chemins possibles (dans tmp) */
+		tmp = LDC_init();
+		it = LDCIterateur_init(chemins, LDCITERATEUR_AVANT);
+		for (it = LDCIterateur_debut(it); ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it))
+			tmp = LDC_fusion(tmp, GrapheHex_avancerSurChemin(g, (LDC) LDCIterateur_valeur(it), j));
+		
+		LDCIterateur_libererMemoire(&it);
+		LDC_freeElements(chemins, (LDCElementFree) LDC_libererMemoire);
+		LDC_libererMemoire(&chemins);
+		
+		/* On trouve tous les chemins menant à arrivée (dans tmp), on les place dans chemins */
+		it = LDCIterateur_init(tmp, LDCITERATEUR_AVANT);
+		it = LDCIterateur_debut(it);
+		chemins = LDC_init();
+		pos = 0;
+		
+		while (! LDCIterateur_fin(it)){
+			chem = (LDC) LDCIterateur_valeur(it);
+			if (GrapheNoeud_estEgal(arrivee, (GrapheNoeud) LDC_obtenirElement(chem, -1))){
+				termine = 1;
+				chemins = LDC_insererElement(chemins, -1, chem, (LDCElementFree) LDC_libererMemoire);
+				it = LDCIterateur_avancer(it);
+				tmp = LDC_enleverElement(tmp, pos);
+			}
+			else {
+				it = LDCIterateur_avancer(it);
+				++pos;
+			}
+		}
+		LDCIterateur_libererMemoire(&it);
+		
+		/* Si chemins est vide, aucun ne mène (encore) à l'arrivée, on les ajoute tous */
+		if (LDC_taille(chemins) == 0){
+			LDC_libererMemoire(&chemins);
+			chemins = LDC_copier(tmp);
+		}
+		
+		/* Sinon, on a terminé le traitement et on efface les chemins encore contenus dans tmp */
+		else 
+			LDC_freeElements(tmp, (LDCElementFree) LDC_libererMemoire);
+		
+		
+		/* Si chemins est encore vide, c'est aucun chemin n'existe */
+		if (LDC_taille(chemins) == 0)
+			termine = 1;
+				
+		/* Libération mémoire de tmp (mais pas de son contenu, qui est copié dans chemins ou a déjà été effacé) */
+		LDC_libererMemoire(&tmp);
+	}
+		
+	return chemins;
+}
+	
+	
 	
 
 

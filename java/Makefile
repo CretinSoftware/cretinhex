@@ -26,7 +26,7 @@ JAVA_DOC             = ../$(DOC)/java
 
 # MAKES
 all: $(JAVA_APP)
-headers: header_PartieJNI header_IA0
+headers: header_PartieJNI header_IA0 header_BridgeBot
 doc: $(JAVA_DOC)/html/index.html
 
 
@@ -50,7 +50,9 @@ header_IA0:
 	rm -f ../$(C)/$(C_HEADER_IA0)
 	javah  -sourcepath $(JAVA_SRC) -o ../$(C)/$(C_HEADER_IA0) $(JAVA_CLASS_IA0)
 
-
+header_BridgeBot:
+	rm -f ../$(C)/$(C_HEADER_BRIDGEBOT)
+	javah  -sourcepath $(JAVA_SRC) -o ../$(C)/$(C_HEADER_BRIDGEBOT) $(JAVA_CLASS_BRIDGEBOT)
 
 
 # Dossiers

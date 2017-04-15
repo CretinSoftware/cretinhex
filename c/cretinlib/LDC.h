@@ -202,6 +202,14 @@ LDC LDC_fusion(LDC ldc1, LDC ldc2);
 LDC LDC_fusionSansDoublons(LDC ldc1, LDC ldc2, LDCElementEgal egal);
 
 
+/**
+ * \fn      LDC LDC_copier(LDC ldc)
+ * \brief   Copier une LDC à l'identique
+ * \note    Les éléments ne sont pas dupliqués, et le champ 'free' est mis à NULL
+ */
+LDC LDC_copier(LDC ldc);
+
+
 /*
  * \fn      void LDC_afficher(LDC ldc)
  * \brief   Affiche une LDC (les adresses de ses éléments)

@@ -99,6 +99,12 @@ typedef struct GrapheNoeud * GrapheNoeud;                           /**< Noeud d
 
 
 
+/*-
+ * \brief Égalité de noeuds : même adresse
+ */
+int GrapheNoeud_estEgal(GrapheNoeud n1, GrapheNoeud n2);
+
+
 /**
  * \brief   Initialise un GrapheNoeud
  * \param   e L'élément contenu dans ce noeud
