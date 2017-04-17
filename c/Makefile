@@ -24,7 +24,8 @@ include ../parametres/make.txt
 C_SRC                = $(C_CRETINLIB) $(C_HEX)
 C_DOC                = ../$(DOC)/c
 C_FICHIERS_C        := $(foreach dos, $(C_SRC), $(wildcard $(dos)/*.c))
-C_FICHIERS_O        := $(foreach dos, $(C_SRC), $(patsubst $(dos)/%.c,$(dos)/$(DOS_O)/%.o,$(wildcard $(dos)/*.c)))
+C_FICHIERS_O        := $(foreach dos, $(C_SRC), $(patsubst $(dos)/%.c,$(dos)/$(DOS_O)/%.o,$(wildcard $(dos)/*.c))) \
+                       $(foreach dos, $(C_SRC), $(wildcard $(dos)/$(DOS_O)/*.o))
 
 
 
@@ -36,7 +37,7 @@ all: c
 headers: 
 	make headers -C ../$(JAVA)
 
-c: $(LIB_CRETINHEX) $(LIB_IA0)
+c: $(TOUTES_LIB)
 
 doc: $(C_DOC)/html/index.html
 
@@ -56,7 +57,7 @@ $(LIB_IA0_SO): $(C_IA0)/$(DOS_O)/*.o
 	
 
 # Windows : le fera-t'on ?
-$(LIB_CRETINHEX_DLL) $(LIB_IA0_DLL): 
+%.dll: 
 	@echo "Pas de compilation pour windows actuellement"
 	
 	
@@ -99,7 +100,7 @@ doc-clean:
 # Efface tout ce qui peut être regénéré
 maxclean: 
 	@$(foreach dos, $(C_TOUT), make maxclean -C $(dos); )
-	rm -f $(LIB_CRETINHEX)
+	rm -f *.so *.dll
 	
 	
 

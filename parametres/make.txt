@@ -29,6 +29,7 @@ else
 	LIB_CRETINHEX    = $(LIB_CRETINHEX_SO)
 	LIB_IA0          = $(LIB_IA0_SO)
 endif
+TOUTES_LIB           = $(LIB_CRETINHEX) $(LIB_IA0)
 
 
 # Dossiers du projet (relatif au projet)
@@ -36,6 +37,7 @@ PARAMS               = parametres
 DOC                  = doc
 JAVA                 = java
 C                    = c
+DOSSIER_CLIENT       = rendu_client
 
 
 # Dossiers Java (relatifs à java/)

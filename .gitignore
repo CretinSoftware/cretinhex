@@ -1,5 +1,6 @@
 !.gitignore
 doc/
+rendu_client
 mon_premier_programme
 java/bin
 c/*.so
