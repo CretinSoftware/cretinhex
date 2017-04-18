@@ -123,6 +123,12 @@ GrapheHex GrapheHex_modifierCase(GrapheHex g, int x, int y, Joueur j);
  */
 GrapheNoeud GrapheHex_obtenirNoeud(GrapheHex g, int x, int y);
 
+/**
+ * \brief   Donne les cases correspondant à un noeud
+ * \note    La LDC contient des entiers n avec n / largeur = x et n % largeur = y
+ */
+LDC GrapheHex_casesDuNoeud(GrapheHex g, GrapheNoeud n);
+
 
 /**
  * \brief    Fusionne deux noeuds en prenant soin du métagraphe
@@ -135,7 +141,6 @@ GrapheHex GrapheHex_fusionnerNoeuds(GrapheHex g, GrapheNoeud n1, GrapheNoeud n2)
  * \note    La gestion de la mémoire de la LDC renvoyée est à votre charge.
  */
 LDC GrapheHex_groupes(GrapheHex g, Joueur j);
-
 
 /**
  * \brief    Simplifie tout le graphe (regroupe les J1 contigus, et les J2)

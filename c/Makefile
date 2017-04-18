@@ -67,8 +67,7 @@ $(LIB_CRETINHEX_DLL) $(LIB_IA0_DLL):
 	
 # Appelle les makes pour fournir les .o
 %.o: 
-#	make $(C_OBJ)/$(notdir $@) -C $(subst $(C_OBJ)/,,$(dir $@))
-	echo $@
+#	make $(DOS_O)/$(notdir $@) -C $(subst $(DOS_O)/,,$(dir $@))
 	make -C $(subst $(DOS_O)/,,$(dir $@))
 
 
