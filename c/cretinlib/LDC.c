@@ -24,6 +24,17 @@
 
 
 
+/* \brief Fait simplement un free, peut être transmis comme LDCElementFree */
+void LDCElement_free(LDCElement * e){
+	free(*e);
+	*e = NULL;
+}
+
+/* \brief Affirme que deux entiers sont égaux, ou non */
+int int_estEgal(int * a, int * b){
+	return *a == *b;
+}
+
 
 
 
