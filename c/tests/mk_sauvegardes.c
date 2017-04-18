@@ -76,7 +76,7 @@ int main(int argc, char * argv[]){
 	
 	
 	for (i = 0; i < nb_coups; ++i){
-		if (i % (nb_coups / 10) == 0){
+		if (nb_coups < 10 || i % (nb_coups / 10) == 0){
 			printf(".");
 			fflush(stdout);
 		}

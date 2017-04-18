@@ -28,10 +28,10 @@ REP_IN=fichiers_in
 REP_OUT=fichiers_out/Partie
 
 # Dimension des grilles
-DIMENSIONS="10 30"
+DIMENSIONS="5 10 20"
 
 # Nombre de coups joués
-NB_COUPS_JOUES="100 900"
+NB_COUPS_JOUES="25 100 400"
 
 # Nombre de tests pour chacun de ces réglages
 NB_TESTS=1
@@ -101,7 +101,8 @@ f_in="$REP_IN/sauv_@1x@2_@3.txt"
 f_out="$REP_OUT/sauvegarde_@1x@2_@3.txt"
 
 # Pattern de la commande pour créer le fichier en entrée
-mk_f_in="./mk_sauvegardes @1 1 @2 $f_in"
+random_number=`cat /dev/urandom | tr -dc "0-9" | head -c 10`
+mk_f_in="./mk_sauvegardes @1 `expr $random_number % 2 + 1` @2 $f_in"
 
 # Pattern de la commande de test
 commande="./main_Partie -s $f_in $f_out"

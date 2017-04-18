@@ -61,7 +61,6 @@ echo_taille(){
 
 
 
-
 # Par défaut
 
 use_valgrind=""
@@ -99,8 +98,15 @@ mkdir -p `dirname "$f_out"`
 
 
 
-# AFFICHAGE : fichier en sortie
-echo -n "$f_out"
+# AFFICHAGE : fichier en sortie (taille : 40c)
+chaine="$f_out"
+cpt=`expr length "$chaine"`
+while test $cpt -lt 40
+do
+	chaine="$chaine "
+	cpt=`expr $cpt + 1`
+done
+echo -n "$chaine"
 
 
 memOK=0
@@ -109,7 +115,9 @@ resOK=0
 # Execution
 if test "$use_valgrind"
 then
+	tps_dep=`date +%s.%N`
 	valgrind --log-file="$f_log" $commande > "$f_out"
+	tps_fin=`date +%s.%N`
 
 	# Recherche de la ligne qui fait plaisir dans le log valgrind
 	grep "in use at exit: 0 bytes in 0 blocks" "$f_log" > /dev/null 2>&1
@@ -135,19 +143,26 @@ then
 	
 	
 else
+	tps_dep=`date +%s.%N`
 	$commande > "$f_out"
+	tps_fin=`date +%s.%N`
 fi
 
+
+
+tps=$(echo "$tps_fin - $tps_dep" | bc)
+test "`echo $tps|cut -c 1`" = "." && tps="0$tps"
+tps=`echo $tps | head -c 5`
 
 # Comparaison des fichiers entrée et sortie (résultat)
 $verif
 
 if test $? -eq 0
 then
-	echo -e "	resultat : $OK"
+	echo -e "	resultat : $OK   (tps: $tps s)"
 	resOK=1
 else
-	echo -e "	resultat : $KO"
+	echo -e "	resultat : $KO   (tps: $tps s)"
 fi
 
 test $resOK -eq 1 && test ! "$use_valgrind" -o $memOK -eq 1 && exit 0
