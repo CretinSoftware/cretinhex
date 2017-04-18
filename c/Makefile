@@ -24,7 +24,8 @@ include ../parametres/make.txt
 C_SRC                = $(C_CRETINLIB) $(C_HEX)
 C_DOC                = ../$(DOC)/c
 C_FICHIERS_C        := $(foreach dos, $(C_SRC), $(wildcard $(dos)/*.c))
-C_FICHIERS_O        := $(foreach dos, $(C_SRC), $(patsubst $(dos)/%.c,$(dos)/$(DOS_O)/%.o,$(wildcard $(dos)/*.c)))
+C_FICHIERS_O        := $(foreach dos, $(C_SRC), $(patsubst $(dos)/%.c,$(dos)/$(DOS_O)/%.o,$(wildcard $(dos)/*.c))) \
+                       $(foreach dos, $(C_SRC), $(wildcard $(dos)/$(DOS_O)/*.o))
 
 
 
@@ -59,7 +60,7 @@ $(LIB_BRIDGEBOT_SO): $(C_FICHIERS_O) $(patsubst $(C_BRIDGEBOT)/%.c, $(C_BRIDGEBO
 	
 
 # Windows : le fera-t'on ?
-$(LIB_CRETINHEX_DLL) $(LIB_IA0_DLL): 
+%.dll: 
 	@echo "Pas de compilation pour windows actuellement"
 	
 	
@@ -102,7 +103,7 @@ doc-clean:
 # Efface tout ce qui peut être regénéré
 maxclean: 
 	@$(foreach dos, $(C_TOUT), make maxclean -C $(dos); )
-	rm -f $(TOUTES_LIB)
+	rm -f *.so *.dll
 	
 	
 

@@ -153,7 +153,7 @@ mkdir -p $REP_OUT
 f_in="$REP_IN/sauv_@1x@2_@3.txt"
 
 # Pattern du fichier en sortie
-f_out="$REP_OUT/`basename $f_in`"
+f_out="$REP_OUT/constr_@1x@2_@3.txt"
 
 # Pattern de la commande pour créer le fichier en entrée
 mk_f_in="./mk_sauvegardes @1 1 @2 $f_in"
