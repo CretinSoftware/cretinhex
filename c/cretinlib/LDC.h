@@ -80,6 +80,13 @@ typedef void * LDCElement;                      /**< Pointeur vers un truc exter
 typedef void (*LDCElementFree)(LDCElement *);     /**< Callback pour libérer la mémoire allouée à un LDCElement par un script externe */
 typedef int (*LDCElementEgal)(LDCElement, LDCElement); /**< Fonction définissant l'égalité entre deux éléments */
 
+
+/** \brief Fait simplement un free, peut être transmis comme LDCElementFree */
+void LDCElement_free(LDCElement * e);
+
+/** \brief Affirme que deux entiers sont égaux, ou non */
+int int_estEgal(int * a, int * b);
+
 /** @} */
 
 

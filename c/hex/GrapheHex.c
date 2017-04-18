@@ -334,11 +334,6 @@ GrapheNoeud GrapheHex_obtenirNoeud(GrapheHex g, int x, int y){
 
 
 
-void free_int(int ** n){
-	free(*n);
-	*n = NULL;
-}
-
 /*
  * \brief   Donne les cases correspondant à un noeud
  * \note    La LDC contient les adresses d'entiers n avec n / largeur = x et n % largeur = y
@@ -353,7 +348,7 @@ LDC GrapheHex_casesDuNoeud(GrapheHex g, GrapheNoeud noeud){
 		if (GrapheNoeud_estEgal(g->metagraphe[i], noeud)){
 			n = (int *) malloc(sizeof(int));
 			*n = i;
-			ldc = LDC_insererElement(ldc, -1, n, (LDCElementFree) free_int);
+			ldc = LDC_insererElement(ldc, -1, n, LDCElement_free);
 		}
 	}
 	

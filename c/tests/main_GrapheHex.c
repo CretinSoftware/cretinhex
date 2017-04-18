@@ -99,10 +99,6 @@ void afficherGroupes(GrapheHex g, Joueur j){
 
 
 
-int int_estEgal(int * a, int * b){
-	return *a == *b;
-}
-
 /**
  * \brief affiche le chemin
  */
