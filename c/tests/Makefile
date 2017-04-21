@@ -61,7 +61,7 @@ main_Graphe:     $(foreach f, LDC.o Graphe.o utile.o, $(DOS_CRETINLIB)/$(DOS_O)/
 	
 	
 main_GrapheHex:  $(foreach f, LDC.o Graphe.o utile.o, $(DOS_CRETINLIB)/$(DOS_O)/$(f)) \
-                 $(foreach f, Joueur.o Damier.o Partie.o GrapheHex.o, $(DOS_HEX)/$(DOS_O)/$(f)) \
+                 $(foreach f, Joueur.o Damier.o GrapheHex.o, $(DOS_HEX)/$(DOS_O)/$(f)) \
                  $(foreach f, tests.o main_GrapheHex.o, $(DOS_O)/$(f))
 	$(CC) $(C_OPT) $^ -o $@
 	

@@ -129,6 +129,18 @@ GrapheNoeud GrapheHex_obtenirNoeud(GrapheHex g, int x, int y);
  */
 LDC GrapheHex_casesDuNoeud(GrapheHex g, GrapheNoeud n);
 
+/**
+ * \brief   Trouve les noeuds accessibles en n coups
+ * \param   g      Le graphe à fouiller
+ * \param   noeud  Le noeud depuis lequel on cherche
+ * \param   n      Le nombre de coups pour atteindre les cases
+ * \param   j      Le joueur qui cherche à poser ses pions
+ * \param   ponts  La taille des ponts à prendre en compte
+ * \return  Une LDC de (n+1) LDC de noeuds, où :
+ *            - la 0ème contient le noeud passé en argument
+ *            - les ièmes contiennent les noeuds joignables en i coup minimum
+ */
+LDC GrapheHex_noeudsAccessiblesEnNCoups(GrapheHex g, GrapheNoeud noeud, int n, Joueur j, int ponts);
 
 /**
  * \brief    Fusionne deux noeuds en prenant soin du métagraphe

@@ -66,10 +66,10 @@ REP_IN=fichiers_in
 REP_OUT=fichiers_out/GrapheHex
 
 # Dimension des grilles
-DIMENSIONS="5 10"
+DIMENSIONS="5 15"
 
 # Nombre de coups joués
-NB_COUPS_JOUES="25 100"
+NB_COUPS_JOUES="20 80"
 
 # Nombre de tests pour chacun de ces réglages
 NB_TESTS=1
@@ -216,16 +216,40 @@ commande="./main_GrapheHex -g $f_in"
 verif="$0 -g $f_in $f_out @1" 
 
 
-
-
-# On crée la boucle pour les tests identiques
-bcl=""
-i=0
-while test $i -lt $NB_TESTS
+# On limite la boucle du nombre de coups joues
+for largeur in $DIMENSIONS
 do
-	bcl="$bcl $i"
-	i=`expr $i + 1`
+	bcl2=""
+	for nb_coups in $NB_COUPS_JOUES
+	do
+		test $nb_coups -le `expr $largeur \* $largeur` && bcl2="$bcl2 $nb_coups"
+	done
+	
+	# On lance la série de tests
+	./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "" "" "$f_out" "$commande" "$verif" "$largeur" "$bcl2" "$bcl"
 done
+
+
+
+
+
+# Noeuds à N
+# -----------------------------------------------
+
+# Pattern du fichier en entree
+f_in="$REP_IN/sauv_@1x@2_@3.txt"
+
+# Pattern du fichier en sortie
+f_out="$REP_OUT/noeuds_a_n_@1x@2_@3.txt"
+
+# Pattern de la commande pour créer le fichier en entrée
+mk_f_in="./mk_sauvegardes @1 1 @2 $f_in"
+
+# Pattern de la commande de test
+commande="./main_GrapheHex -n $f_in 9 N"
+
+# Pattern de la commande de vérification
+verif="" 
 
 
 
@@ -241,6 +265,7 @@ do
 	# On lance la série de tests
 	./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "" "" "$f_out" "$commande" "$verif" "$largeur" "$bcl2" "$bcl"
 done
+
 
 exit $ko
 

@@ -24,6 +24,7 @@ erreur(){
 # Facilité d'écriture
 OK="[\x1B[1;32mOK\x1B[0m]"
 KO="[\x1B[1;31mKO\x1B[0m]"
+NON_TESTE="[\x1B[1;33m??\x1B[0m]"
 
 # donne une taille en o / ko / Mo
 echo_taille(){
@@ -154,18 +155,31 @@ tps=$(echo "$tps_fin - $tps_dep" | bc)
 test "`echo $tps|cut -c 1`" = "." && tps="0$tps"
 tps=`echo $tps | head -c 5`
 
-# Comparaison des fichiers entrée et sortie (résultat)
-$verif
 
-if test $? -eq 0
+
+
+# Vérification
+
+if test "$verif" 
 then
-	echo -e "	resultat : $OK   (tps: $tps s)"
-	resOK=1
+
+	$verif
+
+	if test $? -eq 0
+	then
+		echo -e "	resultat : $OK   (tps: $tps s)"
+		resOK=1
+	else
+		echo -e "	resultat : $KO   (tps: $tps s)"
+	fi
+
+	test $resOK -eq 1 && test ! "$use_valgrind" -o $memOK -eq 1 && exit 0
 else
-	echo -e "	resultat : $KO   (tps: $tps s)"
+	echo -e "	resultat : $NON_TESTE   (tps: $tps s)"
+	test ! "$use_valgrind" -o $memOK -eq 1 && exit 0
 fi
 
-test $resOK -eq 1 && test ! "$use_valgrind" -o $memOK -eq 1 && exit 0
+
 exit 1
 
 

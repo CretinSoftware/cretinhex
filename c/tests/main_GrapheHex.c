@@ -16,14 +16,14 @@
 /**
  * \brief Usage de la commande
  */
-void erreurUsage(char * argv[]){
-	fprintf(stderr, "%s: usage :\n", argv[0]);
+void erreurUsage(const char * cmd){
+	fprintf(stderr, "%s: usage :\n", cmd);
 	fprintf(stderr, "	-c  fichier_sauvegarde\n");
 	fprintf(stderr, "	-g  fichier_sauvegarde\n");
 	fprintf(stderr, "	-p  fichier_sauvegarde\n");
+	fprintf(stderr, "	-n  fichier_sauvegarde distance [N|S|E|O]\n");
 	exit(10);
 }
-
 
 
 
@@ -66,13 +66,14 @@ void afficherGroupes(GrapheHex g, Joueur j){
 	lgDamier = GrapheHex_largeurDamier(g);
 	metagraphe = GrapheHex_obtenirMetagraphe(g);
 	
-	char affichage[lgDamier*lgDamier];
+	int affichage[lgDamier*lgDamier];
 	for (i = 0; i < lgDamier * lgDamier; ++i)
 		affichage[i] = 0;
 	
 	groupes = GrapheHex_groupes(g, j);
 	it = LDCIterateur_init(groupes, LDCITERATEUR_AVANT);
 	cpt = 1;
+	
 	
 	for(it = LDCIterateur_debut(it); ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it)){		
 		for (i = 0; i < lgDamier * lgDamier; ++i)
@@ -90,7 +91,8 @@ void afficherGroupes(GrapheHex g, Joueur j){
 		else
 			printf(".");
 			
-		if ( (i+1) % lgDamier == 0)
+		
+		if ((i+1) % lgDamier == 0)
 			printf("\n");
 		else 
 			printf(" ");
@@ -110,7 +112,7 @@ void afficherChemins(LDC chemins, Joueur joueur, GrapheHex g){
 	
 	largeur = GrapheHex_largeurDamier(g);
 	
-	printf("%d chemins\n", LDC_taille(chemins));
+	printf("Joueur %d : %d chemins\n", joueur, LDC_taille(chemins));
 	
 	it1 = LDCIterateur_init(chemins, LDCITERATEUR_AVANT);
 	for(it1 = LDCIterateur_debut(it1); ! LDCIterateur_fin(it1); it1 = LDCIterateur_avancer(it1)){
@@ -136,6 +138,7 @@ void afficherChemins(LDC chemins, Joueur joueur, GrapheHex g){
 					case 2: printf("*"); break;
 					default:printf(".");
 				}
+				
 			if ((i+1) % largeur == 0){
 				printf("\n");
 				for (j = 0; j <= i / largeur; ++j)
@@ -151,10 +154,66 @@ void afficherChemins(LDC chemins, Joueur joueur, GrapheHex g){
 			
 }
 
+void afficherNoeudsAN(GrapheHex gh, LDC noeuds){
+	int i, j, lgDamier;
+	int cpt;
+	LDCIterateur it;
+	GrapheNoeud * metagraphe;
+	
+	lgDamier = GrapheHex_largeurDamier(gh);
+	metagraphe = GrapheHex_obtenirMetagraphe(gh);
+	
+	char affichage[lgDamier*lgDamier];
+	for (i = 0; i < lgDamier * lgDamier; ++i){
+		affichage[i] = -1;
+	}
+	
+	
+	for (cpt = 0; cpt < LDC_taille(noeuds); ++cpt){
+		it = LDCIterateur_init(LDC_obtenirElement(noeuds, cpt), LDCITERATEUR_AVANT);
+		
+		for (it = LDCIterateur_debut(it); ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it))
+			for (i = 0; i < lgDamier * lgDamier; ++i)
+				if (LDCIterateur_valeur(it) == metagraphe[i])
+					affichage[i] = cpt;
+		LDCIterateur_libererMemoire(&it);
+	}
+	
+	for (i = 0; i < lgDamier * lgDamier; ++i){
+		if (affichage[i] >= 0)
+			printf("%d", affichage[i]); 
+		else
+			printf(".");
+			
+		if ( (i+1) % lgDamier == 0){
+			printf("\n");
+			for (j = 0; j <= i / lgDamier; ++j)
+				printf(" ");
+		}
+		else 
+			printf(" ");
+	}
+	printf("\n");
+}
+
+
+
+
+
+
+Joueur char2joueur(char c){
+	switch (c){
+		case 'o': return J1;
+		case '*': return J2;
+		default:  return J0;
+	}
+}
+
 
 /**
  * \brief Construction d'un graphe depuis un fichier 
  */
+ /*
 GrapheHex construireDepuisFichier(const char * fichier){
 	
 	GrapheHex gh;
@@ -168,6 +227,45 @@ GrapheHex construireDepuisFichier(const char * fichier){
 	
 	return gh;
 
+}*/
+GrapheHex construireDepuisFichier(const char * fichier){
+	
+	FILE * f;
+	int i, l;
+	char c;
+	Damier d;
+	GrapheHex g;
+	
+	
+	/* Ouverture du fichier */
+	f = fopen(fichier, "r");
+	if (f == NULL){
+		exit(-1);
+	}
+	
+	/* En-tête */
+	fscanf(f, "\\hex\n");
+	
+	/* Largeur */
+	if (fscanf(f, "\\dim %d\n", &l) != 1)
+		fprintf(stderr, "Impossible de lire le fichier\n");
+
+	d = Damier_init(l);
+	/* Damier */
+	fscanf(f, "\\board\n");
+	for (i = 0; i < l * l; ++i)
+		if (fscanf(f, "%c ", &c) == 1)
+			Damier_modifierCase(d, char2joueur(c), i%l, i/l);
+		else
+			fprintf(stderr, "Impossible de lire le fichier\n");
+	fscanf(f, "\\endboard\n");
+	
+	fclose(f);
+	
+	g = GrapheHex_init(d);
+	Damier_libererMemoire(&d);
+	
+	return g;
 }
 
 
@@ -224,31 +322,70 @@ void test_chemins(const char * fichier){
 	GrapheHex_libererMemoire(&gh);
 }
 
+/**
+ * \brief Test de la fonction donnant les noeuds à n de distance
+ */
+void test_noeuds_a_n(const char * nomCommandePassee, const char * fichier, int distance, char pointEntree){
+	GrapheHex gh;
+	LDC ldc;
+	
+	gh = construireDepuisFichier(fichier);
+	
+	/*GrapheHex_afficher(gh);*/
+	/*afficherGrapheHex(gh);*/
+	switch (pointEntree){
+		case 'n': case 'N':
+			ldc = GrapheHex_noeudsAccessiblesEnNCoups(gh, GrapheHex_nord(gh), distance, J1, 0);
+			break;
+		case 's': case 'S':
+			ldc = GrapheHex_noeudsAccessiblesEnNCoups(gh, GrapheHex_sud(gh), distance, J1, 0);
+			break;
+		case 'e': case 'E':
+			ldc = GrapheHex_noeudsAccessiblesEnNCoups(gh, GrapheHex_est(gh), distance, J2, 0);
+			break;
+		case 'o':case 'O':
+			ldc = GrapheHex_noeudsAccessiblesEnNCoups(gh, GrapheHex_ouest(gh), distance, J2, 0);
+			break;
+		default:
+			erreurUsage(nomCommandePassee);
+	}
+	afficherNoeudsAN(gh, ldc);
+		
+	GrapheHex_libererMemoire(&gh);
+	LDC_libererMemoire(&ldc);
+}
+
+
 
 
 int main(int argc, char * argv[]){
 
-	if (argc < 2) erreurUsage(argv);
+	if (argc < 2) erreurUsage(argv[0]);
 	
 	switch (argv[1][1]){
 		/* Construction */
 		case 'c':
-			if (argc != 3) erreurUsage(argv);
+			if (argc != 3) erreurUsage(argv[0]);
 			test_construction(argv[2]);
 			break;
 		/* Groupes */
 		case 'g':
-			if (argc != 3) erreurUsage(argv);
+			if (argc != 3) erreurUsage(argv[0]);
 			test_groupes(argv[2]);
 			break;
 		/* Chemins */
 		case 'p':
-			if (argc != 3) erreurUsage(argv);
+			if (argc != 3) erreurUsage(argv[0]);
 			test_chemins(argv[2]);
+			break;
+		/* Noeuds à n */
+		case 'n':
+			if (argc != 5) erreurUsage(argv[0]);
+			test_noeuds_a_n(argv[0], argv[2], atoi(argv[3]), argv[4][0]);
 			break;
 		
 		default:
-			 erreurUsage(argv);
+			 erreurUsage(argv[0]);
 	}
 	
 	return 0;
