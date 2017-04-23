@@ -10,6 +10,7 @@
 # JAVA_HOME          = /usr/lib/jvm/java-7-openjdk-amd64
 JAVA_HOME            = $(subst /jre,,$(shell jrunscript -e 'java.lang.System.out.println(java.lang.System.getProperty("java.home"));'))
 SYSTEME              = unix
+DEV                  = oui
 
 
 # Executable
@@ -59,7 +60,11 @@ C_TOUT               = $(C_CRETINLIB) $(C_HEX) $(C_IA0) $(C_TESTS)
 
 # Compilation C
 CC                   = gcc
-C_OPT                = -Wall -Werror -ansi -fPIC -g
+ifeq ($(DEV),oui)
+	C_OPT            = -Wall -Werror -ansi -fPIC -g
+else
+	C_OPT            = -Wall -Werror -ansi -fPIC -DNDEBUG
+endif
 JNI_OPT              = -I$(JAVA_HOME)/include/ -I$(JAVA_HOME)/include/linux
 DOS_O                = obj
 DOS_D                = dep
