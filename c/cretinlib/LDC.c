@@ -430,20 +430,68 @@ LDC LDC_copier(LDC ldc){
  * \note    Le filtre sera appliqué à chaque élément : filtre(élément, param); renvoie vrai si l'élément est à garder
  * \note    La ldc transmise n'est ni modifiée ni supprimée, la ldc renvoyée peut être supprimée sans influence sur celle transmise. 
  */
-LDC LDC_filtrer(LDC ldc, LDCElementEgal filtre, LDCElement param){
+LDC LDC_filtrer(LDC ldc1, LDC ldc2, LDCElementEgal filtre){
 	LDC retour;
 	LDCElement e;
-	LDCIterateur it;
+	LDCIterateur it1, it2;
+	int trouve;
 	
 	retour = LDC_init();
-	it = LDCIterateur_init(ldc, LDCITERATEUR_AVANT);
+	it1 = LDCIterateur_init(ldc1, LDCITERATEUR_AVANT);
+	it2 = LDCIterateur_init(ldc2, LDCITERATEUR_AVANT);
 	
-	for (it = LDCIterateur_debut(it); ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it)){
-		e = LDCIterateur_valeur(it);
-		if (filtre(e, param))
+	for (it1 = LDCIterateur_debut(it1); ! LDCIterateur_fin(it1); it1 = LDCIterateur_avancer(it1)){
+		e = LDCIterateur_valeur(it1);
+		trouve = 0;
+		for (it2 = LDCIterateur_debut(it2); ! LDCIterateur_fin(it2) && ! trouve; it2 = LDCIterateur_avancer(it2)){
+			if (filtre(e, LDCIterateur_valeur(it2))){
+				retour = LDC_insererElement(retour, -1, e, NULL);
+				trouve = 1;
+			}
+		}
+	}
+	LDCIterateur_libererMemoire(&it1);
+	LDCIterateur_libererMemoire(&it2);
+	return retour;
+}
+
+
+
+
+
+/*
+ * \fn      LDC LDC_exfilter(LDC ldc, LDCElementEgal filtre, LDCElement param)
+ * \brief   Renvoie les éléments qui matchent le filtre
+ * \param   ldc     La LDC à fouiller
+ * \param   filtre  Une fonction qui renvoie vrai pour les éléments à garder
+ * \param   param   Un élément de LDC qui sera le second argument de la fonction filtre
+ * \return  Une LDC contenant les éléments de ldc matchant le filtre apprliqué avec le paramètre param
+ * \note    Le filtre sera appliqué à chaque élément : filtre(élément, param); renvoie vrai si l'élément est à garder
+ * \note    La ldc transmise n'est ni modifiée ni supprimée, la ldc renvoyée peut être supprimée sans influence sur celle transmise. 
+ */
+LDC LDC_exfiltrer(LDC ldc1, LDC ldc2, LDCElementEgal filtre){
+	LDC retour;
+	LDCElement e;
+	LDCIterateur it1, it2;
+	int trouve;
+	
+	retour = LDC_init();
+	it1 = LDCIterateur_init(ldc1, LDCITERATEUR_AVANT);
+	it2 = LDCIterateur_init(ldc2, LDCITERATEUR_AVANT);
+	
+	for (it1 = LDCIterateur_debut(it1); ! LDCIterateur_fin(it1); it1 = LDCIterateur_avancer(it1)){
+		e = LDCIterateur_valeur(it1);
+		trouve = 0;
+		for (it2 = LDCIterateur_debut(it2); ! LDCIterateur_fin(it2) && ! trouve; it2 = LDCIterateur_avancer(it2)){
+			if (filtre(e, LDCIterateur_valeur(it2))){
+				trouve = 1;
+			}
+		}
+		if (! trouve)
 			retour = LDC_insererElement(retour, -1, e, NULL);
 	}
-	LDCIterateur_libererMemoire(&it);
+	LDCIterateur_libererMemoire(&it1);
+	LDCIterateur_libererMemoire(&it2);
 	return retour;
 }
 

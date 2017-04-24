@@ -16,6 +16,7 @@ void erreurUsage(char * argv[]){
 	fprintf(stderr, "	fusion:         -f  dimension_n-uplet  nombre_n-uplets  fichier_ldc1  fichier_ldc2\n");
 	fprintf(stderr, "	fusion sans db  -g  dimension_n-uplet  nombre_n-uplets  fichier_ldc1  fichier_ldc2\n");
 	fprintf(stderr, "	filtre          -h  dimension_n-uplet  nombre_n-uplets  fichier_ldc1  fichier_ldc2\n");
+	fprintf(stderr, "	filter-out      -i  dimension_n-uplet  nombre_n-uplets  fichier_ldc1  fichier_ldc2\n");
 	exit(10);
 }
 
@@ -120,20 +121,18 @@ void test_fusion(int dim, int nb, const char * fichier1, const char * fichier2, 
 /**
  * \brief Test de filtre
  */
-void test_filtre(int dim, int nb, const char * fichier1, const char * fichier2){
+void test_filtre(int dim, int nb, const char * fichier1, const char * fichier2, int exfiltrer){
 	LDC ldc1, ldc2, ldc3;
-	LDCIterateur it;
+	
 	ldc1 = mkLDC(dim, nb, fichier1);
 	ldc2 = mkLDC(dim, nb, fichier2);
-	ldc3 = LDC_init();
-	
-	it = LDCIterateur_init(ldc2, LDCITERATEUR_AVANT);
-	for (it = LDCIterateur_debut(it); ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it))
-		ldc3 = LDC_fusion(ldc3, LDC_filtrer(ldc1, (LDCElementEgal) NUplet_egal, LDCIterateur_valeur(it)));
+	if (exfiltrer)
+		ldc3 = LDC_exfiltrer(ldc1, ldc2, (LDCElementEgal) NUplet_egal);
+	else
+		ldc3 = LDC_filtrer(ldc1, ldc2, (LDCElementEgal) NUplet_egal);
 	
 	afficherLDC(ldc3);
 	
-	LDCIterateur_free(&it);
 	LDC_free(&ldc1);
 	LDC_free(&ldc2);
 	LDC_free(&ldc3);
@@ -223,7 +222,12 @@ int main(int argc, char * argv[]){
 		/* Filtre */
 		case 'h':
 			if (argc != 6) erreurUsage(argv);
-			test_filtre(atoi(argv[2]), atoi(argv[3]), argv[4], argv[5]);
+			test_filtre(atoi(argv[2]), atoi(argv[3]), argv[4], argv[5], 0);
+			break;
+		/* Filter-out */
+		case 'i':
+			if (argc != 6) erreurUsage(argv);
+			test_filtre(atoi(argv[2]), atoi(argv[3]), argv[4], argv[5], 1);
 			break;
 		
 		default:

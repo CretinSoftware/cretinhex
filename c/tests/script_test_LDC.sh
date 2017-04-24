@@ -85,13 +85,13 @@ verif_fusionSansDoublons(){
 	
 	while read ligne
 	do
-		grep -e "$ligne" $ff > /dev/null
+		grep -e "^$ligne " $ff > /dev/null
 		test $? -ne 0 && ok=""
 	done < $f1
 	
 	while read ligne
 	do
-		grep -e "$ligne" $ff > /dev/null
+		grep -e "^$ligne " $ff > /dev/null
 		test $? -ne 0 && ok=""
 	done < $f2
 	
@@ -109,14 +109,35 @@ verif_filtre(){
 	
 	while read ligne
 	do
-		grep -e "^$ligne$" $f1 > /dev/null
+		grep -e "^$ligne " $f2 > /dev/null
 		if test $? -eq 0
 		then
-			echo $ligne
-			grep -e "$ligne" $ff > /dev/null
+			grep -e "^$ligne " $ff > /dev/null
 			test $? -ne 0 && ok=""
 		fi
-	done < $f2
+	done < $f1
+	
+	test "$ok" && exit 0
+	exit 1
+}
+
+
+
+verif_exfiltre(){
+	f1="$1"
+	f2="$2"
+	ff="$3"
+	ok="oui"
+	
+	while read ligne
+	do
+		grep -e "^$ligne " $f2 > /dev/null
+		if test $? -eq 1
+		then
+			grep -e "$ligne " $ff > /dev/null
+			test $? -ne 0 && ok="" && echo $ligne
+		fi
+	done < $f1
 	
 	test "$ok" && exit 0
 	exit 1
@@ -132,7 +153,7 @@ REP_IN=fichiers_in
 REP_OUT=fichiers_out/LDC
 
 # Nombre de n-uplets à traiter par défaut
-TAILLE_DONNEES="100"
+TAILLE_DONNEES="500"
 
 # Dimension des n-uplets
 DIMENSIONS=1
@@ -175,6 +196,12 @@ then
 			shift
 			test $# -eq 3 || erreur usage
 			verif_filtre "$1" "$2" "$3"
+			exit $?
+			;;
+		-i)
+			shift
+			test $# -eq 3 || erreur usage
+			verif_exfiltre "$1" "$2" "$3"
 			exit $?
 			;;
 	esac
@@ -335,7 +362,49 @@ verif="$0 -g $f_in $f_in2 $f_out"
 
 
 ./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "$f_in2" "$mk_f_in2" "$f_out" "$commande" "$verif" "$DIMENSIONS" "$TAILLE_DONNEES" "$bcl"
-test $? -eq 0 || exit 1
+
+test $? -eq 0 || ko=`expr $ko + 1`
+
+
+
+# Filtre
+# -------------------------------------
+
+# Pattern du fichier en sortie
+f_out="$REP_OUT/filtre_@1x@2_@3.txt"
+
+# Pattern de la commande de test
+commande="./main_LDC -h @1 @2 $f_in $f_in2"
+
+# Pattern de la commande de vérification
+verif="$0 -h $f_in $f_in2 $f_out"
+
+
+./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "$f_in2" "$mk_f_in2" "$f_out" "$commande" "$verif" "$DIMENSIONS" "$TAILLE_DONNEES" "$bcl"
+
+test $? -eq 0 || ko=`expr $ko + 1`
+
+
+
+
+# Filtre
+# -------------------------------------
+
+# Pattern du fichier en sortie
+f_out="$REP_OUT/filter-out_@1x@2_@3.txt"
+
+# Pattern de la commande de test
+commande="./main_LDC -i @1 @2 $f_in $f_in2"
+
+# Pattern de la commande de vérification
+verif="$0 -i $f_in $f_in2 $f_out"
+
+
+./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "$f_in2" "$mk_f_in2" "$f_out" "$commande" "$verif" "$DIMENSIONS" "$TAILLE_DONNEES" "$bcl"
+
+test $? -eq 0 || ko=`expr $ko + 1`
+
+
 
 
 
@@ -379,6 +448,7 @@ commande="./main_LDC -r @1 @2 $f_in $f_in2"
 verif="cmp $f_in $f_out" 
 
 ./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "$f_in2" "$mk_f_in2" "$f_out" "$commande" "$verif" "$DIMENSIONS" "$TAILLE_DONNEES" "$bcl"
+
 
 test $? -eq 0 || ko=`expr $ko + 1`
 

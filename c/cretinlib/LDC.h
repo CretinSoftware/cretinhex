@@ -208,15 +208,24 @@ LDC LDC_fusionSansDoublons(LDC ldc1, LDC ldc2, LDCElementEgal egal);
 LDC LDC_copier(LDC ldc);
 
 /**
- * \fn      LDC LDC_filter(LDC ldc, LDCElementEgal filtre, LDCElement param)
- * \brief   Renvoie les éléments qui matchent le filtre
- * \param   ldc     La LDC à fouiller
+ * \fn      LDC LDC_filtrer(LDC ldc1, LDC ldc2, LDCElementEgal filtre)
+ * \brief   Renvoie l'intersection de ldc1 et ldc2
+ * \param   ldc 1   La LDC à fouiller
+ * \param   ldc2    La liste des résultats admissibles
  * \param   filtre  Une fonction qui renvoie vrai pour les éléments à garder
- * \param   param   Un élément de LDC qui sera le second argument de la fonction filtre
- * \return  Une LDC contenant les éléments de ldc matchant le filtre apprliqué avec le paramètre param
- * \note    Le filtre sera appliqué à chaque élément : filtre(élément, param); renvoie vrai si l'élément est à garder
+ * \return  Une LDC contenant les éléments 
  */
-LDC LDC_filtrer(LDC ldc, LDCElementEgal filtre, LDCElement param); 
+LDC LDC_filtrer(LDC ldc1, LDC ldc2, LDCElementEgal filtre);
+
+/**
+ * \fn      LDC LDC_filtrer(LDC ldc1, LDC ldc2, LDCElementEgal filtre)
+ * \brief   Renvoie la différence de ldc1 par ldc2
+ * \param   ldc 1   La LDC à fouiller
+ * \param   ldc2    La liste des résultats inadmissibles
+ * \param   filtre  Une fonction qui renvoie vrai pour les éléments à refuser
+ * \return  Une LDC contenant les éléments 
+ */
+LDC LDC_exfiltrer(LDC ldc1, LDC ldc2, LDCElementEgal filtre);
 
 
 /*
