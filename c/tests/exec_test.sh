@@ -117,7 +117,7 @@ resOK=0
 if test "$use_valgrind"
 then
 	tps_dep=`date +%s.%N`
-	valgrind --log-file="$f_log" $commande > "$f_out"
+	valgrind --log-file="$f_log" --leak-check=full $commande > "$f_out"
 	tps_fin=`date +%s.%N`
 
 	# Recherche de la ligne qui fait plaisir dans le log valgrind

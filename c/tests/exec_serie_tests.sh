@@ -103,8 +103,8 @@ do
 			
 			if test "$f_in2"!="" -a ! -f "$f_in2"
 			then
-				$mk_f_in2
 				sleep 1
+				$mk_f_in2
 			fi
 			
 			
