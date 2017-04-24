@@ -95,7 +95,30 @@ verif_fusionSansDoublons(){
 		test $? -ne 0 && ok=""
 	done < $f2
 	
-	test ok && exit 0
+	test "$ok" && exit 0
+	exit 1
+}
+
+
+
+verif_filtre(){
+	f1="$1"
+	f2="$2"
+	ff="$3"
+	ok="oui"
+	
+	while read ligne
+	do
+		grep -e "^$ligne$" $f1 > /dev/null
+		if test $? -eq 0
+		then
+			echo $ligne
+			grep -e "$ligne" $ff > /dev/null
+			test $? -ne 0 && ok=""
+		fi
+	done < $f2
+	
+	test "$ok" && exit 0
 	exit 1
 }
 
@@ -109,7 +132,7 @@ REP_IN=fichiers_in
 REP_OUT=fichiers_out/LDC
 
 # Nombre de n-uplets à traiter par défaut
-TAILLE_DONNEES="100 1000"
+TAILLE_DONNEES="100"
 
 # Dimension des n-uplets
 DIMENSIONS=1
@@ -146,6 +169,12 @@ then
 			shift
 			test $# -eq 3 || erreur usage
 			verif_fusionSansDoublons "$1" "$2" "$3"
+			exit $?
+			;;
+		-h)
+			shift
+			test $# -eq 3 || erreur usage
+			verif_filtre "$1" "$2" "$3"
 			exit $?
 			;;
 	esac
@@ -269,7 +298,7 @@ test $? -eq 0 || ko=`expr $ko + 1`
 
 # Pattern des fichiers en entree
 f_in="$REP_IN/n-uplets_fusion_@1x@2_@3_a.txt"
-f_in2="$REP_IN/fusion_@1x@2_@3_b.txt"
+f_in2="$REP_IN/n-uplets_fusion_@1x@2_@3_b.txt"
 
 # Pattern du fichier en sortie
 f_out="$REP_OUT/fusion_@1x@2_@3.txt"
@@ -307,6 +336,27 @@ verif="$0 -g $f_in $f_in2 $f_out"
 
 ./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "$f_in2" "$mk_f_in2" "$f_out" "$commande" "$verif" "$DIMENSIONS" "$TAILLE_DONNEES" "$bcl"
 test $? -eq 0 || exit 1
+
+
+
+
+# Filtre
+# -------------------------------------
+
+# Pattern du fichier en sortie
+f_out="$REP_OUT/filtre_@1x@2_@3.txt"
+
+# Pattern de la commande de test
+commande="./main_LDC -h @1 @2 $f_in $f_in2"
+
+# Pattern de la commande de vérification
+verif="$0 -h $f_in $f_in2 $f_out"
+
+
+./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "$f_in2" "$mk_f_in2" "$f_out" "$commande" "$verif" "$DIMENSIONS" "$TAILLE_DONNEES" "$bcl"
+test $? -eq 0 || exit 1
+
+
 
 
 
