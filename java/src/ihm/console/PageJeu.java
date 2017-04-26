@@ -27,8 +27,8 @@ public class PageJeu extends Page{
 	 */
 	public PageJeu(String f) {
 		super("Jeu");
+		this.init();
 		this.partie = new Partie(f);
-		this.menu = new Menu("Quitter la partie ?", new PageAccueil());
 	}
 	
 	/**
@@ -37,8 +37,15 @@ public class PageJeu extends Page{
 	 */   
 	public PageJeu(int largeur, Joueur premier) {
 		super("Jeu");
+		this.init();
 		this.partie = new Partie(largeur, premier);
-		this.menu = new Menu("Quitter la partie ?", new PageAccueil());
+	}
+	
+	/**
+	 * \brief  init appelée par tous les constructeurs
+	 */
+	private void init(){
+		this.menu = new Menu("Et maintenant ?", new PageAccueil(), new PageNouvellePartie(), new PageSortie());
 	}
 	
 	

@@ -10,7 +10,7 @@
 function erreur(){ 
 	case $1 in
 		usage)
-			echo "$0: usage: [-v] $0 [TAILLE_DONNEES [NB_TESTS [DIMENSIONS]]]" >&2
+			echo "$0: usage: [-v] $0 [TAILLE [NB_COUPS [NB_TESTS]]]" >&2
 			exit 2
 			;;
 	esac
@@ -28,10 +28,10 @@ REP_IN=fichiers_in
 REP_OUT=fichiers_out/Partie
 
 # Dimension des grilles
-DIMENSIONS="5 10 20"
+DIMENSIONS="10 20"
 
 # Nombre de coups joués
-NB_COUPS_JOUES="25 100 400"
+NB_COUPS_JOUES="100"
 
 # Nombre de tests pour chacun de ces réglages
 NB_TESTS=1
@@ -57,26 +57,26 @@ then
 fi
 
 
-# 2eme argument : nombre de tests
+# 1er argument : taille
 if test $# -ge 1
 then
-	expr $1 + 1 > /dev/null
-	test $? -le 1 || erreur usage
-	NB_TESTS=$1
+	DIMENSIONS=$1
 fi 
 
 
-# 3eme argument : dimensions à tester (sous forme d'une chaîne "1 3 7")
+# 2eme argument : NB_COUPS
 if test $# -ge 2
 then
-	DIMENSIONS=$2
+	NB_COUPS_JOUES=$2
 fi 
 
 
-# 4eme argument : Nombres de coups à jouer (sous forme d'une chaîne "1 3 7")
+# 3eme argument : NB_TESTS
 if test $# -ge 3
 then
-	NB_COUPS_JOUES=$3
+	expr $3 + 1 > /dev/null 2>&1
+	test $? -le 1 || erreur usage
+	NB_TESTS=$3
 fi 
 
 # Plus d'arguments : erreur

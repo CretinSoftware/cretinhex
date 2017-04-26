@@ -2,7 +2,6 @@
  * \file     mk_sauvegardes.c
  * \brief    TESTS : Création de fichiers de sauvegarde
  * \ingroup  pack_hex_Partie
- * \ingroup  pack_hex_GrapheHex
  *
  * \par      Commande
  * <pre>./mk_sauvegardes largeur pemier nb_coups fichier_out</pre>

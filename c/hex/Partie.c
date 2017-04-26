@@ -418,8 +418,8 @@ Partie Partie_charger(const char * nomFichier){
 	int i, l, x, y;
 	char c;
 	Partie p;
-	ElemHisto eh;
-	Joueur j;
+	/*ElemHisto eh;
+	Joueur j;*/
 	
 	
 	/* Ouverture du fichier */
@@ -440,32 +440,40 @@ Partie Partie_charger(const char * nomFichier){
 	
 
 	/* Damier */
+	
 	fscanf(f, "\\board\n");
 	for (i = 0; i < l * l; ++i)
 		if (fscanf(f, "%c ", &c) == 1)
-			Damier_modifierCase(p->damier, char2joueur(c), i%l, i/l);
+			;/*Damier_modifierCase(p->damier, char2joueur(c), i%l, i/l);*/
 		else
 			formatFichierIncorrect(nomFichier);
 	fscanf(f, "\\endboard\n");
+	
+	
+	/* Les pions sont placés d'après l'historique. Plus de vérif... */
+	/** \todo Vérification de la correspondance damier / historique */
 	
 	/* Historique + premier joueur + aQuiDeJouer + vérification des coups ! */
 	fscanf(f, "\\game\n");
 	i = 1;
 	while (fscanf(f, "\\play %c %d %d\n", &c, &x, &y)){
-		j = char2joueur(c);
-		assert(Partie_obtenirCase(p, x, y) == j);
+		/*j = char2joueur(c);
+		assert(Partie_obtenirCase(p, x, y) == j);*/
 		
-		if (i == 1)
+		if (i == 1){
 			p->premierJoueur = char2joueur(c);
+			p->aQuiDeJouer = p->premierJoueur;
+		}
 		
-		eh = ElemHisto_init(j, x, y);
-		p->historique = LDC_insererElement(p->historique, -1, eh, (LDCElementFree) ElemHisto_libererMemoire);
+		p = Partie_placerPion(p, x, y);
+		/*eh = ElemHisto_init(j, x, y);
+		p->historique = LDC_insererElement(p->historique, -1, eh, (LDCElementFree) ElemHisto_libererMemoire); */
 		++i;
 	}
 	fscanf(f, "\\game\n");
-	p->aQuiDeJouer = Joueur_suivant(j);
+/*	p->aQuiDeJouer = Joueur_suivant(j);
 	p->tour = i;
-	
+	*/
 		
 	
 	

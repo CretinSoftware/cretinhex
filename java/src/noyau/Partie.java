@@ -36,8 +36,7 @@ public class Partie extends PartieJNI {
 	
 	/** \brief Constructeur pour une partie d'après le fichier de sauvegarde nomFichier */
 	public Partie(String nomFichier){
-		super();
-		this.charger(nomFichier);
+		super(nomFichier);
 	}
 	
 	

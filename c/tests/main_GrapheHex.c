@@ -8,7 +8,7 @@
 
 
 # include "../hex/Partie.h"
-# include "../hex/GrapheHex.h"
+# include "../hex/GrapheHexPlus.h"
 
 
 

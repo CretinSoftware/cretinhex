@@ -18,7 +18,7 @@ public class PageNouvellePartie extends Page{
 	public Page executer_code()
 	{
 		/* Largeur du damier */
-		int largeur = new Menu("Largeur du damier").obtenirInt(0, 20);
+		int largeur = new Menu("Largeur du damier").obtenirInt(0, 50);
 		
 		/* Premier joueur */
 		Joueur premier = Joueur.fromInt(new Menu("Qui commence ?", Application.j1.getNom(), Application.j2.getNom()).obtenirInt());

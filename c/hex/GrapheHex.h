@@ -165,14 +165,6 @@ GrapheHex GrapheHex_simplifier(GrapheHex g);
 Joueur GrapheHex_quiGagne(GrapheHex g);
 
 
-/**
- * \brief    Donne le(s) plus court(s) chemin(s) pour aller des points d'entrée A vers B
- * \note     La fonction renvoie une LDC de LDC (LDC à deux dimensions). Sa désallocation mémoire est à votre charge.
- */
-LDC GrapheHex_plusCourtsChemins(GrapheHex g, GrapheNoeud depart, GrapheNoeud arrivee, Joueur j);
-
-
-
 
 
 /** @} */

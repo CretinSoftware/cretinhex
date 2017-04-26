@@ -13,7 +13,7 @@ public class PageAccueil extends Page {
 	private String texte;    /**< \brief Contenu de la page */
 	
 	public PageAccueil(){
-		super("HEX : cretinplay");
+		super("Accueil");
 		this.texte = "Bien le bonjour !";
 		this.menu = new Menu(
 			"Que faire ?",

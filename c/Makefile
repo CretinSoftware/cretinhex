@@ -48,7 +48,8 @@ doc: $(C_DOC)/html/index.html
 
 
 # Bibliothèque cretinhex
-$(LIB_CRETINHEX_SO): $(C_FICHIERS_O)
+$(LIB_CRETINHEX_SO): $(foreach f, LDC Graphe utile, $(C_CRETINLIB)/$(DOS_O)/$(f).o) \
+                     $(foreach f, Joueur Damier GrapheHex Partie PartieJNI, $(C_HEX)/$(DOS_O)/$(f).o)
 	gcc -shared $(C_OPT) $^ -o $@
 	
 $(LIB_IA0_SO):  $(patsubst $(C_IA0)/%.c, $(C_IA0)/$(DOS_O)/%.o, $(wildcard $(C_IA0)/*.c))
