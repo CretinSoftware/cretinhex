@@ -147,13 +147,6 @@ LDC GrapheHex_noeudsAccessiblesEnNCoups(GrapheHex g, GrapheNoeud noeud, int n, J
  */
 GrapheHex GrapheHex_fusionnerNoeuds(GrapheHex g, GrapheNoeud n1, GrapheNoeud n2);
 
-
-/**
- * \brief   Donne les noeuds d'un joueur
- * \note    La gestion de la mémoire de la LDC renvoyée est à votre charge.
- */
-LDC GrapheHex_groupes(GrapheHex g, Joueur j);
-
 /**
  * \brief    Simplifie tout le graphe (regroupe les J1 contigus, et les J2)
  */

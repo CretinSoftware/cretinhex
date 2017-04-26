@@ -68,11 +68,11 @@ void afficherGroupes(GrapheHex g, Joueur j){
 	
 	int affichage[lgDamier*lgDamier];
 	for (i = 0; i < lgDamier * lgDamier; ++i)
-		affichage[i] = 0;
+		affichage[i] = -1;
 	
 	groupes = GrapheHex_groupes(g, j);
 	it = LDCIterateur_init(groupes, LDCITERATEUR_AVANT);
-	cpt = 1;
+	cpt = 0;
 	
 	
 	for(it = LDCIterateur_debut(it); ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it)){		
@@ -86,7 +86,7 @@ void afficherGroupes(GrapheHex g, Joueur j){
 	LDC_libererMemoire(&groupes);
 	
 	for (i = 0; i < lgDamier * lgDamier; ++i){
-		if (affichage[i] > 0)
+		if (affichage[i] >= 0)
 			printf("%d", affichage[i]); 
 		else
 			printf(".");
@@ -291,10 +291,20 @@ void test_groupes(const char * fichier){
 	
 	gh = construireDepuisFichier(fichier);
 	
+	
 	afficherGroupes(gh, 0);
 	afficherGroupes(gh, 1);
 	afficherGroupes(gh, 2);
 	
+	LDC groupes;
+	groupes = GrapheHex_initGroupes(gh, J1, 0);
+	
+	LDCIterateur it = LDCIterateur_init(groupes, LDCITERATEUR_AVANT);
+	for (it = LDCIterateur_debut(it); ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it))
+		Groupe_afficher(LDCIterateur_valeur(it));
+	
+	LDCIterateur_libererMemoire(&it);
+	LDC_libererMemoire(&groupes);
 	GrapheHex_libererMemoire(&gh);
 }
 

@@ -1,7 +1,7 @@
 #! /bin/bash
 
 
-# Test de la Partie sur le chargement / sauvegarde
+# Test du GrapheHex
 
 
 
@@ -46,7 +46,7 @@ compareGroupes(){
 	test $? -eq 0 || ko=`expr $ko + 1`
 	
 	cat "$1" | grep -v "^\\\\" | tr 'o*.' ',X,' > tmp
-	cat "$2" | tail -n $3 | tr '0-9' 'X' | tr '.' ',' | tr -s 'X' > tmp2
+	cat "$2" | head -n `expr 3 \* $3` | tail -n $3 | tr '0-9' 'X' | tr '.' ',' | tr -s 'X' > tmp2
 	cmp tmp tmp2 > /dev/null 2>&1
 	test $? -eq 0 || ko=`expr $ko + 1`
 	
@@ -66,10 +66,10 @@ REP_IN=fichiers_in
 REP_OUT=fichiers_out/GrapheHex
 
 # Dimension des grilles
-DIMENSIONS="5 15"
+DIMENSIONS="10"
 
 # Nombre de coups joués
-NB_COUPS_JOUES="20 80"
+NB_COUPS_JOUES="50"
 
 # Nombre de tests pour chacun de ces réglages
 NB_TESTS=1

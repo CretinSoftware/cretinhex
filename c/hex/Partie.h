@@ -217,13 +217,13 @@ Joueur * Partie_obtenirTabJoueurs(Partie p);
 
 
 /**
- * \fn Joueur * Partie_obtenirDamierHisto(Partie p)
+ * \fn Joueur * Partie_obtenirTabJoueursHisto(Partie p, int n)
  * \brief Le damier tel qu'il était au tour n
  * \param p La partie en cours
  * \param n Le tour demandé
  * \return Le damier du tour n
  *
- * \req 0 < n &le; Partie_obtenirTour(p)
+ * \pre 0 < n &le; Partie_obtenirTour(p)
  *
  * Pour rappel :
  *  - x = colonne

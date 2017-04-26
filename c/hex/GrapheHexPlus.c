@@ -17,6 +17,28 @@
 
 
 
+/*
+ * \brief   Donne les noeuds d'un joueur
+ */
+LDC GrapheHex_groupes(GrapheHex g, Joueur j){
+	LDC tousLesNoeuds, resultat;
+	LDCIterateur it;
+
+	resultat = LDC_init();	
+	tousLesNoeuds = Graphe_tousLesNoeuds(GrapheHex_obtenirGraphe(g));
+	it = LDCIterateur_init(tousLesNoeuds, LDCITERATEUR_AVANT);
+	
+	for (it = LDCIterateur_debut(it); ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it))
+		if (GHElement_valeur((GHElement) GrapheNoeud_obtenirElement((GrapheNoeud) LDCIterateur_valeur(it))) == j)
+			resultat = LDC_insererElement(resultat, -1, LDCIterateur_valeur(it), NULL);
+	
+	LDCIterateur_libererMemoire(&it);
+	LDC_libererMemoire(&tousLesNoeuds);
+	return resultat;
+}
+
+
+
 /**
  * \brief   Trouve les noeuds accessible en un coup supplémentaire
  * \param   g      Le graphe à fouiller
@@ -136,6 +158,31 @@ LDC GrapheHex_noeudsAccessiblesEnNCoups(GrapheHex g, GrapheNoeud noeud, int n, J
 	return ldc;
 }
 
+
+
+/**
+ * \brief   Trouve la distance minimale entre deux noeuds, selon le joueur
+ */
+int GrapheHex_distanceMini(GrapheHex g, GrapheNoeud n1, GrapheNoeud n2, Joueur j, int ponts){
+	LDC ldc, sousldc;
+	int retour;
+	
+	ldc = LDC_init();
+	ldc = LDC_insererElement(ldc, 0, LDC_insererElement(LDC_init(), 0, n1, NULL), (LDCElementFree) LDC_libererMemoire);
+	
+	sousldc = LDC_obtenirElement(ldc, -1);
+	while (LDC_obtenirPosition(sousldc, n2, (LDCElementEgal) GrapheNoeud_estEgal) < 0 && LDC_taille(sousldc) > 0){
+		ldc = trouverNoeudsSuivants(g, ldc, j, ponts);
+		sousldc = LDC_obtenirElement(ldc, -1);
+	}		
+	if (LDC_taille(sousldc) == 0)
+		retour = -1;
+	else
+		retour = LDC_taille(ldc) - 1;
+	
+	LDC_libererMemoire(&ldc);
+	return retour;
+}
 
 
 
@@ -258,8 +305,102 @@ LDC GrapheHex_plusCourtsChemins(GrapheHex g, GrapheNoeud depart, GrapheNoeud arr
 	
 	
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+/* Groupes */
 
 
+
+typedef struct Groupe {
+	GrapheHex graphehex;
+	GrapheNoeud noeud;
+	LDC distanceAuxGroupes;
+} GroupeInterne;
+
+
+
+Groupe Groupe_init(GrapheHex g, GrapheNoeud n){
+	Groupe gr = (Groupe) malloc(sizeof(GroupeInterne));
+	assert(gr != NULL);
+	
+	gr->graphehex = g;
+	gr->noeud = n;
+	gr->distanceAuxGroupes = LDC_init();
+	return gr;
+}
+
+void Groupe_free(Groupe * gr){
+	LDC_free(&((*gr)->distanceAuxGroupes));
+	free(*gr);
+	gr = NULL;
+}
+
+Groupe Groupe_initDistanceAuxGroupes(Groupe gr, LDC tousLesGroupes, int ponts){
+	GrapheNoeud n;
+	int * d;
+	
+	while (LDC_taille(gr->distanceAuxGroupes) > 0)
+		gr->distanceAuxGroupes = LDC_enlever(gr->distanceAuxGroupes, -1);
+	
+	LDCIterateur it;
+	it = LDCIterateur_init(tousLesGroupes, LDCITERATEUR_AVANT);
+	
+	for (it = LDCIterateur_debut(it); ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it)){
+		n = (GrapheNoeud) LDCIterateur_valeur(it);
+		d = (int *) malloc(sizeof(int));
+		*d = GrapheHex_distanceMini(gr->graphehex, gr->noeud, n, GHElement_valeur(GrapheNoeud_obtenirElement(n)), ponts);
+		gr->distanceAuxGroupes = LDC_inserer(gr->distanceAuxGroupes, LDCIterateur_position(it), d, LDCElement_free);
+	}
+	
+	LDCIterateur_free(&it);
+	
+	return gr;
+}
+
+
+LDC GrapheHex_initGroupes(GrapheHex g, Joueur j, int ponts){
+	Groupe groupe;
+	LDC groupes, noeuds;
+	LDCIterateur it;
+	
+	groupes = LDC_init();
+	noeuds = GrapheHex_groupes(g, j);
+	
+	it = LDCIterateur_init(noeuds, LDCITERATEUR_AVANT);
+	for (it = LDCIterateur_debut(it); ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it)){
+		groupe = Groupe_init(g, LDCIterateur_valeur(it));
+		groupe = Groupe_initDistanceAuxGroupes(groupe, noeuds, ponts);
+		groupes = LDC_inserer(groupes, -1, groupe, (LDCElementFree) Groupe_free);
+	}
+	LDCIterateur_free(&it);
+	LDC_free(&noeuds);
+	return groupes;
+}
+
+
+void Groupe_afficher(Groupe gr){
+	const char * espaces = "         ";
+	printf("Groupe : %5d ( graphehex=%5d, noeud=%5d)\n", adresse(gr), adresse(gr->graphehex), adresse(gr->noeud));
+	
+	LDCIterateur it = LDCIterateur_init(gr->distanceAuxGroupes, LDCITERATEUR_AVANT);
+	for (it = LDCIterateur_debut(it); ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it))
+		printf("%sGroupe n°%d à une distance de %d\n", espaces, LDCIterateur_position(it), * (int*) LDCIterateur_valeur(it));
+		LDCIterateur_free(&it);
+}
 
 
 

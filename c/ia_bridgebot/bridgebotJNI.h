@@ -9,26 +9,18 @@ extern "C" {
 #endif
 /*
  * Class:     noyau_BridgeBot
- * Method:    bridgeXjouer
- * Signature: ([II)[I
+ * Method:    bridgebotXjouer
+ * Signature: ([III)[I
  */
-JNIEXPORT jintArray JNICALL Java_noyau_BridgeBot_bridgeXjouer
-  (JNIEnv *, jobject, jintArray, jint);
+JNIEXPORT jintArray JNICALL Java_noyau_BridgeBot_bridgebotXjouer
+  (JNIEnv *, jobject, jintArray, jint, jint);
 
 /*
  * Class:     noyau_BridgeBot
  * Method:    bridgebotXinit
- * Signature: (I)V
- */
-JNIEXPORT void JNICALL Java_noyau_BridgeBot_bridgebotXinit
-  (JNIEnv *, jobject, jint);
-
-/*
- * Class:     noyau_BridgeBot
- * Method:    bridgebotXlibererMemoire
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_noyau_BridgeBot_bridgebotXlibererMemoire
+JNIEXPORT void JNICALL Java_noyau_BridgeBot_bridgebotXinit
   (JNIEnv *, jobject);
 
 #ifdef __cplusplus

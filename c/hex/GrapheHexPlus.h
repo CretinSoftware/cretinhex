@@ -19,6 +19,16 @@
 
 
 
+
+/**
+ * \defgroup pack_hex_GrapheHexPlus GrapheHexPlus
+ * \ingroup  pack_hex_GrapheHex
+ * \brief    Fonctionnalités supplémentaires pour GrapheHex (groupes, chemins, etc.)
+ * @{
+ */
+
+
+
 /**
  * \brief   Trouve les noeuds accessibles en n coups
  * \param   g      Le graphe à fouiller
@@ -31,6 +41,7 @@
  *            - les ièmes contiennent les noeuds joignables en i coup minimum
  */
 LDC GrapheHex_noeudsAccessiblesEnNCoups(GrapheHex g, GrapheNoeud noeud, int n, Joueur j, int ponts);
+int GrapheHex_distanceMini(GrapheHex g, GrapheNoeud n1, GrapheNoeud n2, Joueur j, int ponts);
 
 /**
  * \brief    Fusionne deux noeuds en prenant soin du métagraphe
@@ -55,6 +66,26 @@ GrapheHex GrapheHex_simplifier(GrapheHex g);
 LDC GrapheHex_plusCourtsChemins(GrapheHex g, GrapheNoeud depart, GrapheNoeud arrivee, Joueur j);
 
 
+
+
+/**
+ * \addtogroup pack_hex_GrapheHexPlus_groupe Groupes
+ * @{
+ */
+typedef struct Groupe * Groupe;
+
+
+Groupe Groupe_init(GrapheHex g, GrapheNoeud n);
+
+void Groupe_free(Groupe * gr);
+
+Groupe Groupe_initDistanceAuxGroupes(Groupe gr, LDC tousLesGroupes, int ponts);
+
+LDC GrapheHex_initGroupes(GrapheHex g, Joueur j, int ponts);
+
+void Groupe_afficher(Groupe gr);
+
+/** @} */
 
 
 

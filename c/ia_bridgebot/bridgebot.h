@@ -9,10 +9,13 @@
 # ifndef __CRETINHEX_BRIDGEBOT__
 # define __CRETINHEX_BRIDGEBOT__
 
+# define BRIDGEBOT_PONTS 0 
+# define BRIDGEBOT_DEBUG 1
+
 
 # include "../hex/Joueur.h"
 # include "../hex/Damier.h"
-# include "../hex/GrapheHex.h"
+# include "../hex/GrapheHexPlus.h"
 
 
 
@@ -40,18 +43,13 @@ typedef struct BridgeBot * BridgeBot;
 /**
  * \brief    Initialise un bridgebot
  */
-BridgeBot BridgeBot_init(Joueur j);
+void BridgeBot_init();
 
 /**
  * \brief    Demande à un BridgeBot ce qu'il ferait sur un tel damier
  */
-void BridgeBot_jouer(BridgeBot bb, Damier d, int * x, int * y);
+void BridgeBot_jouer(Damier d, int joueur, int * x, int * y);
 
-
-/**
- * \brief Libère la mémoire allouée à un BridgeBot
- */
-void BridgeBot_libererMemoire(BridgeBot * bb);
 
 /** @} */
 

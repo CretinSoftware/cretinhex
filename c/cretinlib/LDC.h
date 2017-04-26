@@ -188,7 +188,7 @@ LDC LDC_fusion(LDC ldc1, LDC ldc2);
 
 
 /**
- * \fn      LDC LDC_fusion(LDC ldc1, LDC ldc2)
+ * \fn      LDC LDC_fusion(LDC ldc1, LDC ldc2n LDCElementEgal egal)
  * \brief   Fusionne deux LDC sans doublons
  * \param   ldc1 La LDC qui reçoit
  * \param   ldc2 La LDC à concatener à ldc1
@@ -210,7 +210,7 @@ LDC LDC_copier(LDC ldc);
 /**
  * \fn      LDC LDC_filtrer(LDC ldc1, LDC ldc2, LDCElementEgal filtre)
  * \brief   Renvoie l'intersection de ldc1 et ldc2
- * \param   ldc 1   La LDC à fouiller
+ * \param   ldc1   La LDC à fouiller
  * \param   ldc2    La liste des résultats admissibles
  * \param   filtre  Une fonction qui renvoie vrai pour les éléments à garder
  * \return  Une LDC contenant les éléments 
@@ -218,9 +218,9 @@ LDC LDC_copier(LDC ldc);
 LDC LDC_filtrer(LDC ldc1, LDC ldc2, LDCElementEgal filtre);
 
 /**
- * \fn      LDC LDC_filtrer(LDC ldc1, LDC ldc2, LDCElementEgal filtre)
+ * \fn      LDC LDC_exfiltrer(LDC ldc1, LDC ldc2, LDCElementEgal filtre)
  * \brief   Renvoie la différence de ldc1 par ldc2
- * \param   ldc 1   La LDC à fouiller
+ * \param   ldc1   La LDC à fouiller
  * \param   ldc2    La liste des résultats inadmissibles
  * \param   filtre  Une fonction qui renvoie vrai pour les éléments à refuser
  * \return  Une LDC contenant les éléments 

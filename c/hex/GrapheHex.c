@@ -267,29 +267,6 @@ GrapheHex GrapheHex_fusionnerNoeuds(GrapheHex g, GrapheNoeud n1, GrapheNoeud n2)
 }
 
 
-
-
-/*
- * \brief   Donne les noeuds d'un joueur
- */
-LDC GrapheHex_groupes(GrapheHex g, Joueur j){
-	LDC tousLesNoeuds, resultat;
-	LDCIterateur it;
-
-	resultat = LDC_init();	
-	tousLesNoeuds = Graphe_tousLesNoeuds(g->graphe);
-	it = LDCIterateur_init(tousLesNoeuds, LDCITERATEUR_AVANT);
-	
-	for (it = LDCIterateur_debut(it); ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it))
-		if (GHElement_valeur((GHElement) GrapheNoeud_obtenirElement((GrapheNoeud) LDCIterateur_valeur(it))) == j)
-			resultat = LDC_insererElement(resultat, -1, LDCIterateur_valeur(it), NULL);
-	
-	LDCIterateur_libererMemoire(&it);
-	LDC_libererMemoire(&tousLesNoeuds);
-	return resultat;
-}
-
-
 /*
  * \brief    Libère la mémoire allouée à un GrapheHex
  */

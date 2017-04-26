@@ -20,30 +20,27 @@ public class BridgeBot implements Utilisateur {
 	/** \brief Constructeur d'après le joueur en question (J ou J2)*/
 	public BridgeBot(Joueur j){
 		this.nom = "BridgeBot";
-		bridgebotXinit(j.toInt());
+		this.j = j;
+		bridgebotXinit();
 	}
 	
 	
 	/** \brief Appelle queJouer par JNI */
-	private native int[] bridgebotXjouer(int[] damier, int tailleDamier);
+	private native int[] bridgebotXjouer(int[] damier, int tailleDamier, int joueur);
 	
 	/** \brief Alloue de la mémoire du bot */
-	private native void bridgebotXinit(int j);
-	
-	/** \brief Libère la mémoire allouée au bot */
-	private native void bridgebotXlibererMemoire();
+	private native void bridgebotXinit();
 	
 	
 
 	public int[] jouer(Partie p){
-		return bridgebotXjouer(p.obtenirDamierInt(), p.largeurDamier());
+		return bridgebotXjouer(p.obtenirDamierInt(), p.largeurDamier(), this.j.toInt());
 	}
 	
 	public void actualiser(int x, int y){
 	}
 	
 	public void quitter(){
-		bridgebotXlibererMemoire();
 	}
 
 

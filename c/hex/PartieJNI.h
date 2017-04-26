@@ -90,7 +90,7 @@ JNIEXPORT jint JNICALL Java_noyau_PartieJNI_cretinhexXsauvegarder
 /*
  * Class:     noyau_PartieJNI
  * Method:    cretinhexXcharger
- * Signature: (Ljava/lang/String;)I
+ * Signature: (Ljava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_noyau_PartieJNI_cretinhexXcharger
   (JNIEnv *, jobject, jstring);

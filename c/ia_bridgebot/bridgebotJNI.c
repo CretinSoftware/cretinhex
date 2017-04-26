@@ -9,7 +9,6 @@
 # include "bridgebotJNI.h"
 
 
-BridgeBot BRIDGEBOT_GLOBAL;
 
 
 /**
@@ -21,20 +20,29 @@ BridgeBot BRIDGEBOT_GLOBAL;
  * Il y detecte les ponts et essaie d'avancer son chemin en empèchant son adversaire 
  * de faire la même chose 
  */
-JNIEXPORT jintArray JNICALL Java_noyau_BridgeBot_bridgeXjouer
-  (JNIEnv * jEnv, jobject jObject, jintArray plateau, jint largeurDamier){
+JNIEXPORT jintArray JNICALL Java_noyau_BridgeBot_bridgebotXjouer
+  (JNIEnv * jEnv, jobject jObject, jintArray plateau, jint largeurDamier, jint joueur){
   
 	jintArray retour;
 	jint temp[2];
 	jint * cases;
 	jint x, y;
+	int i;
 	
 	/* Fabrication du damier de la partie */
 	cases = (*jEnv)->GetIntArrayElements(jEnv, plateau, 0);
 	Damier d = Damier_init(largeurDamier);
+	for (i = 0; i < largeurDamier * largeurDamier; ++i){
+		switch (cases[i]){
+			case 1: d = Damier_modifierCase(d, J1, i%largeurDamier, i/largeurDamier); break;
+			case 2: d = Damier_modifierCase(d, J2, i%largeurDamier, i/largeurDamier); break;
+		}
+	}
 	
 	/* Calcul du coup à jouer */
-	BridgeBot_jouer(BRIDGEBOT_GLOBAL, d, &x, &y);
+	BridgeBot_jouer(d, joueur, &x, &y);
+	
+	Damier_libererMemoire(&d);
 	
 	
 	(*jEnv)->ReleaseIntArrayElements(jEnv, plateau, cases, 0);
@@ -55,8 +63,8 @@ JNIEXPORT jintArray JNICALL Java_noyau_BridgeBot_bridgeXjouer
  * \brief   Initialise le BridgeBot (alloue de la mémoire, dit qui il est (J1 ou J2))
  */
 JNIEXPORT void JNICALL Java_noyau_BridgeBot_bridgebotXinit
-  (JNIEnv * jEnv, jobject jObject, jint joueur){
-	BRIDGEBOT_GLOBAL = BridgeBot_init(joueur);
+  (JNIEnv * jEnv, jobject jObject){
+	BridgeBot_init();
 }
 
 
@@ -68,7 +76,6 @@ JNIEXPORT void JNICALL Java_noyau_BridgeBot_bridgebotXinit
  */
 JNIEXPORT void JNICALL Java_noyau_BridgeBot_bridgebotXlibererMemoire
   (JNIEnv * jEnv, jobject jObject){
-	BridgeBot_libererMemoire(&BRIDGEBOT_GLOBAL);
 }
 
 
