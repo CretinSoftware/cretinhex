@@ -18,7 +18,7 @@
  */
 void erreurUsage(const char * cmd){
 	fprintf(stderr, "%s: usage :\n", cmd);
-	fprintf(stderr, "constr:    -c  fichier_sauvegarde joueur\n");
+	fprintf(stderr, "constr:    -c  fichier_sauvegarde joueur ponts\n");
 	exit(10);
 }
 
@@ -73,25 +73,23 @@ Damier Damier_construireDepuisFichier(const char * fichier){
 /**
  * \brief Test de construction
  */
-void test_construction(const char * fichier, int joueur){
-	BridgeBot bb;
+void test_construction(const char * fichier, int joueur, int ponts){
 	Damier d;
 	int x, y;
 	
-	switch (joueur){
-		case J1: bb = BridgeBot_init(J1); break;
-		case J2: bb = BridgeBot_init(J2); break;
-		default: erreurUsage("");
-	}
+	BridgeBot_init(J1);
 	
 	d = Damier_construireDepuisFichier(fichier);
 	
-	BridgeBot_jouer(bb, d, &x, &y);
+	switch (joueur){
+		case 1: BridgeBot_jouer(d, J1, &x, &y, ponts); break;
+		case 2: BridgeBot_jouer(d, J2, &x, &y, ponts); break;
+		default: erreurUsage("");
+	}
 	
 	printf("%d\n%d\n", x, y);
 	
 	Damier_libererMemoire(&d);
-	BridgeBot_libererMemoire(&bb);
 
 }
 
@@ -105,8 +103,8 @@ int main(int argc, char * argv[]){
 	switch (argv[1][1]){
 		/* Construction */
 		case 'c':
-			if (argc != 4) erreurUsage(argv[0]);
-			test_construction(argv[2], atoi(argv[3]));
+			if (argc != 5) erreurUsage(argv[0]);
+			test_construction(argv[2], atoi(argv[3]), atoi(argv[4]));
 			break;
 		
 		default:

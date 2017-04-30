@@ -21,7 +21,7 @@ void erreurUsage(const char * cmd){
 	fprintf(stderr, "	-c  fichier_sauvegarde\n");
 	fprintf(stderr, "	-g  fichier_sauvegarde\n");
 	fprintf(stderr, "	-p  fichier_sauvegarde\n");
-	fprintf(stderr, "	-n  fichier_sauvegarde distance [N|S|E|O]\n");
+	fprintf(stderr, "	-n  fichier_sauvegarde distance [N|S|E|O] ponts\n");
 	exit(10);
 }
 
@@ -335,7 +335,7 @@ void test_chemins(const char * fichier){
 /**
  * \brief Test de la fonction donnant les noeuds à n de distance
  */
-void test_noeuds_a_n(const char * nomCommandePassee, const char * fichier, int distance, char pointEntree){
+void test_noeuds_a_n(const char * nomCommandePassee, const char * fichier, int distance, char pointEntree, int ponts){
 	GrapheHex gh;
 	LDC ldc;
 	
@@ -345,16 +345,16 @@ void test_noeuds_a_n(const char * nomCommandePassee, const char * fichier, int d
 	/*afficherGrapheHex(gh);*/
 	switch (pointEntree){
 		case 'n': case 'N':
-			ldc = GrapheHex_noeudsAccessiblesEnNCoups(gh, GrapheHex_nord(gh), distance, J1, 0);
+			ldc = GrapheHex_noeudsAccessiblesEnNCoups(gh, GrapheHex_nord(gh), distance, J1, ponts);
 			break;
 		case 's': case 'S':
-			ldc = GrapheHex_noeudsAccessiblesEnNCoups(gh, GrapheHex_sud(gh), distance, J1, 0);
+			ldc = GrapheHex_noeudsAccessiblesEnNCoups(gh, GrapheHex_sud(gh), distance, J1, ponts);
 			break;
 		case 'e': case 'E':
-			ldc = GrapheHex_noeudsAccessiblesEnNCoups(gh, GrapheHex_est(gh), distance, J2, 0);
+			ldc = GrapheHex_noeudsAccessiblesEnNCoups(gh, GrapheHex_est(gh), distance, J2, ponts);
 			break;
 		case 'o':case 'O':
-			ldc = GrapheHex_noeudsAccessiblesEnNCoups(gh, GrapheHex_ouest(gh), distance, J2, 0);
+			ldc = GrapheHex_noeudsAccessiblesEnNCoups(gh, GrapheHex_ouest(gh), distance, J2, ponts);
 			break;
 		default:
 			erreurUsage(nomCommandePassee);
@@ -390,8 +390,8 @@ int main(int argc, char * argv[]){
 			break;
 		/* Noeuds à n */
 		case 'n':
-			if (argc != 5) erreurUsage(argv[0]);
-			test_noeuds_a_n(argv[0], argv[2], atoi(argv[3]), argv[4][0]);
+			if (argc != 6) erreurUsage(argv[0]);
+			test_noeuds_a_n(argv[0], argv[2], atoi(argv[3]), argv[4][0], atoi(argv[5]));
 			break;
 		
 		default:

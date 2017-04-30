@@ -9,8 +9,8 @@
 # ifndef __CRETINHEX_BRIDGEBOT__
 # define __CRETINHEX_BRIDGEBOT__
 
-# define BRIDGEBOT_PONTS 0 
-# define BRIDGEBOT_DEBUG 1
+# define BRIDGEBOT_PONTS 1
+# define BRIDGEBOT_DEBUG 0
 
 
 # include "../hex/Joueur.h"
@@ -48,7 +48,7 @@ void BridgeBot_init();
 /**
  * \brief    Demande à un BridgeBot ce qu'il ferait sur un tel damier
  */
-void BridgeBot_jouer(Damier d, int joueur, int * x, int * y);
+void BridgeBot_jouer(Damier d, int joueur, int * x, int * y, int ponts);
 
 
 /** @} */

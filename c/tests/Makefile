@@ -35,6 +35,8 @@ Graphe Graphe_memoire: main_Graphe mk_fichier_graphe
 
 GrapheHex GrapheHex_memoire: main_GrapheHex mk_sauvegardes
 
+BridgeBot BridgeBot_memoire: main_BridgeBot mk_sauvegardes
+
 $(SERIE_TESTS):
 	-./script_test_$@.sh
 

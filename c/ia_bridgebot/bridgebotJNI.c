@@ -40,7 +40,7 @@ JNIEXPORT jintArray JNICALL Java_noyau_BridgeBot_bridgebotXjouer
 	}
 	
 	/* Calcul du coup à jouer */
-	BridgeBot_jouer(d, joueur, &x, &y);
+	BridgeBot_jouer(d, joueur, &x, &y, BRIDGEBOT_PONTS);
 	
 	Damier_libererMemoire(&d);
 	

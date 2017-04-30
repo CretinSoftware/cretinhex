@@ -98,7 +98,7 @@ mkdir -p $REP_OUT
 # -----------------------------------------------
 
 # Pattern du fichier en entree
-f_in="$REP_IN/sauv_@1x@2_@3.txt"
+f_in="$REP_IN/sauv_@1x@2_0.txt"
 
 # Pattern du fichier en sortie
 f_out="$REP_OUT/constr_@1x@2_@3.txt"
@@ -107,7 +107,7 @@ f_out="$REP_OUT/constr_@1x@2_@3.txt"
 mk_f_in="./mk_sauvegardes @1 1 @2 $f_in"
 
 # Pattern de la commande de test
-commande="./main_BridgeBot -c $f_in 1"
+commande="./main_BridgeBot -c $f_in 1 @3"
 
 # Pattern de la commande de vérification
 verif="" 
@@ -137,7 +137,7 @@ do
 	done
 	
 	# On lance la série de tests
-	./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "" "" "$f_out" "$commande" "$verif" "$largeur" "$bcl2" "$bcl"
+	./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "" "" "$f_out" "$commande" "$verif" "$largeur" "$bcl2" "0 1"
 done
 
 
