@@ -22,6 +22,7 @@
  */
 
 # include "Partie.h"
+# include "GrapheHex.h"
 # include <stdlib.h>
 # include <stdio.h>
 # include <assert.h>
@@ -83,11 +84,12 @@ void ElemHisto_libererMemoire(ElemHisto * eh){
  * @{
  */
 typedef struct Partie {
-	Joueur premierJoueur;    /**< Le joueur qui à commencé la partie (différent de J0) */
-	Joueur aQuiDeJouer;      /**< Le joueur qui doit faire le prochain mouvement (différent de J0) */
-	Damier damier;           /**< L'occupation de toutes les cases */
-	int tour;                /**< Compteur de tour */
-	LDC historique;          /**< Historique : tous les movements joués */
+	Joueur premierJoueur;    /**< \brief Le joueur qui à commencé la partie (différent de J0) */
+	Joueur aQuiDeJouer;      /**< \brief Le joueur qui doit faire le prochain mouvement (différent de J0) */
+	Damier damier;           /**< \brief L'occupation de toutes les cases */
+	int tour;                /**< \brief Compteur de tour */
+	LDC historique;          /**< \brief Historique : tous les movements joués */
+	GrapheHex graphehex;     /**< \brief GrapheHex : le graphe simplifié */
 } PartieInterne;
 
 /** @} */
@@ -114,6 +116,7 @@ Partie Partie_init(int l, Joueur j){
 	p->aQuiDeJouer = j;
 	p->damier = Damier_init(l);
 	p->historique = LDC_init();
+	p->graphehex = GrapheHex_init(p->damier);
 	
 	return p;
 }
@@ -184,6 +187,7 @@ Partie Partie_placerPion(Partie p, int x, int y){
 	assert(Damier_obtenirCase(p->damier, x, y) == J0);
 	/* Placement du pion */
 	p->damier = Damier_modifierCase(p->damier, p->aQuiDeJouer, x, y);
+	p->graphehex = GrapheHex_modifierCase(p->graphehex, x, y, p->aQuiDeJouer);
 	
 	/* Ajoute à l'historique */
 	ElemHisto eh = ElemHisto_init(p->aQuiDeJouer, x, y);
@@ -220,7 +224,7 @@ Joueur Partie_obtenirCase(Partie p, int x, int y){
 
 
 /*
- * \fn Joueur * Partie_obtenirDamier(Partie p)
+ * \fn Damier Partie_obtenirDamier(Partie p)
  * \param p La partie en cours
  * \return Le damier
  *
@@ -230,14 +234,33 @@ Joueur Partie_obtenirCase(Partie p, int x, int y){
  *  - y = ligne
  *  - la case (x, y) est à l'indice (y*Partie_largeurDamier(p) + x)
  */
-Joueur * Partie_obtenirDamier(Partie p){
-	return Damier_obtenirDamier(p->damier);
+Damier Partie_obtenirDamier(Partie p){
+	return p->damier;
+}
+
+
+
+
+
+/*
+ * \fn Joueur * Partie_obtenirTabJoueurs(Partie p)
+ * \param p La partie en cours
+ * \return Le damier
+ *
+ * \brief Le damier est représenté comme un tableau linéaire
+ * Pour rappel :
+ *  - x = colonne
+ *  - y = ligne
+ *  - la case (x, y) est à l'indice (y*Partie_largeurDamier(p) + x)
+ */
+Joueur * Partie_obtenirTabJoueurs(Partie p){
+	return Damier_obtenirTabJoueurs(p->damier);
 }
 
 
 
 /**
- * \fn Joueur * Partie_obtenirDamierHisto(Partie p)
+ * \fn Joueur * Partie_obtenirTabJoueursHisto(Partie p)
  * \brief Le damier tel qu'il était au tour n
  * \param p La partie en cours
  * \param n Le tour demandé
@@ -247,7 +270,7 @@ Joueur * Partie_obtenirDamier(Partie p){
  *
  * \todo Travailler avec un itérateur !
  */
-Joueur * Partie_obtenirDamierHisto(Partie p, int n){
+Joueur * Partie_obtenirTabJoueursHisto(Partie p, int n){
 	Damier d = Damier_init(Damier_obtenirLargeur(p->damier));
 	LDCIterateur it = LDCIterateur_init(p->historique, LDCITERATEUR_AVANT);
 	ElemHisto eh;
@@ -256,7 +279,7 @@ Joueur * Partie_obtenirDamierHisto(Partie p, int n){
 		d = Damier_modifierCase(d, eh->joueur, eh->x, eh->y);
 	}
 	LDCIterateur_libererMemoire(&it);
-	return Damier_obtenirDamier(d);
+	return Damier_obtenirTabJoueurs(d);
 }
 	
 
@@ -273,7 +296,7 @@ Joueur * Partie_obtenirDamierHisto(Partie p, int n){
  * \brief Donne le gagnant d'une partie terminée, J0 sinon
  */
 Joueur Partie_quiGagne(Partie p){
-	return J0;
+	return GrapheHex_quiGagne(p->graphehex);
 }
 
 
@@ -317,7 +340,7 @@ int Partie_sauvegarder(Partie p, const char * nomFichier){
 	FILE * f;
 	int i;
 	int l = Damier_obtenirLargeur(p->damier);
-	Joueur * damier = Damier_obtenirDamier(p->damier);
+	Joueur * damier = Damier_obtenirTabJoueurs(p->damier);
 	
 	/* Ouverture du fichier */
 	f = fopen(nomFichier, "w");
@@ -395,8 +418,8 @@ Partie Partie_charger(const char * nomFichier){
 	int i, l, x, y;
 	char c;
 	Partie p;
-	ElemHisto eh;
-	Joueur j;
+	/*ElemHisto eh;
+	Joueur j;*/
 	
 	
 	/* Ouverture du fichier */
@@ -417,32 +440,40 @@ Partie Partie_charger(const char * nomFichier){
 	
 
 	/* Damier */
+	
 	fscanf(f, "\\board\n");
 	for (i = 0; i < l * l; ++i)
 		if (fscanf(f, "%c ", &c) == 1)
-			Damier_modifierCase(p->damier, char2joueur(c), i%l, i/l);
+			;/*Damier_modifierCase(p->damier, char2joueur(c), i%l, i/l);*/
 		else
 			formatFichierIncorrect(nomFichier);
 	fscanf(f, "\\endboard\n");
+	
+	
+	/* Les pions sont placés d'après l'historique. Plus de vérif... */
+	/** \todo Vérification de la correspondance damier / historique */
 	
 	/* Historique + premier joueur + aQuiDeJouer + vérification des coups ! */
 	fscanf(f, "\\game\n");
 	i = 1;
 	while (fscanf(f, "\\play %c %d %d\n", &c, &x, &y)){
-		j = char2joueur(c);
-		assert(Partie_obtenirCase(p, x, y) == j);
+		/*j = char2joueur(c);
+		assert(Partie_obtenirCase(p, x, y) == j);*/
 		
-		if (i == 1)
+		if (i == 1){
 			p->premierJoueur = char2joueur(c);
+			p->aQuiDeJouer = p->premierJoueur;
+		}
 		
-		eh = ElemHisto_init(j, x, y);
-		p->historique = LDC_insererElement(p->historique, -1, eh, (LDCElementFree) ElemHisto_libererMemoire);
+		p = Partie_placerPion(p, x, y);
+		/*eh = ElemHisto_init(j, x, y);
+		p->historique = LDC_insererElement(p->historique, -1, eh, (LDCElementFree) ElemHisto_libererMemoire); */
 		++i;
 	}
 	fscanf(f, "\\game\n");
-	p->aQuiDeJouer = Joueur_suivant(j);
+/*	p->aQuiDeJouer = Joueur_suivant(j);
 	p->tour = i;
-	
+	*/
 		
 	
 	
@@ -464,6 +495,7 @@ Partie Partie_charger(const char * nomFichier){
 void Partie_libererMemoire(Partie * p){
 	Damier_libererMemoire(&((*p)->damier));
 	LDC_libererMemoire(&((*p)->historique));
+	GrapheHex_libererMemoire(&((*p)->graphehex));
 	free(*p);
 	*p = NULL;
 }

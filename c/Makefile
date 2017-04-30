@@ -24,7 +24,8 @@ include ../parametres/make.txt
 C_SRC                = $(C_CRETINLIB) $(C_HEX)
 C_DOC                = ../$(DOC)/c
 C_FICHIERS_C        := $(foreach dos, $(C_SRC), $(wildcard $(dos)/*.c))
-C_FICHIERS_O        := $(foreach dos, $(C_SRC), $(patsubst $(dos)/%.c,$(dos)/$(DOS_O)/%.o,$(wildcard $(dos)/*.c)))
+C_FICHIERS_O        := $(foreach dos, $(C_SRC), $(patsubst $(dos)/%.c,$(dos)/$(DOS_O)/%.o,$(wildcard $(dos)/*.c))) \
+                       $(foreach dos, $(C_SRC), $(wildcard $(dos)/$(DOS_O)/*.o))
 
 
 
@@ -36,7 +37,7 @@ all: c
 headers: 
 	make headers -C ../$(JAVA)
 
-c: $(LIB_CRETINHEX)
+c: $(TOUTES_LIB)
 
 doc: $(C_DOC)/html/index.html
 
@@ -47,17 +48,30 @@ doc: $(C_DOC)/html/index.html
 
 
 # Bibliothèque cretinhex
-$(LIB_CRETINHEX_SO): $(C_FICHIERS_O)
-	echo $^
-	gcc -shared $(C_OPT) $(C_FICHIERS_O) -o $(LIB_CRETINHEX_SO)
+$(LIB_CRETINHEX_SO): $(foreach f, LDC Graphe utile, $(C_CRETINLIB)/$(DOS_O)/$(f).o) \
+                     $(foreach f, Joueur Damier GrapheHex Partie PartieJNI, $(C_HEX)/$(DOS_O)/$(f).o)
+	gcc -shared $(C_OPT) $^ -o $@
 	
-$(LIB_CRETINHEX_DLL): 
+$(LIB_IA0_SO):  $(patsubst $(C_IA0)/%.c, $(C_IA0)/$(DOS_O)/%.o, $(wildcard $(C_IA0)/*.c))
+	gcc -shared $(C_OPT) $^ -o $@
+	
+$(LIB_BRIDGEBOT_SO): $(foreach f, LDC Graphe utile, $(C_CRETINLIB)/$(DOS_O)/$(f).o) \
+                     $(foreach f, Joueur Damier GrapheHex GrapheHexPlus, $(C_HEX)/$(DOS_O)/$(f).o) \
+                     $(foreach f, bridgebot bridgebotJNI, $(C_BRIDGEBOT)/$(DOS_O)/$(f).o)
+	gcc -shared $(C_OPT) $^ -o $@
+	
+	
+
+# Windows : le fera-t'on ?
+%.dll: 
 	@echo "Pas de compilation pour windows actuellement"
-
-
+	
+	
+	
+	
 # Appelle les makes pour fournir les .o
 %.o: 
-#	make $(C_OBJ)/$(notdir $@) -C $(subst $(C_OBJ)/,,$(dir $@))
+#	make $(DOS_O)/$(notdir $@) -C $(subst $(DOS_O)/,,$(dir $@))
 	make -C $(subst $(DOS_O)/,,$(dir $@))
 
 
@@ -92,7 +106,7 @@ doc-clean:
 # Efface tout ce qui peut être regénéré
 maxclean: 
 	@$(foreach dos, $(C_TOUT), make maxclean -C $(dos); )
-	rm -f $(LIB_CRETINHEX)
+	rm -f *.so *.dll
 	
 	
 

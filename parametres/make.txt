@@ -9,7 +9,8 @@
 # Paramètres utilisateur
 # JAVA_HOME          = /usr/lib/jvm/java-7-openjdk-amd64
 JAVA_HOME            = $(subst /jre,,$(shell jrunscript -e 'java.lang.System.out.println(java.lang.System.getProperty("java.home"));'))
-SYSTEME              = linux
+SYSTEME              = unix
+DEV                  = oui
 
 
 # Executable
@@ -19,12 +20,23 @@ EXE                  = mon_premier_programme
 # Bibliothèques
 LIB_CRETINHEX_SO     = cretinhex.so
 LIB_CRETINHEX_DLL    = cretinhex.dll
+LIB_IA0_SO           = cretinhex_randombot.so
+LIB_IA0_DLL          = cretinhex_randombot.dll
+LIB_BRIDGEBOT_SO     = cretinhex_bridgebot.so
+LIB_BRIDGEBOT_DLL    = cretinhex_bridgebot.dll
 
 ifeq ($(SYSTEME), windows)
-	LIB_CRETINHEX        = $(LIB_CRETINHEX_DLL)
+	LIB_CRETINHEX    = $(LIB_CRETINHEX_DLL)
+	LIB_IA0          = $(LIB_IA0_DLL)
+	LDB_BRIDGEBOT    = $(LIB_BRIDGEBOT_DLL)
 else
-	LIB_CRETINHEX        = $(LIB_CRETINHEX_SO)
+	LIB_CRETINHEX    = $(LIB_CRETINHEX_SO)
+	LIB_IA0          = $(LIB_IA0_SO)
+	LIB_BRIDGEBOT    = $(LIB_BRIDGEBOT_SO)
 endif
+TOUTES_LIB           = $(LIB_CRETINHEX) $(LIB_IA0)
+
+TOUTES_LIB           = $(LIB_CRETINHEX) $(LIB_IA0) $(LIB_BRIDGEBOT)
 
 
 # Dossiers du projet (relatif au projet)
@@ -32,6 +44,7 @@ PARAMS               = parametres
 DOC                  = doc
 JAVA                 = java
 C                    = c
+DOSSIER_CLIENT       = rendu_client
 
 
 # Dossiers Java (relatifs à java/)
@@ -40,18 +53,26 @@ JAVA_BIN             = bin
 JAVA_APP             = $(JAVA_BIN)/cretinplay/Application.class
 JAVA_CLASS_APP       = cretinplay.Application
 JAVA_CLASS_PARTIEJNI = noyau.PartieJNI
+JAVA_CLASS_IA0       = noyau.IA0
+JAVA_CLASS_BRIDGEBOT = noyau.BridgeBot
 
 
 # Dossiers C
 C_CRETINLIB          = cretinlib
 C_HEX                = hex
+C_IA0                = ia_randombot
+C_BRIDGEBOT          = ia_bridgebot
 C_TESTS              = tests
-C_TOUT               = $(C_CRETINLIB) $(C_HEX) $(C_TESTS)
+C_TOUT               = $(C_CRETINLIB) $(C_HEX) $(C_IA0) $(C_BRIDGEBOT) $(C_TESTS)
 
 
 # Compilation C
 CC                   = gcc
-C_OPT                = -Wall -Werror -ansi -fPIC
+ifeq ($(DEV),oui)
+	C_OPT            = -Wall -Werror -ansi -fPIC -g
+else
+	C_OPT            = -Wall -Werror -ansi -fPIC -DNDEBUG
+endif
 JNI_OPT              = -I$(JAVA_HOME)/include/ -I$(JAVA_HOME)/include/linux
 DOS_O                = obj
 DOS_D                = dep
@@ -59,6 +80,8 @@ DOS_D                = dep
 
 # JNI
 C_HEADER_PARTIEJNI   = $(C_HEX)/PartieJNI.h
+C_HEADER_IA0         = $(C_IA0)/randombot.h
+C_HEADER_BRIDGEBOT   = $(C_BRIDGEBOT)/bridgebotJNI.h
 
 
 

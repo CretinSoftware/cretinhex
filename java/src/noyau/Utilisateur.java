@@ -33,4 +33,9 @@ public interface Utilisateur
 	 * \todo    Void si c'est vraiment nécessaire (on lui passe déjà la partie, et donc l'historique)
 	 */
 	public void actualiser(int x, int y);
+	
+	/**
+	 * \brief   Désallouer la mémoire (surtout pour les ia)
+	 */
+	public void quitter();
 }

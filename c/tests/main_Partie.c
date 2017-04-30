@@ -12,7 +12,7 @@
  */
 void erreurUsage(char * argv[]){
 	fprintf(stderr, "%s: usage :\n", argv[0]);
-	fprintf(stderr, "	-s  fichier_source\n");
+	fprintf(stderr, "	-s  fichier_in fichier_out\n");
 	exit(10);
 }
 
@@ -23,13 +23,8 @@ void erreurUsage(char * argv[]){
 /**
  * \brief Test de construction
  */
-void test_sauvegarde(const char * fichier){
+void test_sauvegarde(const char * f_in, const char * f_out){
 	Partie p;
-	char f_in[256];
-	char f_out[256];
-	
-	sprintf(f_in, "%s/%s", INPUTS, fichier);
-	sprintf(f_out, "%s/Partie/%s", OUTPUTS, fichier);
 	
 	p = Partie_charger(f_in);
 	Partie_sauvegarder(p, f_out);
@@ -46,8 +41,8 @@ int main(int argc, char * argv[]){
 	switch (argv[1][1]){
 		/* Sauvegardes */
 		case 's':
-			if (argc != 3) erreurUsage(argv);
-			test_sauvegarde(argv[2]);
+			if (argc != 4) erreurUsage(argv);
+			test_sauvegarde(argv[2], argv[3]);
 			break;
 		
 		default:

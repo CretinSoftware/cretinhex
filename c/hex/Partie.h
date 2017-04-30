@@ -21,7 +21,7 @@
  * <pre style="line-height:1em;">
  * SORTE :            Partie
  * 
- * UTILISE :          Joueur, LDC, char, int
+ * UTILISE :          Joueur, Damier, LDC, char, int
  *
  * CONSTRUCTEURS :    Partie_init                   int, Joueur -> Partie     
  *                    Partie_placerPion        Partie, int, int -> Partie
@@ -29,7 +29,8 @@
  * OPERATEURS :       Partie_aQuiDeJouer                 Partie -> Joueur
  *                    Partie_largeurDamier               Partie -> int
  *                    Partie_obtenirCase       Partie, int, int -> Joueur
- *                    Partie_obtenirDamier               Partie -> Joueur[]
+ *                    Partie_obtenirDamier               Partie -> Damier
+ *                    Partie_obtenirTabJoueurs           Partie -> Joueur[]
  *                    Partie_obtenirTour                 Partie -> int
  *                    Partie_quiGagne                    Partie -> Joueur 
  *                    Partie_sauvegarder         Partie, char[] -> _____
@@ -82,6 +83,7 @@
 # ifndef __CRETIN_HEX_PARTIE__
 # define __CRETIN_HEX_PARTIE__
 # include "Joueur.h"
+# include "Damier.h"
 
 
 /**
@@ -185,7 +187,7 @@ Joueur Partie_obtenirCase(Partie p, int x, int y);
 
 
 /**
- * \fn Joueur * Partie_obtenirDamier(Partie p)
+ * \fn Damier Partie_obtenirDamier(Partie p)
  * \brief Le damier est représenté comme un tableau linéaire
  * \param p La partie en cours
  * \return Le damier
@@ -195,25 +197,40 @@ Joueur Partie_obtenirCase(Partie p, int x, int y);
  *  - y = ligne
  *  - la case (x, y) est à l'indice (y*Partie_largeurDamier(p) + x)
  */
-Joueur * Partie_obtenirDamier(Partie p);
+Damier Partie_obtenirDamier(Partie p);
 
 
 
 /**
- * \fn Joueur * Partie_obtenirDamierHisto(Partie p)
- * \brief Le damier tel qu'il était au tour n
+ * \fn Joueur * Partie_obtenirTabJoueurs(Partie p)
+ * \brief Le damier est représenté comme un tableau linéaire
  * \param p La partie en cours
- * \param n Le tour demandé
- * \return Le damier du tour n
- *
- * \req 0 < n &le; Partie_obtenirTour(p)
+ * \return Le damier
  *
  * Pour rappel :
  *  - x = colonne
  *  - y = ligne
  *  - la case (x, y) est à l'indice (y*Partie_largeurDamier(p) + x)
  */
-Joueur * Partie_obtenirDamierHisto(Partie p, int n);
+Joueur * Partie_obtenirTabJoueurs(Partie p);
+
+
+
+/**
+ * \fn Joueur * Partie_obtenirTabJoueursHisto(Partie p, int n)
+ * \brief Le damier tel qu'il était au tour n
+ * \param p La partie en cours
+ * \param n Le tour demandé
+ * \return Le damier du tour n
+ *
+ * \pre 0 < n &le; Partie_obtenirTour(p)
+ *
+ * Pour rappel :
+ *  - x = colonne
+ *  - y = ligne
+ *  - la case (x, y) est à l'indice (y*Partie_largeurDamier(p) + x)
+ */
+Joueur * Partie_obtenirTabJoueursHisto(Partie p, int n);
 
 
 

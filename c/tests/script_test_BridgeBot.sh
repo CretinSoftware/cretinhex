@@ -1,17 +1,21 @@
 #! /bin/bash
 
 
-# Test de la Partie sur le chargement / sauvegarde
+# Test du bridgebot
 
 
 
 
 
-function erreur(){ 
+erreur(){ 
 	case $1 in
 		usage)
-			echo "$0: usage: [-v] $0 [TAILLE [NB_COUPS [NB_TESTS]]]" >&2
+			echo "$0: usage: $0 [-v] [NB_TESTS [DIMENSIONS [NB_COUPS_JOUES]]]" >&2
 			exit 2
+			;;
+		fichier)
+			echo "$0: fichier: $2 inexistant, ou droit insuffisants" >&2
+			exit 3
 			;;
 	esac
 }
@@ -21,17 +25,15 @@ function erreur(){
 
 
 
-
-
 # Répertoires
 REP_IN=fichiers_in
-REP_OUT=fichiers_out/Partie
+REP_OUT=fichiers_out/BridgeBot
 
 # Dimension des grilles
-DIMENSIONS="10 20"
+DIMENSIONS="10"
 
 # Nombre de coups joués
-NB_COUPS_JOUES="100"
+NB_COUPS_JOUES="50"
 
 # Nombre de tests pour chacun de ces réglages
 NB_TESTS=1
@@ -57,26 +59,26 @@ then
 fi
 
 
-# 1er argument : taille
+# 2eme argument : nombre de tests
 if test $# -ge 1
 then
-	DIMENSIONS=$1
+	expr $1 + 1 > /dev/null
+	test $? -le 1 || erreur usage
+	NB_TESTS=$1
 fi 
 
 
-# 2eme argument : NB_COUPS
+# 3eme argument : dimensions à tester (sous forme d'une chaîne "1 3 7")
 if test $# -ge 2
 then
-	NB_COUPS_JOUES=$2
+	DIMENSIONS=$2
 fi 
 
 
-# 3eme argument : NB_TESTS
+# 4eme argument : Nombres de coups à jouer (sous forme d'une chaîne "1 3 7")
 if test $# -ge 3
 then
-	expr $3 + 1 > /dev/null 2>&1
-	test $? -le 1 || erreur usage
-	NB_TESTS=$3
+	NB_COUPS_JOUES=$3
 fi 
 
 # Plus d'arguments : erreur
@@ -92,23 +94,23 @@ mkdir -p $REP_OUT
 
 
 
-
+# Construction
+# -----------------------------------------------
 
 # Pattern du fichier en entree
-f_in="$REP_IN/sauv_@1x@2_@3.txt"
+f_in="$REP_IN/sauv_@1x@2_0.txt"
 
 # Pattern du fichier en sortie
-f_out="$REP_OUT/sauvegarde_@1x@2_@3.txt"
+f_out="$REP_OUT/constr_@1x@2_@3.txt"
 
 # Pattern de la commande pour créer le fichier en entrée
-random_number=`cat /dev/urandom | tr -dc "0-9" | head -c 10`
-mk_f_in="./mk_sauvegardes @1 `expr $random_number % 2 + 1` @2 $f_in"
+mk_f_in="./mk_sauvegardes @1 1 @2 $f_in"
 
 # Pattern de la commande de test
-commande="./main_Partie -s $f_in $f_out"
+commande="./main_BridgeBot -c $f_in 1 @3"
 
 # Pattern de la commande de vérification
-verif="cmp $f_in $f_out" 
+verif="" 
 
 
 ko=0
@@ -135,8 +137,11 @@ do
 	done
 	
 	# On lance la série de tests
-	./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "" "" "$f_out" "$commande" "$verif" "$largeur" "$bcl2" "$bcl"
+	./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "" "" "$f_out" "$commande" "$verif" "$largeur" "$bcl2" "0 1"
 done
+
+
+
 
 exit $ko
 

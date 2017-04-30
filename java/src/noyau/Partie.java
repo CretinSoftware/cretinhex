@@ -36,8 +36,7 @@ public class Partie extends PartieJNI {
 	
 	/** \brief Constructeur pour une partie d'après le fichier de sauvegarde nomFichier */
 	public Partie(String nomFichier){
-		super();
-		this.charger(nomFichier);
+		super(nomFichier);
 	}
 	
 	
@@ -122,6 +121,13 @@ public class Partie extends PartieJNI {
 			damierJ[i] = Joueur.fromInt(damierI[i]);
 			
 		return damierJ;
+	}
+	
+	/**
+	 * \brief  Renvoie le damier sous forme d'entier
+	 */
+	public int[] obtenirDamierInt(){
+		return super.cretinhexXobtenirDamier();
 	}
 		
 	
@@ -228,7 +234,7 @@ public class Partie extends PartieJNI {
 	 * Affichage du damier actuel
 	 */
 	public void afficher(){
-		System.out.println("\nTour " + this.obtenirTour() + ", à " + this.j.toString() + " de jouer");
+		System.out.println("\nTour " + this.obtenirTour() + ", c'est à " + this.j.toString());
 		Joueur damier[] = this.obtenirDamier();
 		this.afficherDamier(damier);
 	}

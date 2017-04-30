@@ -99,13 +99,13 @@ do
 			
 			
 			
+			test -f "$f_in"  || $mk_f_in
 			
 			if test "$f_in2"!="" -a ! -f "$f_in2"
 			then
-				$mk_f_in2
 				sleep 1
+				$mk_f_in2
 			fi
-			test -f "$f_in"  || $mk_f_in
 			
 			
 			./exec_test.sh $use_valgrind "$f_in" "$f_in2" "$f_out" "$commande" "$verif"

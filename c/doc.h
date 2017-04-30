@@ -26,11 +26,20 @@
 
 
 /**
+ * \defgroup c_pack_ia Intelligences Artificielles
+ * \brief    Regroupe les IA
+ */
+
+
+/**
  * \dir c/cretinlib 
  * \brief Gestion des données
  *
  * \dir c/hex
  * \brief Gestion du jeu Hex
+ *
+ * \dir c/ia_randombot
+ * \brief Joue des coups valides aléatoires
  *
  * \dir c/tests
  * \brief Programmes de test des modules

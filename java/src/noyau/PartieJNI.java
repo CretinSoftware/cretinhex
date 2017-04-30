@@ -34,9 +34,14 @@ public class PartieJNI {
 	
 	
 	/**
-	 * \brief Constructeur simple. Attend des instructions par exemple charger)
+	 * \brief Constructeur d'après fichier de sauvegarde
 	 */
-	PartieJNI(){
+	PartieJNI(String nomFichier){
+		this.cretinhexXcharger(nomFichier);
+		
+		this.largeur = this.cretinhexXlargeurDamier();
+		this.j = Joueur.fromInt(this.cretinhexXaQuiDeJouer());
+		this.tour = 1;
 	}
 	
 	/**

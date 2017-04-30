@@ -24,6 +24,17 @@
 
 
 
+/* \brief Fait simplement un free, peut être transmis comme LDCElementFree */
+void LDCElement_free(LDCElement * e){
+	free(*e);
+	*e = NULL;
+}
+
+/* \brief Affirme que deux entiers sont égaux, ou non */
+int int_estEgal(int * a, int * b){
+	return *a == *b;
+}
+
 
 
 
@@ -245,6 +256,9 @@ LDC LDC_insererElement(LDC ldc, int pos, LDCElement e, LDCElementFree free){
 	++ldc->taille;
 	return ldc;
 }
+LDC LDC_inserer(LDC ldc, int pos, LDCElement e, LDCElementFree free){
+	return LDC_insererElement(ldc, pos, e, free);
+}
 
 
 /*
@@ -256,6 +270,9 @@ LDC LDC_insererElement(LDC ldc, int pos, LDCElement e, LDCElementFree free){
 LDCElement LDC_obtenirElement(LDC ldc, int pos){
 	LDCCellule c = LDC_obtenirCellule(ldc, pos);
 	return c->valeur;
+}
+LDCElement LDC_obtenir(LDC ldc, int pos){
+	return LDC_obtenirElement(ldc, pos);
 }
 
 
@@ -286,6 +303,9 @@ int LDC_obtenirPosition(LDC ldc, LDCElement e, LDCElementEgal egal){
 	
 	return pos;	
 }
+int LDC_chercher(LDC ldc, LDCElement e, LDCElementEgal egal){
+	return LDC_obtenirPosition(ldc, e, egal);
+}
 		
 
 
@@ -304,6 +324,9 @@ LDC LDC_enleverElement(LDC ldc, int pos){
 	LDCCellule_libererMemoire(&c);
 	--ldc->taille;
 	return ldc;
+}
+LDC LDC_enlever(LDC ldc, int pos){
+	return LDC_enleverElement(ldc, pos);
 }
 
 
@@ -376,6 +399,106 @@ LDC LDC_fusionSansDoublons(LDC ldc1, LDC ldc2, LDCElementEgal egal){
 
 
 /*
+ * \fn      LDC LDC_copier(LDC ldc)
+ * \brief   Copier une LDC à l'identique
+ * \note    Les éléments ne sont pas dupliqués, et le champ 'free' est mis à NULL
+ */
+LDC LDC_copier(LDC ldc){
+	LDC retour;
+	LDCIterateur it;
+	
+	retour = LDC_init();
+	it = LDCIterateur_init(ldc, LDCITERATEUR_AVANT);
+	
+	for (it = LDCIterateur_debut(it); ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it))
+		retour = LDC_insererElement(retour, -1, LDCIterateur_valeur(it), NULL);
+	
+	LDCIterateur_libererMemoire(&it);
+	
+	return retour;
+}
+
+
+
+/*
+ * \fn      LDC LDC_filter(LDC ldc, LDCElementEgal filtre, LDCElement param)
+ * \brief   Renvoie les éléments qui matchent le filtre
+ * \param   ldc     La LDC à fouiller
+ * \param   filtre  Une fonction qui renvoie vrai pour les éléments à garder
+ * \param   param   Un élément de LDC qui sera le second argument de la fonction filtre
+ * \return  Une LDC contenant les éléments de ldc matchant le filtre apprliqué avec le paramètre param
+ * \note    Le filtre sera appliqué à chaque élément : filtre(élément, param); renvoie vrai si l'élément est à garder
+ * \note    La ldc transmise n'est ni modifiée ni supprimée, la ldc renvoyée peut être supprimée sans influence sur celle transmise. 
+ */
+LDC LDC_filtrer(LDC ldc1, LDC ldc2, LDCElementEgal filtre){
+	LDC retour;
+	LDCElement e;
+	LDCIterateur it1, it2;
+	int trouve;
+	
+	retour = LDC_init();
+	it1 = LDCIterateur_init(ldc1, LDCITERATEUR_AVANT);
+	it2 = LDCIterateur_init(ldc2, LDCITERATEUR_AVANT);
+	
+	for (it1 = LDCIterateur_debut(it1); ! LDCIterateur_fin(it1); it1 = LDCIterateur_avancer(it1)){
+		e = LDCIterateur_valeur(it1);
+		trouve = 0;
+		for (it2 = LDCIterateur_debut(it2); ! LDCIterateur_fin(it2) && ! trouve; it2 = LDCIterateur_avancer(it2)){
+			if (filtre(e, LDCIterateur_valeur(it2))){
+				retour = LDC_insererElement(retour, -1, e, NULL);
+				trouve = 1;
+			}
+		}
+	}
+	LDCIterateur_libererMemoire(&it1);
+	LDCIterateur_libererMemoire(&it2);
+	return retour;
+}
+
+
+
+
+
+/*
+ * \fn      LDC LDC_exfilter(LDC ldc, LDCElementEgal filtre, LDCElement param)
+ * \brief   Renvoie les éléments qui matchent le filtre
+ * \param   ldc     La LDC à fouiller
+ * \param   filtre  Une fonction qui renvoie vrai pour les éléments à garder
+ * \param   param   Un élément de LDC qui sera le second argument de la fonction filtre
+ * \return  Une LDC contenant les éléments de ldc matchant le filtre apprliqué avec le paramètre param
+ * \note    Le filtre sera appliqué à chaque élément : filtre(élément, param); renvoie vrai si l'élément est à garder
+ * \note    La ldc transmise n'est ni modifiée ni supprimée, la ldc renvoyée peut être supprimée sans influence sur celle transmise. 
+ */
+LDC LDC_exfiltrer(LDC ldc1, LDC ldc2, LDCElementEgal filtre){
+	LDC retour;
+	LDCElement e;
+	LDCIterateur it1, it2;
+	int trouve;
+	
+	retour = LDC_init();
+	it1 = LDCIterateur_init(ldc1, LDCITERATEUR_AVANT);
+	it2 = LDCIterateur_init(ldc2, LDCITERATEUR_AVANT);
+	
+	for (it1 = LDCIterateur_debut(it1); ! LDCIterateur_fin(it1); it1 = LDCIterateur_avancer(it1)){
+		e = LDCIterateur_valeur(it1);
+		trouve = 0;
+		for (it2 = LDCIterateur_debut(it2); ! LDCIterateur_fin(it2) && ! trouve; it2 = LDCIterateur_avancer(it2)){
+			if (filtre(e, LDCIterateur_valeur(it2))){
+				trouve = 1;
+			}
+		}
+		if (! trouve)
+			retour = LDC_insererElement(retour, -1, e, NULL);
+	}
+	LDCIterateur_libererMemoire(&it1);
+	LDCIterateur_libererMemoire(&it2);
+	return retour;
+}
+
+
+
+
+/*
 */
 void LDC_afficher(LDC ldc){
 	LDCIterateur it;
@@ -405,6 +528,9 @@ void LDC_libererMemoire(LDC * ldc){
 	LDCCellule_libererMemoire(&c);
 	free(*ldc);
 	*ldc = NULL;
+}
+void LDC_free(LDC * ldc){
+	LDC_libererMemoire(ldc);
 }
 
 
@@ -450,6 +576,9 @@ LDCIterateur LDCIterateur_init(LDC ldc, int sens){
 void LDCIterateur_libererMemoire(LDCIterateur * it){
 	free(*it);
 	*it = NULL;
+}
+void LDCIterateur_free(LDCIterateur * it){
+	LDCIterateur_libererMemoire(it);
 }
 
 /*

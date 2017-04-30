@@ -53,6 +53,9 @@
 
 
 
+
+
+
 /**
  * \defgroup pack_cretinlib_LDCElement LDCElement
  * 
@@ -65,6 +68,13 @@
 typedef void * LDCElement;                      /**< Pointeur vers un truc externe, pour être contenu dans un LDCElement */
 typedef void (*LDCElementFree)(LDCElement *);     /**< Callback pour libérer la mémoire allouée à un LDCElement par un script externe */
 typedef int (*LDCElementEgal)(LDCElement, LDCElement); /**< Fonction définissant l'égalité entre deux éléments */
+
+
+/** \brief Fait simplement un free, peut être transmis comme LDCElementFree */
+void LDCElement_free(LDCElement * e);
+
+/** \brief Affirme que deux entiers sont égaux, ou non */
+int int_estEgal(int * a, int * b);
 
 /** @} */
 
@@ -123,8 +133,7 @@ LDC LDC_init();
  *
  */
 LDC LDC_insererElement(LDC ldc, int pos, LDCElement e, LDCElementFree free);
-
-
+LDC LDC_inserer(LDC ldc, int pos, LDCElement e, LDCElementFree free);
 
 /**
  * \fn LDCElement LDC_obtenirElement(LDC ldc, int pos)
@@ -134,6 +143,7 @@ LDC LDC_insererElement(LDC ldc, int pos, LDCElement e, LDCElementFree free);
  *
  */
 LDCElement LDC_obtenirElement(LDC ldc, int pos);
+LDCElement LDC_obtenir(LDC ldc, int pos);
 
 
 
@@ -141,7 +151,8 @@ LDCElement LDC_obtenirElement(LDC ldc, int pos);
  \fn int LDC_obtenirPosition(LDC ldc, LDCElement e, LDCElementEgal egal)
  \brief renvoie la position d'un élément, -1 si absent
  */
-int LDC_obtenirPosition(LDC ldc, LDCElement e, LDCElementEgal egal); 
+int LDC_obtenirPosition(LDC ldc, LDCElement e, LDCElementEgal egal);
+int LDC_chercher(LDC ldc, LDCElement e, LDCElementEgal egal);
 
 
 
@@ -151,7 +162,8 @@ int LDC_obtenirPosition(LDC ldc, LDCElement e, LDCElementEgal egal);
  * \return La LDC
  *
  */
-LDC LDC_enleverElement(LDC ldc, int pos);
+LDC LDC_enleverElement(LDC ldc, int pos); 
+LDC LDC_enlever(LDC ldc, int pos); 
 
 
 
@@ -176,7 +188,7 @@ LDC LDC_fusion(LDC ldc1, LDC ldc2);
 
 
 /**
- * \fn      LDC LDC_fusion(LDC ldc1, LDC ldc2)
+ * \fn      LDC LDC_fusion(LDC ldc1, LDC ldc2n LDCElementEgal egal)
  * \brief   Fusionne deux LDC sans doublons
  * \param   ldc1 La LDC qui reçoit
  * \param   ldc2 La LDC à concatener à ldc1
@@ -186,6 +198,34 @@ LDC LDC_fusion(LDC ldc1, LDC ldc2);
  * \pre     ldc1 ne contient pas de doublons
  */
 LDC LDC_fusionSansDoublons(LDC ldc1, LDC ldc2, LDCElementEgal egal);
+
+
+/**
+ * \fn      LDC LDC_copier(LDC ldc)
+ * \brief   Copier une LDC à l'identique
+ * \note    Les éléments ne sont pas dupliqués, et le champ 'free' est mis à NULL
+ */
+LDC LDC_copier(LDC ldc);
+
+/**
+ * \fn      LDC LDC_filtrer(LDC ldc1, LDC ldc2, LDCElementEgal filtre)
+ * \brief   Renvoie l'intersection de ldc1 et ldc2
+ * \param   ldc1   La LDC à fouiller
+ * \param   ldc2    La liste des résultats admissibles
+ * \param   filtre  Une fonction qui renvoie vrai pour les éléments à garder
+ * \return  Une LDC contenant les éléments 
+ */
+LDC LDC_filtrer(LDC ldc1, LDC ldc2, LDCElementEgal filtre);
+
+/**
+ * \fn      LDC LDC_exfiltrer(LDC ldc1, LDC ldc2, LDCElementEgal filtre)
+ * \brief   Renvoie la différence de ldc1 par ldc2
+ * \param   ldc1   La LDC à fouiller
+ * \param   ldc2    La liste des résultats inadmissibles
+ * \param   filtre  Une fonction qui renvoie vrai pour les éléments à refuser
+ * \return  Une LDC contenant les éléments 
+ */
+LDC LDC_exfiltrer(LDC ldc1, LDC ldc2, LDCElementEgal filtre);
 
 
 /*
@@ -201,6 +241,7 @@ void LDC_afficher(LDC ldc);
  *
  */
 void LDC_libererMemoire(LDC * ldc);
+void LDC_free(LDC * ldc);
 
 
 
@@ -251,6 +292,7 @@ LDCIterateur LDCIterateur_init(LDC ldc, int sens);
  * \param it Pointeur vers un itérateur
  */
 void LDCIterateur_libererMemoire(LDCIterateur * it);
+void LDCIterateur_free(LDCIterateur * it);
 
 /**
  * \fn int LDCIterateur_position(LDCiterateur it)
