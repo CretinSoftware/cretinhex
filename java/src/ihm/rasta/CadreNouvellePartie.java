@@ -20,6 +20,7 @@ public class CadreNouvellePartie extends Cadre {
 
 	private JComboBox comboBox;
 	private JTextField textField;
+	private BlocBoutons blocBoutons;
 
 
 	private Bouton boutons[] = {
@@ -37,7 +38,9 @@ public class CadreNouvellePartie extends Cadre {
 		
 		this.add(new Texte("<h1>Nouvelle partie</h1>", JLabel.CENTER), BorderLayout.NORTH);
 		
-		this.add(new BlocBoutons(this.boutons), BorderLayout.SOUTH);
+		this.blocBoutons = new BlocBoutons(this.boutons);
+		this.add(this.blocBoutons, BorderLayout.SOUTH);
+		/*this.fenetre.getRootPane().setDefaultButton(this.blocBoutons.getBt(1));*/
 		
 		JPanel tout, pan;
 		Texte texte;
@@ -86,6 +89,10 @@ public class CadreNouvellePartie extends Cadre {
 		
 		this.add(tout, BorderLayout.CENTER);
 		
+	}
+	
+	public JButton getDefaultButton(){
+		return this.blocBoutons.getBt(0);
 	}
 	
 	public String[] getOptions(){

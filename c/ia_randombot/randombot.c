@@ -8,6 +8,7 @@
 
 # include <stdlib.h>
 # include <time.h>
+# include <assert.h>
 # include "randombot.h"
 
 /**
@@ -31,19 +32,23 @@ JNIEXPORT jintArray JNICALL Java_noyau_IA0_randombotXjouer
 	jint temp[2];
 	jint * cases;
 	
-	cases = (*jEnv)->GetIntArrayElements(jEnv, plateau, 0);
+	int casesVides[largeur*largeur];
+	int nbCasesVides = 0;
+	int i;
 	
-	/* On trouve une case vide */
-	do {
-		x = rand() % largeur;
-		y = rand() % largeur;
-	}
-    while (cases[x + largeur*y] != 0);
-    
+	cases = (*jEnv)->GetIntArrayElements(jEnv, plateau, 0);
+	for (i = 0; i < largeur*largeur; ++i)
+		if (cases[i] == 0)
+			casesVides[nbCasesVides++] = i;
+	
+	assert(nbCasesVides > 0);
+	i = rand() % nbCasesVides;
+	x = casesVides[i] % largeur;
+	y = casesVides[i] / largeur;
+	
     
 	(*jEnv)->ReleaseIntArrayElements(jEnv, plateau, cases, 0);
 	
-	/* On décompose en (x,y) */
 	temp[0] = x;
 	temp[1] = y;
 	

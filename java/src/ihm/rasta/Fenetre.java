@@ -243,7 +243,16 @@ public class Fenetre extends JFrame implements ActionListener {
 			this.menuItemAccueil.setEnabled(true);
 		}
 		this.idCadreActif = mnemo;
+		this.getRootPane().setDefaultButton(this.getCadreActif().getDefaultButton());
 		this.cl.show(this.contenu, mnemo);
+		
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				if (idCadreActif.equals("jeu"))
+						((CadreJeu) getCadreActif()).demanderJouer();
+
+			}
+		});
 		
 	}
 	
@@ -423,9 +432,5 @@ public class Fenetre extends JFrame implements ActionListener {
 				System.out.println("Action : " + e);
 			}
 		}
-	}
-	
-	
-	
-	
+	}	
 }

@@ -13,7 +13,7 @@ import java.awt.event.*;
  * \date      2 mai
  */
  
-abstract class Cadre extends JPanel implements ActionListener {
+public abstract class Cadre extends JPanel implements ActionListener {
 
 	protected Image imageFond;
 	protected Fenetre fenetre;
@@ -29,6 +29,10 @@ abstract class Cadre extends JPanel implements ActionListener {
 	}
 	
 	public String getConfirmation(String action){
+		return null;
+	}
+	
+	public JButton getDefaultButton(){
 		return null;
 	}
 	

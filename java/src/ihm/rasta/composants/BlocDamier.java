@@ -26,13 +26,20 @@ public class BlocDamier extends Bloc {
 		new Color(64, 64, 64)
 	};
 	
+	private CadreJeu parent;
+	
+	private Polygon hexagones[];
+	
 	private int largeurDamier;
 	private Joueur damier[];
 	
     private Point mouse = new Point();
 
-	public BlocDamier(Joueur damier[], int largeurDamier, int tailleX, int tailleY){
+	public BlocDamier(CadreJeu parent, Joueur damier[], int largeurDamier, int tailleX, int tailleY){
 		super(tailleX, tailleY);
+		
+		this.hexagones = new Polygon[damier.length];
+		this.parent = parent;
 		
 		this.largeurDamier = largeurDamier;
 		this.damier = new Joueur[damier.length];
@@ -40,21 +47,26 @@ public class BlocDamier extends Bloc {
 			this.damier[i] = damier[i];
 		
 		this.addMouseMotionListener(new MouseMotionAdapter() {
-            public void mouseMoved(MouseEvent e) {
-                mouse = e.getPoint();
-                e.getComponent().repaint();
-            }
+			public void mouseMoved(MouseEvent e) {
+				mouse = e.getPoint();
+				e.getComponent().repaint();
+			}
+        });
+		this.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				mouse = e.getPoint();
+				validerClic();
+			}	
         });
 	}
 	
-	public void paintComponent(Graphics g){
+	public void initHexagones(Graphics g){
+		
 		double tailleX = (double) this.getWidth();
 		double tailleY = (double) this.getHeight();		
 		double diam;
 		double decalageX, decalageY;
 		int indice;
-		Polygon polygone;
-		
 		
 		double nbCasesMiniX = (double) (this.largeurDamier) * 1.5;
 		double nbCasesMiniY = (double) (this.largeurDamier + 1) * 3.0 / 4.0;
@@ -94,17 +106,45 @@ public class BlocDamier extends Bloc {
 				xs[4] = (int) (x - (diam * racine3 / 4));
 				xs[5] = xs[4];
 				
-				polygone = new Polygon(xs, ys, 6);
-				
-				
-				if (this.damier[indice] == Joueur.J0 && polygone.contains(mouse))
-					g.setColor(new Color(200, 10, 10));
-				else
-					g.setColor(this.couleurs[this.damier[indice].toInt()]);
-				g.fillPolygon(polygone);
-				g.setColor(Color.black);
-				g.drawPolygon(polygone);
+				this.hexagones[indice] = new Polygon(xs, ys, 6);
 			}
+		}
+	}
+		
+		
+	
+	
+	
+	public void validerClic(){
+		boolean trouve = false;
+		for (int indice = 0; ! trouve && indice < this.hexagones.length; ++indice){
+			if (this.hexagones[indice].contains(mouse)){
+				trouve = true;
+				this.parent.jouerEn(indice % this.largeurDamier, indice / this.largeurDamier);
+			}
+		}
+	}
+	
+	
+	
+	
+	public void paintComponent(Graphics g){
+		
+		this.initHexagones(g);
+		
+		Polygon polygone;
+		
+		for (int indice = 0; indice < this.hexagones.length; ++indice){
+		
+			polygone = this.hexagones[indice];
+			
+			if (this.damier[indice] == Joueur.J0 && polygone.contains(mouse))
+				g.setColor(new Color(200, 10, 10));
+			else
+				g.setColor(this.couleurs[this.damier[indice].toInt()]);
+			g.fillPolygon(polygone);
+			g.setColor(Color.black);
+			g.drawPolygon(polygone);
 		}
 	}
 }

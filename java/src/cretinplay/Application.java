@@ -105,8 +105,8 @@ public class Application {
 		
 		
 		// Utilisateurs par défaut : deux humains
-		j1 = new Humain("Joueur 1", Joueur.J1);
-		j2 = new Humain("Joueur 2", Joueur.J2);
+		j1 = new Humain("Joueur blanc", Joueur.J1);
+		j2 = new Humain("Joueur noir",  Joueur.J2);
 		
 		
 		// Démarrage

@@ -21,10 +21,7 @@ public class IHMRasta implements IHM {
 	}
 	
 	public int[] obtenirCoords(int taille){
-		int xy[] = new int[2];
-		xy[0] = -1;
-		xy[1] = -1;
-		return xy;
+		return null;
 	}
 
 }

@@ -61,7 +61,7 @@ public class DialoguePrefsJoueurs extends Dialogue {
 		cadre.setBackground(Fenetre.couleurBG);
 		cadre.setBorder(BorderFactory.createTitledBorder("Joueur 1"));
 		
-		cadre2 = new BlocVide(275, 30);
+		cadre2 = new Bloc(275, 30);
 		cadre2.setLayout(new BoxLayout(cadre2, BoxLayout.LINE_AXIS));
 		
 		label = new JLabel("Type de joueur :");
@@ -73,11 +73,25 @@ public class DialoguePrefsJoueurs extends Dialogue {
 		this.existanceJ1.addItem("RandomBot");
 		this.existanceJ1.addItem("BridgeBot");
 		this.existanceJ1.setPreferredSize(new Dimension(00, 50));
+		if (Application.j1.getExistance().equals("ia0"))
+			this.existanceJ1.setSelectedItem("RandomBot");
+		else if (Application.j1.getExistance().equals("bridgebot"))
+			this.existanceJ1.setSelectedItem("BridgeBot");
+		else
+			this.existanceJ1.setSelectedItem("Humain");
+		this.existanceJ1.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				if (existanceJ1.getSelectedItem().equals("Humain"))
+					nomJ1.setEnabled(true);
+				else
+					nomJ1.setEnabled(false);
+			}
+		});
 		cadre2.add(this.existanceJ1);
 		
 		cadre.add(cadre2);
 		
-		cadre2 = new BlocVide(275, 30);
+		cadre2 = new Bloc(275, 30);
 		cadre2.setLayout(new BoxLayout(cadre2, BoxLayout.LINE_AXIS));
 		
 		label = new JLabel("Nom du joueur :");
@@ -87,6 +101,10 @@ public class DialoguePrefsJoueurs extends Dialogue {
 		this.nomJ1 = new JTextField(Application.j1.getNom());
 		this.nomJ1.setPreferredSize(new Dimension(100, 50));
 		cadre2.add(this.nomJ1);
+		if (this.existanceJ1.getSelectedItem().equals("Humain"))
+			this.nomJ1.setEnabled(true);
+		else
+			this.nomJ1.setEnabled(false);
 		cadre.add(cadre2);
 		
 		contenu.add(cadre);
@@ -95,7 +113,7 @@ public class DialoguePrefsJoueurs extends Dialogue {
 
 		/* Séparateur */
 
-		contenu.add(new BlocVide(50, this.getHeight()));
+		contenu.add(new Bloc(50, this.getHeight()));
 		
 			
 		
@@ -106,7 +124,7 @@ public class DialoguePrefsJoueurs extends Dialogue {
 		cadre.setBackground(Fenetre.couleurBG);
 		cadre.setBorder(BorderFactory.createTitledBorder("Joueur 2"));
 		
-		cadre2 = new BlocVide(275, 30);
+		cadre2 = new Bloc(275, 30);
 		cadre2.setLayout(new BoxLayout(cadre2, BoxLayout.LINE_AXIS));
 		
 		label = new JLabel("Type de joueur :");
@@ -118,11 +136,25 @@ public class DialoguePrefsJoueurs extends Dialogue {
 		this.existanceJ2.addItem("RandomBot");
 		this.existanceJ2.addItem("BridgeBot");
 		this.existanceJ2.setPreferredSize(new Dimension(100, 50));
+		if (Application.j2.getExistance().equals("ia0"))
+			this.existanceJ2.setSelectedItem("RandomBot");
+		else if (Application.j2.getExistance().equals("bridgebot"))
+			this.existanceJ2.setSelectedItem("BridgeBot");
+		else
+			this.existanceJ2.setSelectedItem("Humain");
+		this.existanceJ2.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				if (existanceJ2.getSelectedItem().equals("Humain"))
+					nomJ2.setEnabled(true);
+				else
+					nomJ2.setEnabled(false);
+			}
+		});
 		cadre2.add(this.existanceJ2);
 		
 		cadre.add(cadre2);
 		
-		cadre2 = new BlocVide(275, 30);
+		cadre2 = new Bloc(275, 30);
 		cadre2.setLayout(new BoxLayout(cadre2, BoxLayout.LINE_AXIS));
 		
 		label = new JLabel("Nom du joueur :");
@@ -131,6 +163,10 @@ public class DialoguePrefsJoueurs extends Dialogue {
 		
 		this.nomJ2 = new JTextField(Application.j2.getNom());
 		this.nomJ2.setPreferredSize(new Dimension(100, 50));
+		if (this.existanceJ2.getSelectedItem().equals("Humain"))
+			this.nomJ2.setEnabled(true);
+		else
+			this.nomJ2.setEnabled(false);
 		cadre2.add(this.nomJ2);
 		cadre.add(cadre2);
 		
@@ -146,6 +182,7 @@ public class DialoguePrefsJoueurs extends Dialogue {
 		boutons.setPreferredSize(new Dimension(750, 50));
 		
 		Bouton btOK = new Bouton(null, "OK");
+		this.getRootPane().setDefaultButton(btOK);
 		btOK.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0){
 				resultat = new String[4];

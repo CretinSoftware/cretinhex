@@ -27,6 +27,7 @@ public class CadreAccueil extends Cadre {
 	};
 	
 	private Image imageFond;
+	private BlocBoutons blocBoutons;
 
 	CadreAccueil(Fenetre fenetre){
 		super(fenetre);
@@ -36,12 +37,17 @@ public class CadreAccueil extends Cadre {
 		
 		this.add(new Texte("<h1>cretinhex</h1>", JLabel.CENTER), BorderLayout.NORTH);
 		
-		this.add(new BlocBoutons(boutons), BorderLayout.SOUTH);
+		this.blocBoutons = new BlocBoutons(this.boutons);
+		this.add(this.blocBoutons, BorderLayout.SOUTH);
 		
 		this.add(new BlocUtilisateur(Application.j1, 100, 500), BorderLayout.WEST);
 		
 		this.add(new BlocUtilisateur(Application.j2, 100, 500), BorderLayout.EAST);
 		
+	}
+	
+	public JButton getDefaultButton(){
+		return this.blocBoutons.getBt(0);
 	}
 
 	

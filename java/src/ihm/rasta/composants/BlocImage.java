@@ -31,10 +31,22 @@ public class BlocImage extends Bloc {
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
 		
-		Utilisateur u;
-		String img;
+		int x = tailleX;
+		int y = tailleY;
 		
-		g.drawImage(this.image, 0, 0, tailleX, tailleY, null);
+		if (x > this.getWidth()){
+			x = this.getWidth();
+			y = tailleY * x / tailleX;
+		}
+		if (y > this.getHeight()){
+			y = this.getHeight();
+			x = tailleX * y / tailleY;
+		}
+		
+		int decalageX = (this.getWidth() - x) / 2;
+		int decalageY = (this.getHeight() - y) / 2;
+		
+		g.drawImage(this.image, decalageX, decalageY, x, y, null);
 	}
 	
 }

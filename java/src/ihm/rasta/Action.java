@@ -13,6 +13,7 @@ package ihm.rasta;
 public class Action {
 
 
+	
 	public static final String NOUVEAU     = "Nouvelle Partie";
 	public static final String OUVRIR      = "Ouvrir";
 	public static final String JEU_NOUVEAU = "Jouer après un nouvelle partie";
