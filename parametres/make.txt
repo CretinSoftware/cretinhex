@@ -50,6 +50,7 @@ DOSSIER_CLIENT       = rendu_client
 # Dossiers Java (relatifs à java/)
 JAVA_SRC             = src
 JAVA_BIN             = bin
+JAVA_IMG             = images
 JAVA_APP             = $(JAVA_BIN)/cretinplay/Application.class
 JAVA_CLASS_APP       = cretinplay.Application
 JAVA_CLASS_PARTIEJNI = noyau.PartieJNI

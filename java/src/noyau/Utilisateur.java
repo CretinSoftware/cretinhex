@@ -15,6 +15,12 @@ public interface Utilisateur
 	/** \brief Définir le nom de l'utilisateur */
 	public void setNom(String nom);
 	
+	/** \brief Obtenir le joueur (J1 ou J2) */
+	public Joueur getJoueur();
+	
+	/** \brief Donne l'essance d'un joueur */
+	public String getExistance();
+	
 	/** 
 	 * \brief   Faire jouer un coup à l'utilisateur
 	 * \param   p L'état actuel de la partie

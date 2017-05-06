@@ -1,0 +1,127 @@
+\hex
+\dim 20
+\board
+o . o o * . . . . . . . . . o . * . . .
+. . . * . * . * . . * . o . . . . . . .
+. . . . . . . . o . * . . * . o . * . .
+. . o . . . . . . * . . . . . * . . . .
+. . . . * . . . . . o o . o . o . * . o
+. o . . o . . . . . . . . . . . . * . o
+. . * . . . . . o . . * . . . . . . . .
+. * . . . o . . * . . * . . . o o . . .
+. . . * . . . . . . * . * o . . . . * .
+. . . * * . . . . . * . . . . . . o * .
+. . o . o . . . . . . . . o * o . . o .
+o o . o . . * . o . * . . * . . . . * o
+. . o . . . o . o o . . . . * . . . o o
+. . * . . . . . . . . . * . . . . * o .
+o . . . * . . * . . . . . . . . . o . .
+. . o . * . . . . . . . . * . . * . . *
+. . . * . . . . . * o o . . . . o . . .
+. . . . . . . o * . . * . o . . . . . *
+. . . . . . . . . . . . * . . . . * . o
+. * . . . . . o . . o . . . . . . . . .
+\endboard
+\game
+\play o 2 10
+\play * 4 14
+\play o 2 0
+\play * 18 8
+\play o 1 5
+\play * 8 17
+\play o 19 5
+\play * 2 13
+\play o 6 12
+\play * 12 8
+\play o 7 19
+\play * 10 11
+\play o 8 6
+\play * 18 11
+\play o 10 16
+\play * 16 15
+\play o 18 10
+\play * 3 8
+\play o 2 15
+\play * 12 18
+\play o 18 12
+\play * 17 5
+\play o 19 12
+\play * 7 1
+\play o 17 14
+\play * 13 15
+\play o 5 7
+\play * 4 0
+\play o 13 17
+\play * 16 0
+\play o 13 10
+\play * 4 15
+\play o 0 14
+\play * 10 9
+\play o 17 9
+\play * 4 4
+\play o 19 11
+\play * 19 17
+\play o 14 0
+\play * 7 14
+\play o 15 2
+\play * 15 3
+\play o 2 3
+\play * 4 9
+\play o 13 8
+\play * 9 16
+\play o 10 4
+\play * 3 1
+\play o 11 16
+\play * 2 6
+\play o 19 4
+\play * 8 7
+\play o 8 11
+\play * 14 12
+\play o 3 0
+\play * 17 2
+\play o 8 2
+\play * 9 3
+\play o 1 11
+\play * 1 7
+\play o 11 4
+\play * 13 2
+\play o 15 4
+\play * 17 4
+\play o 15 10
+\play * 11 6
+\play o 2 12
+\play * 1 19
+\play o 4 5
+\play * 18 9
+\play o 7 17
+\play * 3 16
+\play o 15 7
+\play * 3 9
+\play o 0 0
+\play * 6 11
+\play o 13 4
+\play * 11 17
+\play o 16 16
+\play * 10 1
+\play o 3 11
+\play * 11 7
+\play o 16 7
+\play * 19 15
+\play o 10 19
+\play * 10 2
+\play o 0 11
+\play * 14 10
+\play o 18 13
+\play * 13 11
+\play o 19 18
+\play * 10 8
+\play o 8 12
+\play * 5 1
+\play o 4 10
+\play * 17 13
+\play o 12 1
+\play * 17 18
+\play o 9 12
+\play * 12 13
+\endgame
+\endhex

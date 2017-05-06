@@ -35,6 +35,7 @@ public class Application {
 	 */
 	private static void erreurUsage(){
 		System.err.println("Options autorisées : ");
+		System.err.println("\t-ihm console|rasta ");
 		System.err.println("\t-l x (largeur de l'écran) ");
 		System.err.println("\t-sys UNIX|Windows (quelques fioritures)");
 		System.exit(1);
@@ -63,6 +64,21 @@ public class Application {
 				++i;
 				if (args.length > i)
 					Application.SYSTEME = args[i];
+				else
+					erreurUsage();
+			}
+		
+			// -ihm console (par défaut) ou rasta ou encore d'autres...
+			else if(args[i].equals("-ihm")){
+				++i;
+				if (args.length > i){
+					if (args[i].toUpperCase().equals("RASTA"))
+						Application.ihm = new IHMRasta();
+					else if (args[i].toUpperCase().equals("CONSOLE"))
+						Application.ihm = new IHMConsole();
+					else
+						erreurUsage();
+				}
 				else
 					erreurUsage();
 			}
@@ -99,5 +115,17 @@ public class Application {
 		
 		
 	}
+	
+	
+	
+	
+	public static Utilisateur getUtilisateur(Joueur j){
+		if (j == Joueur.J1)
+			return j1;
+		else
+			return j2;
+	}
+	
+	
 
 }
