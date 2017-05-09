@@ -10,13 +10,15 @@ package ihm.rasta.composants;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.util.regex.*;
+import ihm.rasta.apparences.Apparence;
 
 
 public class Texte extends JLabel {
 	
 	private boolean clicable;
 	private String txt;
+	private Apparence apparence;
 	
 	public Texte(String txt){
 		super(txt);
@@ -28,24 +30,56 @@ public class Texte extends JLabel {
 		this.init(false);
 	}
 	
+	public Texte(String txt, Apparence apparence){
+		super(txt);
+		this.init(false);
+		this.setApparence(apparence);
+	}
+	
+	public Texte(String txt, int alignement, Apparence apparence){
+		super(txt, alignement);
+		this.init(false);
+		this.setApparence(apparence);
+	}
+	
 	private void init(boolean clicable){
 		this.setVerticalAlignment(JLabel.TOP);
 		this.setOpaque(false);
-		this.txt = this.getText();
+		this.txt = this.getHtmlText();
 		this.setHtmlText(this.txt);
 		
 	}
 	
-	private String enBleu(String txt){
+	protected String enBleu(String txt){
 		return "<b><u style=\"color: blue;\">" + this.txt + "</u></b>";
 	}
 	
-	private String enRouge(String txt){
+	protected String enRouge(String txt){
 		return "<b><i><u style=\"color: red;\">" + this.txt + "</u></i></b>";
 	}
 	
-	private void setHtmlText(String txt){
+	protected void setHtmlText(String txt){
 		this.setText("<html>" + txt + "</html>");
+	}
+	
+	public String getHtmlText(){
+		Pattern pattern = Pattern.compile("</?html>");
+		Matcher matcher = pattern.matcher(super.getText());
+		return matcher.replaceAll("");
+	}
+	
+	public void setApparence(Apparence apparence){
+		this.apparence = apparence;
+	}
+	
+	public void paintComponent(Graphics g){
+		if (this.apparence == null)
+			super.paintComponent(g);
+		else {
+			g.setColor(this.apparence.couleur(Apparence.Couleur.FOND));
+			g.fillRect(0, 0, this.getWidth(), this.getHeight());
+			super.paintComponent(g);
+		}
 	}
 	
 }

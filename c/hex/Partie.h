@@ -271,6 +271,20 @@ Partie Partie_charger(const char * nomFichier);
 
 
 
+/**
+ * \fn Partie Partie_annuler(int nombreDeTours)
+ * \param p La partie à modifier
+ * \param nombreDeTours Le nombre de tours à annuler
+ * \return La partie lue
+ *
+ * \brief Annule les nombreDeTours derniers tours
+ *
+ * \pre  nomBreDeTours < Partie_obtenirTour(p)
+ */
+Partie Partie_annuler(Partie p, int nombreDeTours);
+
+
+
 
 /**
  * \fn void Partie_libererMemoire(Partie p)

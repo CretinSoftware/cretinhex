@@ -21,6 +21,7 @@ public class BlocUtilisateur extends Bloc {
 	
 	private static final int DIM_X = 112;
 	private static final int DIM_Y = 136;
+	private static Texte texte;
 
 	public BlocUtilisateur(Utilisateur u, int largeur, int hauteur){
 		super(largeur, hauteur);
@@ -34,11 +35,15 @@ public class BlocUtilisateur extends Bloc {
 		
 		this.add(new Bloc(largeur, hBlocVide));
 		this.add(new BlocImage(Fenetre.apparence.url(u), dx, dy));
-		Texte t = new Texte("<b>"+u.getNom()+"</b>", JLabel.CENTER);
-		t.setPreferredSize(new Dimension(largeur, 30));
-		this.add(t);
+		this.texte = new Texte("<b>"+u.getNom()+"</b>", JLabel.CENTER);
+		this.texte.setPreferredSize(new Dimension(largeur, 30));
+		this.add(this.texte);
 		
 		this.add(new Bloc(largeur, hBlocVide));
+	}
+	
+	public void setApparence(Apparence apparence){
+		this.texte.setApparence(apparence);
 	}
 }
 

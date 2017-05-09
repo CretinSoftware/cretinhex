@@ -181,12 +181,22 @@ public class Partie extends PartieJNI {
 	 * \fn void charger(String nomFichier)
 	 * \param nomFichier Le fichier de sauvegarde
 	 * \brief Charge la partie depuis un fichier
-	 * \attention ne fonctionne pas
 	 */ 
 	public void charger(String nomFichier){
 		super.cretinhexXcharger(nomFichier);
 		this.largeur = this.cretinhexXlargeurDamier();
 		this.j = this.aQuiDeJouer();
+	}
+	
+
+	/**
+	 * \fn void annuler(int nbTours)
+	 * \param nbTours le nombre de mouvements à annuler
+	 * \brief Annule nbTours coups
+	 */ 
+	public void annuler(int nbTours){
+		super.cretinhexXannuler(nbTours);
+		this.j = Joueur.fromInt(super.cretinhexXaQuiDeJouer());
 	}
 	
 

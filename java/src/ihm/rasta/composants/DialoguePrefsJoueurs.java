@@ -58,7 +58,7 @@ public class DialoguePrefsJoueurs extends Dialogue {
 		
 		cadre = new JPanel();
 		cadre.setPreferredSize(new Dimension(375, this.getHeight()));
-		cadre.setBackground(Fenetre.couleurBG);
+		cadre.setOpaque(false);
 		cadre.setBorder(BorderFactory.createTitledBorder("Joueur 1"));
 		
 		cadre2 = new Bloc(275, 30);
@@ -121,7 +121,7 @@ public class DialoguePrefsJoueurs extends Dialogue {
 		
 		cadre = new JPanel();
 		cadre.setPreferredSize(new Dimension(375, this.getHeight()));
-		cadre.setBackground(Fenetre.couleurBG);
+		cadre.setOpaque(false);
 		cadre.setBorder(BorderFactory.createTitledBorder("Joueur 2"));
 		
 		cadre2 = new Bloc(275, 30);
@@ -206,7 +206,7 @@ public class DialoguePrefsJoueurs extends Dialogue {
 		boutons.add(btAnnuler);
 		tout.add(boutons);
 		
-		this.setContentPane(tout);
+		this.getContentPane().add(tout);
 	}
 	
 	

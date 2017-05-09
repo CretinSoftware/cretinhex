@@ -109,8 +109,12 @@ void BridgeBot_jouer(Damier d, int joueur, int * x, int * y, int ponts){
 	/* Si aucun coup n'est possible : on joue sans les ponts, ou bien on a un bug */
 	if (pos == -1 || mini == 0){
 		if (ponts){
-			if (BRIDGEBOT_DEBUG)
-				printf("C'est gagné, on bouche les trous des ponts\n");
+			if (BRIDGEBOT_DEBUG){
+				if (pos == -1)
+					printf("C'est gagné, on bouche les trous des ponts\n");
+				else
+					printf("Calcul différent en partant des différents pôles -> pas de ponts !\n");
+			}
 			BridgeBot_jouer(d, joueur, x, y, 0);
 		}
 		else{

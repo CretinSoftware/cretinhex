@@ -296,7 +296,8 @@ int GrapheHex_distanceMini(GrapheHex g, GrapheNoeud n1, GrapheNoeud n2, Joueur j
 	int retour;
 	
 	ldc = LDC_init();
-	ldc = LDC_insererElement(ldc, 0, LDC_insererElement(LDC_init(), 0, n1, NULL), (LDCElementFree) LDC_libererMemoire);
+	/*ldc = LDC_insererElement(ldc, 0, LDC_insererElement(LDC_init(), 0, n1, NULL), (LDCElementFree) LDC_libererMemoire);*/
+	ldc = GrapheHex_noeudsAccessiblesEnNCoups(g, n1, 0, j, ponts);
 	
 	sousldc = LDC_obtenirElement(ldc, -1);
 	while (LDC_obtenirPosition(sousldc, n2, (LDCElementEgal) GrapheNoeud_estEgal) < 0 && LDC_taille(sousldc) > 0){

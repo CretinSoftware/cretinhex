@@ -1,5 +1,7 @@
 package ihm;
-import ihm.rasta.*;
+import ihm.rasta.Fenetre;
+import ihm.rasta.Contenu;
+import ihm.rasta.apparences.*;
 
 /**
  * \class     IHMRasta
@@ -12,12 +14,22 @@ import ihm.rasta.*;
  
 public class IHMRasta implements IHM {
 
+	Apparence apparence;
 
 	public static Fenetre fenetre;
 	
+	public IHMRasta(){
+		super();
+		this.apparence = new ApparenceClassic();
+	}
+	
+	public IHMRasta(String str){
+		super();
+		this.apparence = Contenu.Mod.fromString(str).toApparence();
+	}
 	
 	public void play(){
-		IHMRasta.fenetre = new Fenetre();		
+		IHMRasta.fenetre = new Fenetre(this.apparence);		
 	}
 	
 	public int[] obtenirCoords(int taille){

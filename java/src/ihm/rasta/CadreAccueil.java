@@ -31,23 +31,28 @@ public class CadreAccueil extends Cadre {
 
 	CadreAccueil(Fenetre fenetre){
 		super(fenetre);
-		this.imageFond = new ImageIcon(Fenetre.apparence.url(RefImage.LOGO)).getImage();
+		this.imageFond = new ImageIcon(Fenetre.apparence.url(Apparence.Image.LOGO)).getImage();
 
 		this.setLayout(new BorderLayout());
 		
-		this.add(new Texte("<h1>cretinhex</h1>", JLabel.CENTER), BorderLayout.NORTH);
+		this.add(new Titre("cretinhex", this.fenetre.apparence), BorderLayout.NORTH);
 		
 		this.blocBoutons = new BlocBoutons(this.boutons);
 		this.add(this.blocBoutons, BorderLayout.SOUTH);
 		
-		this.add(new BlocUtilisateur(Application.j1, 100, 500), BorderLayout.WEST);
+		Bloc bloc;
+		bloc = new BlocUtilisateur(Application.j1, 100, 500);
+		bloc.setApparence(this.fenetre.apparence);		
+		this.add(bloc, BorderLayout.WEST);
 		
-		this.add(new BlocUtilisateur(Application.j2, 100, 500), BorderLayout.EAST);
+		bloc = new BlocUtilisateur(Application.j2, 100, 500);
+		bloc.setApparence(this.fenetre.apparence);		
+		this.add(bloc, BorderLayout.EAST);
 		
 	}
 	
 	public JButton getDefaultButton(){
-		return this.blocBoutons.getBt(0);
+		return this.boutons[0];
 	}
 
 	

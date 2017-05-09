@@ -13,6 +13,7 @@ import java.awt.*;
 import java.awt.event.*;
 import noyau.*;
 import ihm.rasta.*;
+import ihm.rasta.apparences.Apparence;
 import cretinplay.Application;
 
 
@@ -20,11 +21,7 @@ public class BlocDamier extends Bloc {
 
 	public static double racine3 = 1.732;
 	
-	private static Color couleurs[] = {
-		new Color(128, 128, 128),
-		new Color(192, 192, 192),
-		new Color(64, 64, 64)
-	};
+	private static Color couleurs[];
 	
 	private CadreJeu parent;
 	
@@ -35,10 +32,17 @@ public class BlocDamier extends Bloc {
 	
     private Point mouse = new Point();
 
-	public BlocDamier(CadreJeu parent, Joueur damier[], int largeurDamier, int tailleX, int tailleY){
+	public BlocDamier(CadreJeu parent, Joueur damier[], int largeurDamier, int tailleX, int tailleY, Apparence apparence){
 		super(tailleX, tailleY);
 		
-		this.hexagones = new Polygon[damier.length];
+		
+		/* Couleurs */
+		this.couleurs = new Color[3];
+		for (int i = 0; i < 3; ++i)
+			this.couleurs[i] = apparence.couleur(Apparence.Couleur.fromInt(i));
+		
+		/* Hexagones */
+		this.hexagones = new Polygon[(largeurDamier + 2) * (largeurDamier + 2)];
 		this.parent = parent;
 		
 		this.largeurDamier = largeurDamier;
@@ -46,18 +50,20 @@ public class BlocDamier extends Bloc {
 		for (int i = 0; i < damier.length; ++i)
 			this.damier[i] = damier[i];
 		
-		this.addMouseMotionListener(new MouseMotionAdapter() {
-			public void mouseMoved(MouseEvent e) {
-				mouse = e.getPoint();
-				e.getComponent().repaint();
-			}
-        });
-		this.addMouseListener(new MouseAdapter() {
-			public void mousePressed(MouseEvent e) {
-				mouse = e.getPoint();
-				validerClic();
-			}	
-        });
+		if (this.parent != null){
+			this.addMouseMotionListener(new MouseMotionAdapter() {
+				public void mouseMoved(MouseEvent e) {
+					mouse = e.getPoint();
+					e.getComponent().repaint();
+				}
+			});
+			this.addMouseListener(new MouseAdapter() {
+				public void mousePressed(MouseEvent e) {
+					mouse = e.getPoint();
+					validerClic();
+				}	
+			});
+		}
 	}
 	
 	public void initHexagones(Graphics g){
@@ -68,8 +74,8 @@ public class BlocDamier extends Bloc {
 		double decalageX, decalageY;
 		int indice;
 		
-		double nbCasesMiniX = (double) (this.largeurDamier) * 1.5;
-		double nbCasesMiniY = (double) (this.largeurDamier + 1) * 3.0 / 4.0;
+		double nbCasesMiniX = (double) (this.largeurDamier + 2) * 1.5;
+		double nbCasesMiniY = (double) (this.largeurDamier + 3) * 3.0 / 4.0;
 		
 		diam = tailleX * 2.0 / ( racine3 * nbCasesMiniX );
 		decalageX = 0.0;
@@ -85,7 +91,7 @@ public class BlocDamier extends Bloc {
 		int xs[] = new int[6];
 		int ys[] = new int[6];
 		
-		for (int i = 0; i < largeurDamier; ++i){
+		for (int i = 0; i < largeurDamier + 2; ++i){
 			y = ((double) i * 3.0 / 4.0 + 0.5) * diam + decalageY;
 			
 			ys[0] = (int) (y - (diam / 2));
@@ -95,9 +101,9 @@ public class BlocDamier extends Bloc {
 			ys[4] = ys[2];
 			ys[5] = ys[1];
 			
-			for (int j = 0; j < largeurDamier; ++j){
+			for (int j = 0; j < largeurDamier + 2; ++j){
 				x = ((double) i * 0.5 + (double) j + 0.5) * diam * racine3 / 2.0 + decalageX;
-				indice = i * this.largeurDamier + j;
+				indice = i * (this.largeurDamier + 2) + j;
 				
 				xs[0] = (int) x;
 				xs[1] = (int) (x + (diam * racine3 / 4));
@@ -120,7 +126,7 @@ public class BlocDamier extends Bloc {
 		for (int indice = 0; ! trouve && indice < this.hexagones.length; ++indice){
 			if (this.hexagones[indice].contains(mouse)){
 				trouve = true;
-				this.parent.jouerEn(indice % this.largeurDamier, indice / this.largeurDamier);
+				this.parent.jouerEn(indice % (this.largeurDamier+2) - 1, indice / (this.largeurDamier+2) - 1);
 			}
 		}
 	}
@@ -129,7 +135,8 @@ public class BlocDamier extends Bloc {
 	
 	
 	public void paintComponent(Graphics g){
-		
+		int indiceDamier = 0;
+		boolean bordGD, bordHB;
 		this.initHexagones(g);
 		
 		Polygon polygone;
@@ -138,13 +145,28 @@ public class BlocDamier extends Bloc {
 		
 			polygone = this.hexagones[indice];
 			
-			if (this.damier[indice] == Joueur.J0 && polygone.contains(mouse))
-				g.setColor(new Color(200, 10, 10));
-			else
-				g.setColor(this.couleurs[this.damier[indice].toInt()]);
-			g.fillPolygon(polygone);
-			g.setColor(Color.black);
-			g.drawPolygon(polygone);
+			bordHB = (indice / (this.largeurDamier + 2) == 0 || indice / (this.largeurDamier + 2) == this.largeurDamier + 1);
+			bordGD = (indice % (this.largeurDamier + 2) == 0 || indice % (this.largeurDamier + 2) == this.largeurDamier + 1);
+			
+			if (bordHB && !bordGD)
+				g.setColor(this.couleurs[1]);
+			else if (bordGD && !bordHB)
+				g.setColor(this.couleurs[2]);
+			else if (!(bordGD || bordHB)){
+				if (this.damier[indiceDamier] == Joueur.J0 && polygone.contains(mouse))
+					g.setColor(new Color(200, 10, 10));
+				else 
+					g.setColor(this.couleurs[this.damier[indiceDamier].toInt()]);
+				++indiceDamier;
+			}
+			
+			if (!(bordGD && bordHB)){
+				g.fillPolygon(polygone);
+				if (!(bordGD || bordHB)){
+					g.setColor(Color.black);
+					g.drawPolygon(polygone);
+				}
+			}
 		}
 	}
 }

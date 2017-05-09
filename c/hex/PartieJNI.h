@@ -97,6 +97,14 @@ JNIEXPORT void JNICALL Java_noyau_PartieJNI_cretinhexXcharger
 
 /*
  * Class:     noyau_PartieJNI
+ * Method:    cretinhexXannuler
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_noyau_PartieJNI_cretinhexXannuler
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     noyau_PartieJNI
  * Method:    cretinhexXlibererMemoire
  * Signature: ()V
  */

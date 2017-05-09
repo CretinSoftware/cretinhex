@@ -35,7 +35,7 @@ public class Application {
 	 */
 	private static void erreurUsage(){
 		System.err.println("Options autorisées : ");
-		System.err.println("\t-ihm console|rasta ");
+		System.err.println("\t-ihm [classic|console|rasta|abeille] ");
 		System.err.println("\t-l x (largeur de l'écran) ");
 		System.err.println("\t-sys UNIX|Windows (quelques fioritures)");
 		System.exit(1);
@@ -72,19 +72,22 @@ public class Application {
 			else if(args[i].equals("-ihm")){
 				++i;
 				if (args.length > i){
-					if (args[i].toUpperCase().equals("RASTA"))
-						Application.ihm = new IHMRasta();
-					else if (args[i].toUpperCase().equals("CONSOLE"))
+					String str = args[i].toUpperCase();
+					
+					if (str.equals("CONSOLE"))
 						Application.ihm = new IHMConsole();
+						
+					else if (str.equals("CLASSIC") || str.equals("RASTA") || str.equals("ABEILLE"))
+						Application.ihm = new IHMRasta(args[i]);
 					else
 						erreurUsage();
 				}
 				else
-					erreurUsage();
+					Application.ihm = new IHMRasta();
 			}
 			
 						
-			// -l 150 : la largeur de l'écran
+			// -l 150 : la largeur de l'écran en nombre de caractère (pour affichage en ligne de commande)
 			else if (args[i].equals("-l")){
 				++i;
 				if (args.length > i)
@@ -105,8 +108,8 @@ public class Application {
 		
 		
 		// Utilisateurs par défaut : deux humains
-		j1 = new Humain("Joueur blanc", Joueur.J1);
-		j2 = new Humain("Joueur noir",  Joueur.J2);
+		j1 = new Humain("Joueur 1", Joueur.J1);
+		j2 = new Humain("Joueur 2",  Joueur.J2);
 		
 		
 		// Démarrage

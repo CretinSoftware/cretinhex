@@ -21,7 +21,11 @@ public abstract class Cadre extends JPanel implements ActionListener {
 	Cadre(Fenetre fenetre){
 		super();
 		this.fenetre = fenetre;
-		this.imageFond = new ImageIcon(Fenetre.apparence.url(RefImage.FOND)).getImage();
+		
+		String url = Fenetre.apparence.url(Apparence.Image.FOND);
+		if (url != null)
+			this.imageFond = new ImageIcon(url).getImage();
+		
 	}
 	
 	public String[] getOptions(){
@@ -36,9 +40,19 @@ public abstract class Cadre extends JPanel implements ActionListener {
 		return null;
 	}
 	
+	public Component getFocused(){
+		return null;
+	}
+	
 	public void paintComponent(Graphics g){
+	
+		/* Couleur de fond */
+		g.setColor(this.fenetre.apparence.couleur(Apparence.Couleur.FOND));
+		g.fillRect(0, 0, this.getWidth(), this.getHeight());
+	
 		/* Image de fond */
-		g.drawImage(this.imageFond, 0, 0, this.getWidth(), this.getHeight(), null);
+		if (this.imageFond != null)
+			g.drawImage(this.imageFond, 0, 0, this.getWidth(), this.getHeight(), null);
 	}
 
 	public void actionPerformed(ActionEvent e) {

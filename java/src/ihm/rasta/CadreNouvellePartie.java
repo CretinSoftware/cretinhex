@@ -36,7 +36,7 @@ public class CadreNouvellePartie extends Cadre {
 		
 		this.setLayout(new BorderLayout());
 		
-		this.add(new Texte("<h1>Nouvelle partie</h1>", JLabel.CENTER), BorderLayout.NORTH);
+		this.add(new Titre("Nouvelle partie", this.fenetre.apparence), BorderLayout.NORTH);
 		
 		this.blocBoutons = new BlocBoutons(this.boutons);
 		this.add(this.blocBoutons, BorderLayout.SOUTH);
@@ -48,16 +48,18 @@ public class CadreNouvellePartie extends Cadre {
 		tout = new Bloc();
 		tout.setLayout(new BoxLayout(tout, BoxLayout.PAGE_AXIS));
 		
-		pan = new Bloc(500, 75);
+		tout.add(new Bloc(300, 75));
+		
+		pan = new Bloc(300, 75, this.fenetre.apparence);
 		pan.add(new BlocImage(Fenetre.apparence.url(Application.j1), 56, 67));
-		pan.add(new Texte(" <i>" + Application.j1.getNom() + "</i> VS <i>" + Application.j2.getNom() + "</i> "));
+		pan.add(new Texte(" <i>" + Application.j1.getNom() + "</i> VS <i>" + Application.j2.getNom() + "</i> ", JLabel.CENTER));
 		pan.add(new BlocImage(Fenetre.apparence.url(Application.j2), 56, 67));
 		
 		tout.add(pan);
 		
 		/*tout.add(new BlocBoutons(new Bouton(this, "Modifier...", Action.OPT_JOUEURS)));*/
 		
-		pan = new Bloc(500, 50);
+		pan = new Bloc(400, 50, this.fenetre.apparence);
 		texte = new Texte("Qui commence ? ", JLabel.RIGHT);
 		texte.setPreferredSize(new Dimension(150, 25));
 		texte.setVerticalAlignment(JLabel.CENTER);
@@ -71,7 +73,7 @@ public class CadreNouvellePartie extends Cadre {
 		
 		tout.add(pan);
 		
-		pan = new Bloc(500, 50);
+		pan = new Bloc(400, 50, this.fenetre.apparence);
 		texte = new Texte("Largeur du damier : ", JLabel.RIGHT);
 		texte.setPreferredSize(new Dimension(150, 25));
 		texte.setVerticalAlignment(JLabel.CENTER);
@@ -88,11 +90,17 @@ public class CadreNouvellePartie extends Cadre {
 		
 		
 		this.add(tout, BorderLayout.CENTER);
+		this.add(new Bloc(200, 250), BorderLayout.EAST);
+		this.add(new Bloc(200, 250), BorderLayout.WEST);
 		
 	}
 	
 	public JButton getDefaultButton(){
-		return this.blocBoutons.getBt(0);
+		return this.boutons[0];
+	}
+	
+	public Component getFocused(){
+		return this.textField;
 	}
 	
 	public String[] getOptions(){
