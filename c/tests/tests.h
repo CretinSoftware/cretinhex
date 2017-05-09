@@ -21,6 +21,7 @@ void erreurUnix(const char * str, int CE);
 
 /* int */
 int int_egal(int * a, int * b);
+int int_eval(int * n);
 
 /* n-uplet */
 typedef struct s_NUplet * NUplet;
@@ -31,5 +32,6 @@ int NUplet_get(NUplet nuplet, int position);
 void NUplet_libererMemoire(NUplet * nuplet);
 void NUplet_afficher(NUplet nuplet);
 int NUplet_egal(NUplet nu1, NUplet nu2);
+int NUplet_eval(NUplet nu);
 
 # endif
