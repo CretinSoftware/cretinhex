@@ -72,7 +72,7 @@ main_Graphe:     $(foreach f, LDC Graphe utile, ../$(C_CRETINLIB)/$(DOS_O)/$(f).
 	$(CC) $(C_OPT) $^ -o $@
 	
 	
-main_GrapheHex:  $(foreach f, LDC Graphe utile, ../$(C_CRETINLIB)/$(DOS_O)/$(f).o) \
+main_GrapheHex:  $(foreach f, LDC ARNPlus Graphe utile, ../$(C_CRETINLIB)/$(DOS_O)/$(f).o) \
                  $(foreach f, Joueur Damier GrapheHex GrapheHexPlus, ../$(C_HEX)/$(DOS_O)/$(f).o) \
                  $(foreach f, tests main_GrapheHex, $(DOS_O)/$(f).o)
 	$(CC) $(C_OPT) $^ -o $@
@@ -84,7 +84,7 @@ main_Partie:     $(foreach f, LDC Graphe utile , ../$(C_CRETINLIB)/$(DOS_O)/$(f)
 	$(CC) $(C_OPT) $^ -o $@
 	
 	
-main_BridgeBot:  $(foreach f, LDC Graphe utile , ../$(C_CRETINLIB)/$(DOS_O)/$(f).o) \
+main_BridgeBot:  $(foreach f, LDC ARNPlus Graphe utile , ../$(C_CRETINLIB)/$(DOS_O)/$(f).o) \
                  $(foreach f, Joueur Damier GrapheHex GrapheHexPlus, ../$(C_HEX)/$(DOS_O)/$(f).o) \
                  $(foreach f, bridgebot, ../$(C_BRIDGEBOT)/$(DOS_O)/$(f).o) \
                  $(foreach f, tests main_BridgeBot, $(DOS_O)/$(f).o)

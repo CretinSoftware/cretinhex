@@ -19,6 +19,7 @@ typedef struct ABR * ABR;
 
 
 ABR ABR_init(ABRElementEval eval);
+int ABR_taille(ABR abr);
 ABR ABR_inserer(ABR abr, ABRElement e, ABRElementFree free);
 ABR ABR_insererSansDoublons(ABR abr, ABRElement e, ABRElementFree free);
 int ABR_chercher(ABR abr, ABRElement e);

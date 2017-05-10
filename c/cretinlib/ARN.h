@@ -18,6 +18,7 @@ typedef ABR ARN;
 
 
 ARN ARN_init(ARNElementEval eval);
+int ARN_taille(ARN anr);
 ARN ARN_inserer(ARN arn, ARNElement e, ARNElementFree free);
 int ARN_chercher(ARN arn, ARNElement e);
 ARN ARN_enlever(ARN arn, ARNElement e);
@@ -27,8 +28,8 @@ void ARN_free(ARN * arn);
 ARN ARN_fusion(ARN abr1, ARN abr2);
 ARN ARN_fusionSansDoublons(ARN abr1, ARN abr2);
 
-ARN ARN_filtrer(ARN arn1, ARN arn2, ARNElementEgal filtre);
-ARN ARN_exfiltrer(ARN arn1, ARN arn2, ARNElementEgal filtre);
+ARN ARN_filtrer(ARN arn1, ARN arn2);
+ARN ARN_exfiltrer(ARN arn1, ARN arn2);
 
 
 

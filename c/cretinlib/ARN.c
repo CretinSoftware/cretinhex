@@ -11,6 +11,10 @@
 
 
 
+int ARNElement_adresse(ARNElement e){
+	return ABRElement_adresse(e);
+}
+
 
 ARN ARN_equilibrer(ARN arn, ABRCellule c){
 	assert(c->param == 'R');
@@ -80,10 +84,16 @@ ARN ARN_init(ARNElementEval eval){
 	return (ARN) ABR_init(eval);
 }
 
+int ARN_taille(ARN anr){
+	return ABR_taille(anr);
+}
+
+
 /* Sucharge */
 ARN ARN_inserer(ARN arn, ARNElement e, ARNElementFree free){
 	ABRCellule celluleInseree;
 	
+	++arn->taille;
 	if (arn->racine == NULL){
 		arn->racine = ABRCellule_init(e, 'N', free, NULL, 0);
 		return arn;
@@ -109,6 +119,7 @@ ARN ARN_insererSansDoublons(ARN arn, ARNElement e, ARNElementFree free){
 	
 	if (arn->racine == NULL){
 		arn->racine = ABRCellule_init(e, 'N', free, NULL, 0);
+		++arn->taille;
 		return arn;
 	}
 	int cle = arn->eval(e);
@@ -123,6 +134,7 @@ ARN ARN_insererSansDoublons(ARN arn, ARNElement e, ARNElementFree free){
 	
 	celluleInseree = ABRCellule_init(e, 'R', free, pere, cle < arn->eval(pere->element));
 
+	++arn->taille;
 	arn = ARN_equilibrer(arn, celluleInseree);
 	return arn;
 }
@@ -180,7 +192,7 @@ ARN ARN_fusionSansDoublons(ARN arn1, ARN arn2){
 
 
 
-ARN ARN_filtrer(ARN arn1, ARN arn2, ARNElementEgal filtre){
+ARN ARN_filtrer(ARN arn1, ARN arn2){
 	ARN resultat = ARN_init(arn1->eval);
 	ABRIterateur it = ABRIterateur_init(arn1);
 	for (it = ABRIterateur_debut(it); ! ABRIterateur_fin(it); it = ABRIterateur_avancer(it))
@@ -191,7 +203,7 @@ ARN ARN_filtrer(ARN arn1, ARN arn2, ARNElementEgal filtre){
 }
 
 
-ARN ARN_exfiltrer(ARN arn1, ARN arn2, ARNElementEgal filtre){
+ARN ARN_exfiltrer(ARN arn1, ARN arn2){
 	ARN resultat = ARN_init(arn1->eval);
 	ABRIterateur it = ABRIterateur_init(arn1);
 	for (it = ABRIterateur_debut(it); ! ABRIterateur_fin(it); it = ABRIterateur_avancer(it))

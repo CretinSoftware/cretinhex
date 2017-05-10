@@ -21,6 +21,7 @@ ARN ARN_fromLDC(LDC ldc, ARNElementEval eval){
 	LDCIterateur it = LDCIterateur_init(ldc, LDCITERATEUR_AVANT);
 	for (it = LDCIterateur_debut(it); ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it))
 		arn = ARN_inserer(arn, LDCIterateur_valeur(it), NULL);
+	LDCIterateur_free(&it);
 	return arn;
 }
 
@@ -30,6 +31,7 @@ ARN ARN_fromLDCSansDoublons(LDC ldc, ARNElementEval eval){
 	LDCIterateur it = LDCIterateur_init(ldc, LDCITERATEUR_AVANT);
 	for (it = LDCIterateur_debut(it); ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it))
 		arn = ARN_insererSansDoublons(arn, LDCIterateur_valeur(it), NULL);
+	LDCIterateur_free(&it);
 	return arn;
 }
 
@@ -38,6 +40,7 @@ ARN ARN_insererLDC(ARN arn, LDC ldc){
 	LDCIterateur it = LDCIterateur_init(ldc, LDCITERATEUR_AVANT);
 	for (it = LDCIterateur_debut(it); ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it))
 		arn = ARN_inserer(arn, LDCIterateur_valeur(it), NULL);
+	LDCIterateur_free(&it);
 	return arn;
 }
 
@@ -46,6 +49,7 @@ ARN ARN_insererLDCSansDoublons(ARN arn, LDC ldc){
 	LDCIterateur it = LDCIterateur_init(ldc, LDCITERATEUR_AVANT);
 	for (it = LDCIterateur_debut(it); ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it))
 		arn = ARN_insererSansDoublons(arn, LDCIterateur_valeur(it), NULL);
+	LDCIterateur_free(&it);
 	return arn;
 }
 

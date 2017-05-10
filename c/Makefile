@@ -55,7 +55,7 @@ $(LIB_CRETINHEX_SO): $(foreach f, LDC Graphe utile, $(C_CRETINLIB)/$(DOS_O)/$(f)
 $(LIB_IA0_SO):  $(patsubst $(C_IA0)/%.c, $(C_IA0)/$(DOS_O)/%.o, $(wildcard $(C_IA0)/*.c))
 	gcc -shared $(C_OPT) $^ -o $@
 	
-$(LIB_BRIDGEBOT_SO): $(foreach f, LDC Graphe utile, $(C_CRETINLIB)/$(DOS_O)/$(f).o) \
+$(LIB_BRIDGEBOT_SO): $(foreach f, LDC ARNPlus Graphe utile, $(C_CRETINLIB)/$(DOS_O)/$(f).o) \
                      $(foreach f, Joueur Damier GrapheHex GrapheHexPlus, $(C_HEX)/$(DOS_O)/$(f).o) \
                      $(foreach f, bridgebot bridgebotJNI, $(C_BRIDGEBOT)/$(DOS_O)/$(f).o)
 	gcc -shared $(C_OPT) $^ -o $@

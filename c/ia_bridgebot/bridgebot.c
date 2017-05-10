@@ -43,8 +43,10 @@ void BridgeBot_jouer(Damier d, int joueur, int * x, int * y, int ponts){
 	
 	/* On cherche les noeuds à prendre : ils sont à i de NORD, j de SUD, tels que i + j - 1 = distanceMini(NORD, SUD) */
 	int i, j, distance;
-	LDC noeudsAPrendre, listeDepuisA, listeDepuisB, tmpA, tmpB, tmp2A, tmp2B;
+	LDC noeudsAPrendre, listeDepuisA, listeDepuisB;
+	ARN tmpA, tmpB, tmp2A, tmp2B, tmp;
 	LDCIterateur it;
+	ABRIterateur at;
 	GrapheNoeud n;
 	
 	noeudsAPrendre = LDC_init();
@@ -61,29 +63,32 @@ void BridgeBot_jouer(Damier d, int joueur, int * x, int * y, int ponts){
 		tmpA = LDC_obtenirElement(listeDepuisA, i);
 		tmpB = LDC_obtenirElement(listeDepuisB, j);
 		
-		tmp2A = LDC_init();
-		tmp2B = LDC_init();
+		tmp2A = ARN_init(ARNElement_adresse);
+		tmp2B = ARN_init(ARNElement_adresse);
 		
-		it = LDCIterateur_init(tmpA, LDCITERATEUR_AVANT);
-		for (it = LDCIterateur_debut(it); ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it)){
-			n = (GrapheNoeud) LDCIterateur_valeur(it);
+		at = ABRIterateur_init(tmpA);
+		for (at = ABRIterateur_debut(at); ! ABRIterateur_fin(at); at = ABRIterateur_avancer(at)){
+			n = (GrapheNoeud) ABRIterateur_valeur(at);
 			if (GHElement_valeur(GrapheNoeud_obtenirElement(n)) == J0)
-				tmp2A = LDC_insererElement(tmp2A, -1, n, NULL);
+				tmp2A = ARN_inserer(tmp2A, n, NULL);
 		}
-		LDCIterateur_free(&it);
+		ABRIterateur_free(&at);
 		
-		it = LDCIterateur_init(tmpB, LDCITERATEUR_AVANT);
-		for (it = LDCIterateur_debut(it); ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it)){
-			n = (GrapheNoeud) LDCIterateur_valeur(it);
+		at = ABRIterateur_init(tmpB);
+		for (at = ABRIterateur_debut(at); ! ABRIterateur_fin(at); at = ABRIterateur_avancer(at)){
+			n = (GrapheNoeud) ABRIterateur_valeur(at);
 			if (GHElement_valeur(GrapheNoeud_obtenirElement(n)) == J0)
-				tmp2B = LDC_insererElement(tmp2B, -1, n, NULL);
+				tmp2B = ARN_inserer(tmp2B, n, NULL);
 		}
-		LDCIterateur_free(&it);
+		ABRIterateur_free(&at);
 		
 		
-		noeudsAPrendre = LDC_insererElement(noeudsAPrendre, -1, LDC_filtrer(tmp2A, tmp2B, (LDCElementEgal) GrapheNoeud_estEgal), (LDCElementFree) LDC_free);
-		LDC_free(&tmp2A);
-		LDC_free(&tmp2B);		
+		tmp = ARN_filtrer(tmp2A, tmp2B);
+		
+		noeudsAPrendre = LDC_insererElement(noeudsAPrendre, -1, ARN_lister(tmp), (LDCElementFree) LDC_free);
+		ARN_free(&tmp2A);
+		ARN_free(&tmp2B);		
+		ARN_free(&tmp);
 	}
 	
 	

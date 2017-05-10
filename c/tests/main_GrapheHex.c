@@ -157,7 +157,7 @@ void afficherChemins(LDC chemins, Joueur joueur, GrapheHex g){
 void afficherNoeudsAN(GrapheHex gh, LDC noeuds){
 	int i, j, lgDamier;
 	int cpt;
-	LDCIterateur it;
+	ABRIterateur it;
 	GrapheNoeud * metagraphe;
 	
 	lgDamier = GrapheHex_largeurDamier(gh);
@@ -170,13 +170,13 @@ void afficherNoeudsAN(GrapheHex gh, LDC noeuds){
 	
 	
 	for (cpt = 0; cpt < LDC_taille(noeuds); ++cpt){
-		it = LDCIterateur_init(LDC_obtenirElement(noeuds, cpt), LDCITERATEUR_AVANT);
+		it = ABRIterateur_init(LDC_obtenirElement(noeuds, cpt));
 		
-		for (it = LDCIterateur_debut(it); ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it))
+		for (it = ABRIterateur_debut(it); ! ABRIterateur_fin(it); it = ABRIterateur_avancer(it))
 			for (i = 0; i < lgDamier * lgDamier; ++i)
-				if (LDCIterateur_valeur(it) == metagraphe[i])
+				if (ABRIterateur_valeur(it) == metagraphe[i])
 					affichage[i] = cpt;
-		LDCIterateur_libererMemoire(&it);
+		ABRIterateur_free(&it);
 	}
 	
 	for (i = 0; i < lgDamier * lgDamier; ++i){

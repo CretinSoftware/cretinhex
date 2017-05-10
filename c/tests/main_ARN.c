@@ -123,9 +123,9 @@ void test_filtre(int dim, int nb, const char * fichier1, const char * fichier2, 
 	arn1 = mkARN(dim, nb, fichier1);
 	arn2 = mkARN(dim, nb, fichier2);
 	if (exfiltrer)
-		arn3 = ARN_exfiltrer(arn1, arn2, (ARNElementEgal) NUplet_egal);
+		arn3 = ARN_exfiltrer(arn1, arn2);
 	else
-		arn3 = ARN_filtrer(arn1, arn2, (ARNElementEgal) NUplet_egal);
+		arn3 = ARN_filtrer(arn1, arn2);
 	
 	afficherABR(arn3);
 	

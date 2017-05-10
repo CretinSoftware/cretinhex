@@ -25,6 +25,7 @@ typedef struct ABRCellule {
 struct ABR {
 	ABRCellule racine;
 	ABRElementEval eval;
+	int taille;
 };
 
 struct ABRIterateur {
@@ -147,12 +148,18 @@ ABR ABR_init(ABRElementEval eval){
 	
 	abr->eval = eval;
 	abr->racine = NULL;
+	abr->taille = 0;
 		
 	return abr;
 }
 
+int ABR_taille(ABR abr){
+	return abr->taille;
+}
+
 
 ABR ABR_inserer(ABR abr, ABRElement e, ABRElementFree free){
+	++abr->taille;
 	if (abr->racine == NULL){
 		abr->racine = ABRCellule_init(e, 0, free, NULL, 0);
 		return abr;
@@ -173,6 +180,7 @@ ABR ABR_inserer(ABR abr, ABRElement e, ABRElementFree free){
 ABR ABR_insererSansDoublons(ABR abr, ABRElement e, ABRElementFree free){
 	if (abr->racine == NULL){
 		abr->racine = ABRCellule_init(e, 0, free, NULL, 0);
+		++abr->taille;
 		return abr;
 	}
 	int cle = abr->eval(e);
@@ -184,6 +192,7 @@ ABR ABR_insererSansDoublons(ABR abr, ABRElement e, ABRElementFree free){
 		if (cle < abr->eval(c->element))    c = c->filsG;
 		else                                c = c->filsD;
 	}
+	++abr->taille;
 	ABRCellule_init(e, 0, free, pere, cle < abr->eval(pere->element));
 	return abr;
 }
@@ -214,6 +223,7 @@ ABR ABR_enlever(ABR abr, ABRElement e){
 	cAux->filsD->pere = cAux;
 	ABRCellule_free(&c);
 	
+	--abr->taille;
 	return abr;
 }
 
@@ -283,10 +293,14 @@ ABRIterateur ABRIterateur_init(ABR abr){
 
 ABRIterateur ABRIterateur_debut(ABRIterateur it){
 	it->curseur = it->abr->racine;
-	while (it->curseur->filsG != NULL)
-		it->curseur = it->curseur->filsG;
-	if (it->curseur->filsD != NULL)
-		it->direction = 'D';
+	if (it->curseur != NULL){
+		while (it->curseur->filsG != NULL)
+			it->curseur = it->curseur->filsG;
+		if (it->curseur->filsD != NULL)
+			it->direction = 'D';
+		else
+			it->direction = 'P';
+	}
 	else
 		it->direction = 'P';
 	return it;
