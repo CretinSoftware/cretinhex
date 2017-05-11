@@ -25,6 +25,7 @@ public class CadreNouvellePartie extends Cadre {
 
 	private Bouton boutons[] = {
 		new Bouton(this, "Jouer", Action.JEU_NOUVEAU),
+		new Bouton(this, "Édit. joueurs", Action.OPT_JOUEURS),
 		new Bouton(this, "Retour", Action.ACCUEIL)
 	};
 	
