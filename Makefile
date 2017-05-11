@@ -30,7 +30,8 @@ FICHIERS_CLIENT           = $(foreach f, \
                                  $(foreach dos,$(C_SOURCES_CACHEES)  ,$(wildcard $(C)/$(dos)/*.h) \
                                                                       $(patsubst $(C)/$(dos)/%.c,$(C)/$(dos)/$(DOS_O)/%.o,$(wildcard $(C)/$(dos)/*.c))) \
                                  $(filter-out $(foreach dos,$(C_TOUT),$(C)/$(dos)), $(wildcard $(C)/*)) \
-                                 $(foreach f, Makefile doc.h $(JAVA_SRC) $(JAVA_IMG), $(JAVA)/$(f)) \
+                                 $(foreach f, Makefile doc.h $(JAVA_SRC), $(JAVA)/$(f)) \
+                                 $(filter-out $(wildcard $(JAVA)/$(JAVA_IMG)/*/*.xcf), $(wildcard $(JAVA)/$(JAVA_IMG)/*/*)) \
                                  $(filter-out $(DOSSIER_CLIENT) $(C) $(EXE) $(JAVA),$(wildcard *)) \
                             ,$(DOSSIER_CLIENT)/$(f))
 
