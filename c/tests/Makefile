@@ -4,7 +4,7 @@ include ../../parametres/make.txt
 
 
 # Séries de tests
-SERIE_TESTS   = LDC Graphe GrapheHex Partie BridgeBot
+SERIE_TESTS   = LDC ABR ARN Graphe GrapheHex Partie BridgeBot
 SERIE_TESTS_MEMOIRE =  $(foreach t,$(SERIE_TESTS), $(t)_memoire)
 
 
@@ -28,6 +28,10 @@ memory_tests: tests_memoire
 tests_memoire: $(SERIE_TESTS_MEMOIRE)
 
 LDC LDC_memoire: main_LDC mk_n-uplets
+
+ABR ABR_memoire: main_ABR mk_n-uplets
+
+ARN ARN_memoire: main_ARN mk_n-uplets
 
 Partie Partie_memoire: main_Partie mk_sauvegardes
 
@@ -54,13 +58,21 @@ main_LDC:        $(foreach f, LDC , ../$(C_CRETINLIB)/$(DOS_O)/$(f).o) \
                  $(foreach f, tests main_LDC, $(DOS_O)/$(f).o)
 	$(CC) $(C_OPT) $^ -o $@
 	
+main_ABR:        $(foreach f, LDC ABRPlus utile, ../$(C_CRETINLIB)/$(DOS_O)/$(f).o) \
+                 $(foreach f, tests main_ABR, $(DOS_O)/$(f).o)
+	$(CC) $(C_OPT) $^ -o $@
+	
+main_ARN:        $(foreach f, LDC ARNPlus utile, ../$(C_CRETINLIB)/$(DOS_O)/$(f).o) \
+                 $(foreach f, tests main_ARN, $(DOS_O)/$(f).o)
+	$(CC) $(C_OPT) $^ -o $@
+	
 	
 main_Graphe:     $(foreach f, LDC Graphe utile, ../$(C_CRETINLIB)/$(DOS_O)/$(f).o) \
                  $(foreach f, tests main_Graphe, $(DOS_O)/$(f).o)
 	$(CC) $(C_OPT) $^ -o $@
 	
 	
-main_GrapheHex:  $(foreach f, LDC Graphe utile, ../$(C_CRETINLIB)/$(DOS_O)/$(f).o) \
+main_GrapheHex:  $(foreach f, LDC ARNPlus Graphe utile, ../$(C_CRETINLIB)/$(DOS_O)/$(f).o) \
                  $(foreach f, Joueur Damier GrapheHex GrapheHexPlus, ../$(C_HEX)/$(DOS_O)/$(f).o) \
                  $(foreach f, tests main_GrapheHex, $(DOS_O)/$(f).o)
 	$(CC) $(C_OPT) $^ -o $@
@@ -72,7 +84,7 @@ main_Partie:     $(foreach f, LDC Graphe utile , ../$(C_CRETINLIB)/$(DOS_O)/$(f)
 	$(CC) $(C_OPT) $^ -o $@
 	
 	
-main_BridgeBot:  $(foreach f, LDC Graphe utile , ../$(C_CRETINLIB)/$(DOS_O)/$(f).o) \
+main_BridgeBot:  $(foreach f, LDC ARNPlus Graphe utile , ../$(C_CRETINLIB)/$(DOS_O)/$(f).o) \
                  $(foreach f, Joueur Damier GrapheHex GrapheHexPlus, ../$(C_HEX)/$(DOS_O)/$(f).o) \
                  $(foreach f, bridgebot, ../$(C_BRIDGEBOT)/$(DOS_O)/$(f).o) \
                  $(foreach f, tests main_BridgeBot, $(DOS_O)/$(f).o)

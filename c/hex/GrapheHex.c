@@ -82,6 +82,18 @@ int GrapheNoeud_memeJoueur(GrapheNoeud n1, GrapheNoeud n2){
 	return GHElement_memeJoueur((GHElement) GrapheNoeud_obtenirElement(n1), (GHElement) GrapheNoeud_obtenirElement(n2));
 }
 
+int GrapheNoeud_estJ0(GrapheNoeud n){
+	return GHElement_valeur((GHElement) GrapheNoeud_obtenirElement(n)) == J0;
+}
+
+int GrapheNoeud_estJ1(GrapheNoeud n){
+	return GHElement_valeur((GHElement) GrapheNoeud_obtenirElement(n)) == J1;
+}
+
+int GrapheNoeud_estJ2(GrapheNoeud n){
+	return GHElement_valeur((GHElement) GrapheNoeud_obtenirElement(n)) == J2;
+}
+
 void GHElement_libererMemoire(GHElement * e){
 	free(*e);
 	*e = NULL;
