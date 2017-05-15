@@ -23,29 +23,29 @@
 
 
 #include <assert.h>
+#include <stdlib.h>
 #include "Minimax.h"
-#include "Partie.h"
-#include "Damier.h"
-#include "Joueur.h"
+
 
 
 /* ATTENTION Vieux shnock : change rien a l'arrache stp ! je pense tenir un bon truc. Dis moi juste ce que t'en pense.
+ */
 
 
 /**
  * \struct Et.arbre_minimax
  * \brief Structure décisionelle de l'IA minimax
  */
-typedef struct Et.arbre_minimax
+typedef struct Et_arbre_minimax
 {
-	int vers_victoire;//booleen
+	int vers_victoire;
 	Joueur qui_est_IA;
 	int tour_de_jeu;
 	int coord_X;
 	int coord_Y;
 	int nb_configurations_suivantes;
 	Damier damier_du_noeud;
-	struct Et.arbre_minimax* configurations_suivantes;
+	struct Et_arbre_minimax *configurations_suivantes;
 }arbre_mnx_interne;
 
 
@@ -60,12 +60,12 @@ arbre_mnx creer_mnx(Damier D, int nbtour, Joueur idIA)
 	assert(a != NULL);
 	
 	a->qui_est_IA = idIA;
-	a->tour_de_jeu = nbtour
+	a->tour_de_jeu = nbtour;
 	a->coord_X = -1;
 	a->coord_Y = -1;
-	a->nb_configurations_suivantes = (D->largeur * D->largeur)-(nbtour);
+	a->nb_configurations_suivantes = (Damier_obtenirLargeur(D) * Damier_obtenirLargeur(D)) -(nbtour);
 	a->damier_du_noeud = D;
-	a->configurations_suivantes = (arbre_mnx) calloc(a->nb_configurations_suivantes, arbre_mnx);//vérifier la syntaxe des fonctions calloc
+	a->configurations_suivantes = (arbre_mnx) calloc(a->nb_configurations_suivantes, sizeof(arbre_mnx));
 	
 	return a;
 }
@@ -86,28 +86,38 @@ arbre_mnx creer_mnx(Damier D, int nbtour, Joueur idIA)
 arbre_mnx ajouter_mnx(arbre_mnx A, Damier D, Joueur idIA, int tour_de_jeu_en_entree, int X, int Y, 
 											int nb_config_suivantes, Joueur celui_qui_joue)
 {
-	//parametrage de l'arbre allant être ajouté
+	/*parametrage de l'arbre allant être ajouté
+	 */
 	A->qui_est_IA = idIA;
 	A->damier_du_noeud = Damier_modifierCase(D, celui_qui_joue, X, Y);
 	A->tour_de_jeu = tour_de_jeu_en_entree;
 	A->coord_X = X;
 	A->coord_Y = Y;
-	A->nb_configurations_suivantes = nb_config_suivantes
-	A->configurations_suivantes = (arbre_mnx) calloc(A->nb_configurations_suivantes, arbre_mnx);//verif syntaxe
-	//fin du parametrage de l'arbre.
+	A->nb_configurations_suivantes = nb_config_suivantes;
+	A->configurations_suivantes = (arbre_mnx) calloc(A->nb_configurations_suivantes, sizeof(arbre_mnx));
+	/*fin du parametrage de l'arbre.
+	 */
 	
-	//si l'arbre doit avoir des fils
+	/*si l'arbre doit avoir des fils
+	 */
 	if(A->nb_configurations_suivantes > 0)
 	{
-		int i = 0;//indice de navigation dans le tableau de configurations suivante du nouvel arbre_mnx
-		int j = 0;//indice de navigation dans le damier du noeud de l'arbre.
-		while(i < A->nb_configurations_suivantes)//tant que le tableau de configurations suivantes du nouvel arbre n'est pas complet
+		/*indice de navigation dans le tableau de configurations suivante du nouvel arbre_mnx
+		 */
+		int i = 0;
+		/*indice de navigation dans le damier du noeud de l'arbre.
+		 */
+		int j = 0;
+		/*tant que le tableau de configurations suivantes du nouvel arbre n'est pas complet
+		 */
+		while(i < A->nb_configurations_suivantes)
 		{
-			//si j est positionné sur une case n'étant pas attribué.
-			if((j < D->largeur * D->largeur) && (A->damier_du_noeud->cellules[j] == J0))
+			/*si j est positionné sur une case n'étant pas attribué.
+			 */
+			if((j < Damier_obtenirLargeur(D) * Damier_obtenirLargeur(D)) && (Damier_obtenirCase(A->damier_du_noeud, j%Damier_obtenirLargeur(D), j/Damier_obtenirLargeur(D)) == J0))
 			{
-				A->configurations_suivantes[i] = ajouter_mnx(A->configurations_suivantes[i], A->damier_du_noeud, idIA, A->tour_de_jeu +1, j%D->largeur, j/D->largeur, 
-																										 nb_config_suivantes-1, Joueur_suivant(celui_qui_joue);
+				A->configurations_suivantes[i] = ajouter_mnx(A->configurations_suivantes[i], A->damier_du_noeud, idIA, A->tour_de_jeu+1, j%Damier_obtenirLargeur(D), j/Damier_obtenirLargeur(D), 
+																										 A->nb_configurations_suivantes-1, Joueur_suivant(celui_qui_joue));
 				i++;
 			}
 			j++;
@@ -127,12 +137,15 @@ arbre_mnx ajouter_mnx(arbre_mnx A, Damier D, Joueur idIA, int tour_de_jeu_en_ent
 
 int calcul_nb_tour(Damier D, int *nbcoupJ1, int *nbcoupJ2)
 {
-	//initialisation de chaque contenue d'adresse pour comptage a venir.
+	/*initialisation de chaque contenue d'adresse pour comptage a venir.
+	 */
 	*nbcoupJ2 = 0;
 	*nbcoupJ1 = 0;
 	
-	//parcourt de l'intégralité des cases du damier et comptage des coup de J1 et J2
-	for(int i = 0; i < D->largeur * D->largeur; i++)
+	/*parcourt de l'intégralité des cases du damier et comptage des coup de J1 et J2
+	 */
+	int i;
+	for(i = 0; i < D->largeur * D->largeur; i++)
 	{
 		if(D->cellules[i] != J0)
 		{
@@ -170,21 +183,27 @@ arbre_mnx construir_mnx(Damier D, Joueur idIA)
 	int nbtour;
 	
 	nbtour = calcul_nb_tour(D, &nbcoupJ1, &nbcoupJ2);
-	//on creer un arbre, en lui donnant le damier.
+	/*on creer un arbre, en lui donnant le damier.
+	 */
 	arbre_mnx a = creer_mnx(D, nbtour, idIA);
 	
-	//on initialise ensuite chaque configuration suivantes de la racine
-	int i = 0;//indice de navigation dans le tableau de configurations suivantes
-	int j = 0;//indice de navigation dans le damier du noeud
+	/*on initialise ensuite chaque configuration suivantes de la racine
+	 */
+	/*indice de navigation dans le tableau de configurations suivante du nouvel arbre_mnx
+	*/
+	int i = 0;
+	/*indice de navigation dans le damier du noeud de l'arbre.
+	*/
+	int j = 0;
 	while( i < a->nb_configurations_suivantes)
 	{
 		if((j < D->largeur * D->largeur) && (D->cellules[j] == J0))
 		{
-			a->configurations_suivantes[i] = ajouter_mnx(a->configurations_suivantes[i], a->damier_du_noeud, idIA, a->tour_de_jeu +1, j%D->largeur, j/D->largeur,
-																									 a->configurations_suivantes -1, idIA);
+			a->configurations_suivantes[i] = ajouter_mnx(a->configurations_suivantes[i], a->damier_du_noeud, idIA, a->tour_de_jeu+1, j%D->largeur, j/D->largeur,
+																									 a->nb_configurations_suivantes-1, idIA);
 			i++;
 		}
-		j++
+		j++;
 	}
 	return a;
 }
@@ -196,9 +215,11 @@ arbre_mnx construir_mnx(Damier D, Joueur idIA)
  */
 void suprimer_MNX(arbre_mnx A)
 {
-	for(int i = 0; i < A->nb_config_suivantes; i++)
+	int i;
+	for(i = 0; i < A->nb_configurations_suivantes; i++)
 	{
-		suprimer_MNX(
-		
-
-// a finir !! (voir les todo)
+		suprimer_MNX(A->configurations_suivantes[i]);
+	}
+	free(A);
+}
+	
