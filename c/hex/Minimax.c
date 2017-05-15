@@ -189,4 +189,16 @@ arbre_mnx construir_mnx(Damier D, Joueur idIA)
 	return a;
 }
 
+
+/**
+ * \brief libère l'espace mémoire occupée par une structure Minimax
+ * \param A //la structure minimax a supprimer
+ */
+void suprimer_MNX(arbre_mnx A)
+{
+	for(int i = 0; i < A->nb_config_suivantes; i++)
+	{
+		suprimer_MNX(
+		
+
 // a finir !! (voir les todo)
