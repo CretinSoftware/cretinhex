@@ -152,6 +152,8 @@ verif_exfiltre(){
 REP_IN=fichiers_in
 REP_OUT=fichiers_out/LDC
 
+# Nombre de n-uplets à traiter par défaut
+TAILLE_DONNEES="500"
 
 # Dimension des n-uplets
 DIMENSIONS=1
@@ -323,6 +325,7 @@ test $? -eq 0 || ko=`expr $ko + 1`
 
 # Pattern des fichiers en entree
 f_in="$REP_IN/n-uplets_fusion_@1x@2_@3_a.txt"
+f_in2="$REP_IN/n-uplets_fusion_@1x@2_@3_b.txt"
 
 # Pattern du fichier en sortie
 f_out="$REP_OUT/fusion_@1x@2_@3.txt"
@@ -359,6 +362,47 @@ verif="$0 -g $f_in $f_in2 $f_out"
 
 
 ./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "$f_in2" "$mk_f_in2" "$f_out" "$commande" "$verif" "$DIMENSIONS" "$TAILLE_DONNEES" "$bcl"
+
+test $? -eq 0 || ko=`expr $ko + 1`
+
+
+
+# Filtre
+# -------------------------------------
+
+# Pattern du fichier en sortie
+f_out="$REP_OUT/filtre_@1x@2_@3.txt"
+
+# Pattern de la commande de test
+commande="./main_LDC -h @1 @2 $f_in $f_in2"
+
+# Pattern de la commande de vérification
+verif="$0 -h $f_in $f_in2 $f_out"
+
+
+./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "$f_in2" "$mk_f_in2" "$f_out" "$commande" "$verif" "$DIMENSIONS" "$TAILLE_DONNEES" "$bcl"
+
+test $? -eq 0 || ko=`expr $ko + 1`
+
+
+
+
+# Filter-out
+# -------------------------------------
+
+# Pattern du fichier en sortie
+f_out="$REP_OUT/filter-out_@1x@2_@3.txt"
+
+# Pattern de la commande de test
+commande="./main_LDC -i @1 @2 $f_in $f_in2"
+
+# Pattern de la commande de vérification
+verif="$0 -i $f_in $f_in2 $f_out"
+
+
+./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "$f_in2" "$mk_f_in2" "$f_out" "$commande" "$verif" "$DIMENSIONS" "$TAILLE_DONNEES" "$bcl"
+
+test $? -eq 0 || ko=`expr $ko + 1`
 
 
 

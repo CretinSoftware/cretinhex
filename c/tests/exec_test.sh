@@ -31,20 +31,36 @@ echo_taille(){
 	u="o"
 	taille=$1
 	
-	
+	# Divise par 1024
 	if test $taille -ge 1024
 	then
 		u="ko"
 		taille=`expr $taille / 1024`
 	fi
 	
-
+	# Et encore...
 	if test $taille -ge 1024
 	then
 		u="Mo"
 		taille=`expr $taille / 1024`
 	fi
 	
+	chaine="$taille $u"
+	
+	# Ajoute des espaces pour la présentation
+	cpt=`expr length "$chaine"`
+	while test $cpt -lt 7
+	do
+		chaine="$chaine "
+		cpt=`expr $cpt + 1`
+	done
+	
+	# Affichage
+	echo -n "$chaine"
+	return 0
+}
+
+
 
 # Par défaut
 
@@ -78,6 +94,20 @@ test ! "$f_in2" || test -f "$f_in2" -a -r "$f_in" || erreur fichier "$f_in2"
 test ! -f "$f_out" -o -w "$f_out" || erreur fichier "$f_out"
 
 mkdir -p `dirname "$f_out"`
+
+
+
+
+
+# AFFICHAGE : fichier en sortie (taille : 40c)
+chaine="$f_out"
+cpt=`expr length "$chaine"`
+while test $cpt -lt 40
+do
+	chaine="$chaine "
+	cpt=`expr $cpt + 1`
+done
+echo -n "$chaine"
 
 
 memOK=0
