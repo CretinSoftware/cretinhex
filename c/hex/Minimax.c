@@ -31,6 +31,104 @@
 /* ATTENTION Vieux shnock : change rien a l'arrache stp ! je pense tenir un bon truc. Dis moi juste ce que t'en pense.
  */
 
+/* 
+Salut mec. J'ai eu pas mal d'erreurs à la compilation, tu as le log ci dessous.
+Je suis assez surpris que tu n'aies que 3 erreurs et si tu utilises aussi gcc, alors je pense que c'est dû aux makefiles.
+
+Le secret pour compiler avec mes makefiles, c'est de compiler dans le dossier où on travaille (donc, ici, c/hex/)
+Le makefile général ne vérifie pas si les .o, si le code a changé, ni rien. S'il trouve des vieux .o, il s'en sert.
+Je pense que c'est ça qui a dû jouer. Je ne sais pas trop...
+Donc 'cd c/hex && make', ou, sur place, 'make -C c/hex'
+
+Le makefile général appelle celui du dossier c/ UNIQUEMENT si les bibliothèques .so  sont absentes (peu importe si elles sont à jour)
+Le makefile du dossier c/ appelle ceux des sous-dossiers UNIQUEMENT si les .o sont absents, de la même manière.
+Parfois, 'make maxclean all' (efface et recompile tout) et peut être salutaire, mais bien plus long.
+
+
+ 
+
+
+CE QUE J'AI CHANGÉ DANS CE FICHIER (15/05)  :
+
+   - Ce grand commentaire
+   - Une légère ambiguïté entre le type arbre_mnx (struct * mnx) et les tableaux de type arbre_mnx* (struct ** mnx)
+   - L'utilisation du type caché Damier comme s'il était ouvert
+
+Tu verras les modifs ligne par ligne en regardant le dernier commit (bitbucket ou gitg etc)
+
+
+
+Sinon ça m'a l'air bien pensé. J'aime bien la façon dont tu codes, et la façon dont tu présente ton code :-)
+Allez bon courage et moi je passe à table
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+kendou@debian:~/Bureau/UPS Tlse 3/S4/Projet S4/cretinhex/c/hex$ make
+gcc -Wall -Werror -ansi -fPIC -g -c Minimax.c -o obj/Minimax.o
+Minimax.c: In function ‘ajouter_mnx’:
+Minimax.c:119:38: error: incompatible type for argument 1 of ‘ajouter_mnx’
+     A->configurations_suivantes[i] = ajouter_mnx(A->configurations_suivantes[i], A->damier_du_noeud, idIA, A->tour_de_jeu+1, j%Damier_obtenirLargeur(D), j/Damier_obtenirLargeur(D), 
+                                      ^
+Minimax.c:86:11: note: expected ‘arbre_mnx’ but argument is of type ‘struct Et_arbre_minimax’
+ arbre_mnx ajouter_mnx(arbre_mnx A, Damier D, Joueur idIA, int tour_de_jeu_en_entree, int X, int Y, 
+           ^
+Minimax.c: In function ‘calcul_nb_tour’:
+Minimax.c:148:18: error: dereferencing pointer to incomplete type
+  for(i = 0; i < D->largeur * D->largeur; i++)
+                  ^
+Minimax.c:148:31: error: dereferencing pointer to incomplete type
+  for(i = 0; i < D->largeur * D->largeur; i++)
+                               ^
+Minimax.c:150:7: error: dereferencing pointer to incomplete type
+   if(D->cellules[i] != J0)
+       ^
+Minimax.c:152:8: error: dereferencing pointer to incomplete type
+    if(D->cellules[i] == J1)
+        ^
+Minimax.c: In function ‘construir_mnx’:
+Minimax.c:200:12: error: dereferencing pointer to incomplete type
+   if((j < D->largeur * D->largeur) && (D->cellules[j] == J0))
+            ^
+Minimax.c:200:25: error: dereferencing pointer to incomplete type
+   if((j < D->largeur * D->largeur) && (D->cellules[j] == J0))
+                         ^
+Minimax.c:200:41: error: dereferencing pointer to incomplete type
+   if((j < D->largeur * D->largeur) && (D->cellules[j] == J0))
+                                         ^
+Minimax.c:202:128: error: dereferencing pointer to incomplete type
+    a->configurations_suivantes[i] = ajouter_mnx(a->configurations_suivantes[i], a->damier_du_noeud, idIA, a->tour_de_jeu+1, j%D->largeur, j/D->largeur,
+                                                                                                                                ^
+Minimax.c:202:142: error: dereferencing pointer to incomplete type
+    a->configurations_suivantes[i] = ajouter_mnx(a->configurations_suivantes[i], a->damier_du_noeud, idIA, a->tour_de_jeu+1, j%D->largeur, j/D->largeur,
+                                                                                                                                              ^
+Minimax.c:202:37: error: incompatible type for argument 1 of ‘ajouter_mnx’
+    a->configurations_suivantes[i] = ajouter_mnx(a->configurations_suivantes[i], a->damier_du_noeud, idIA, a->tour_de_jeu+1, j%D->largeur, j/D->largeur,
+                                     ^
+Minimax.c:86:11: note: expected ‘arbre_mnx’ but argument is of type ‘struct Et_arbre_minimax’
+ arbre_mnx ajouter_mnx(arbre_mnx A, Damier D, Joueur idIA, int tour_de_jeu_en_entree, int X, int Y, 
+           ^
+Minimax.c: In function ‘suprimer_MNX’:
+Minimax.c:221:3: error: incompatible type for argument 1 of ‘suprimer_MNX’
+   suprimer_MNX(A->configurations_suivantes[i]);
+   ^
+Minimax.c:216:6: note: expected ‘arbre_mnx’ but argument is of type ‘struct Et_arbre_minimax’
+ void suprimer_MNX(arbre_mnx A)
+      ^
+Makefile:36: recipe for target 'obj/Minimax.o' failed
+make: *** [obj/Minimax.o] Error 1
+kendou@debian:~/Bureau/UPS Tlse 3/S4/Projet S4/cretinhex/c/hex$ 
+
+*/
+
+
+
 
 /**
  * \struct Et.arbre_minimax
@@ -45,7 +143,7 @@ typedef struct Et_arbre_minimax
 	int coord_Y;
 	int nb_configurations_suivantes;
 	Damier damier_du_noeud;
-	struct Et_arbre_minimax *configurations_suivantes;
+	struct Et_arbre_minimax **configurations_suivantes; /* C'est un tableau : l'adresse d'une liste d'adresses */
 }arbre_mnx_interne;
 
 
@@ -65,7 +163,7 @@ arbre_mnx creer_mnx(Damier D, int nbtour, Joueur idIA)
 	a->coord_Y = -1;
 	a->nb_configurations_suivantes = (Damier_obtenirLargeur(D) * Damier_obtenirLargeur(D)) -(nbtour);
 	a->damier_du_noeud = D;
-	a->configurations_suivantes = (arbre_mnx) calloc(a->nb_configurations_suivantes, sizeof(arbre_mnx));
+	a->configurations_suivantes = (arbre_mnx*) calloc(a->nb_configurations_suivantes, sizeof(arbre_mnx));
 	
 	return a;
 }
@@ -94,7 +192,7 @@ arbre_mnx ajouter_mnx(arbre_mnx A, Damier D, Joueur idIA, int tour_de_jeu_en_ent
 	A->coord_X = X;
 	A->coord_Y = Y;
 	A->nb_configurations_suivantes = nb_config_suivantes;
-	A->configurations_suivantes = (arbre_mnx) calloc(A->nb_configurations_suivantes, sizeof(arbre_mnx));
+	A->configurations_suivantes = (arbre_mnx*) calloc(A->nb_configurations_suivantes, sizeof(arbre_mnx));
 	/*fin du parametrage de l'arbre.
 	 */
 	
@@ -144,7 +242,7 @@ int calcul_nb_tour(Damier D, int *nbcoupJ1, int *nbcoupJ2)
 	
 	/*parcourt de l'intégralité des cases du damier et comptage des coup de J1 et J2
 	 */
-	int i;
+	/*int i;
 	for(i = 0; i < D->largeur * D->largeur; i++)
 	{
 		if(D->cellules[i] != J0)
@@ -158,7 +256,18 @@ int calcul_nb_tour(Damier D, int *nbcoupJ1, int *nbcoupJ2)
 				*nbcoupJ2+=1;
 			}
 		}
-	}
+	}*/
+	/* On ne peut pas acceder au type caché Damier, (D->largeur, D->cellules) il faut utiliser les opérateurs du .h */
+	int x, y, largeur;
+	largeur = Damier_obtenirLargeur(D);
+	for (y = 0; y < largeur; ++y)
+		for (x = 0; x < largeur; ++x)
+			if (Damier_obtenirCase(D, x, y) == J1)
+				++*nbcoupJ1;
+			else if (Damier_obtenirCase(D, x, y) == J2)
+				++*nbcoupJ2;
+				
+	
 	return(*nbcoupJ1 + *nbcoupJ2);
 }
 
@@ -191,9 +300,10 @@ arbre_mnx construir_mnx(Damier D, Joueur idIA)
 	 */
 	/*indice de navigation dans le tableau de configurations suivante du nouvel arbre_mnx
 	*/
-	int i = 0;
+	/*int i = 0;*/
 	/*indice de navigation dans le damier du noeud de l'arbre.
 	*/
+	/*
 	int j = 0;
 	while( i < a->nb_configurations_suivantes)
 	{
@@ -204,7 +314,23 @@ arbre_mnx construir_mnx(Damier D, Joueur idIA)
 			i++;
 		}
 		j++;
-	}
+	}*/
+	/* Accès à D->largeur, etc. impossible */
+	int i, x, y, largeur;
+	largeur = Damier_obtenirLargeur(D);
+	for (i = 0; i < a->nb_configurations_suivantes; ++i)
+		for (y = 0; y < largeur; ++y)
+			for (x = 0; x < largeur; ++x)
+				if (Damier_obtenirCase(D, x, y) == J0)
+					a->configurations_suivantes[i] = ajouter_mnx(a->configurations_suivantes[i],
+					                                             a->damier_du_noeud,
+					                                             idIA,
+					                                             a->tour_de_jeu + 1,
+					                                             x,
+					                                             y,
+					                                             a->nb_configurations_suivantes - 1,
+					                                             idIA);
+		
 	return a;
 }
 
