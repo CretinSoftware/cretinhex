@@ -28,23 +28,6 @@
 
 
 
-/* ATTENTION Vieux shnock : change rien a l'arrache stp ! je pense tenir un bon truc. Dis moi juste ce que t'en pense.
- */
-
-/* 
-Salut mec. J'ai eu pas mal d'erreurs à la compilation, tu as le log ci dessous.
-Je suis assez surpris que tu n'aies que 3 erreurs et si tu utilises aussi gcc, alors je pense que c'est dû aux makefiles.
-
-Le secret pour compiler avec mes makefiles, c'est de compiler dans le dossier où on travaille (donc, ici, c/hex/)
-Le makefile général ne vérifie pas si les .o, si le code a changé, ni rien. S'il trouve des vieux .o, il s'en sert.
-Je pense que c'est ça qui a dû jouer. Je ne sais pas trop...
-Donc 'cd c/hex && make', ou, sur place, 'make -C c/hex'
-
-Le makefile général appelle celui du dossier c/ UNIQUEMENT si les bibliothèques .so  sont absentes (peu importe si elles sont à jour)
-Le makefile du dossier c/ appelle ceux des sous-dossiers UNIQUEMENT si les .o sont absents, de la même manière.
-Parfois, 'make maxclean all' (efface et recompile tout) et peut être salutaire, mais bien plus long.
-*/
- 
 
 
 /**
@@ -97,9 +80,9 @@ arbre_mnx noter_mnx(arbre_mnx A)
 	int i;
 	for(i = 0; i < A->nb_configurations_suivantes; i++)
 	{
-		if(A->configurations_suivantes[i]->vers_victoire == 2)
+		if(A->configurations_suivantes[i]->vers_victoire == -1)
 		{
-			noter_mnx(A->configurations_suivantes[i]);
+			A->configurations_suivantes[i] = noter_mnx(A->configurations_suivantes[i]);
 		}
 	}
 	i = 0;
@@ -113,6 +96,25 @@ arbre_mnx noter_mnx(arbre_mnx A)
 	 * sur une feuille de profondeur impaire, les branches aillant des noeuds se terminant sur des profondeur paire serront forcément élliminées, puisque si le joueurs est bon, il choisira
 	 * forcément un coup le faisant gagner si il en a la possibilité. Le fait de se diriger vers une branche faisant perdre l'IA ne serra pas de son fait, mais celui de son adversaire,
 	 * adopter une politique de notation différente en fonction d'un noeud de profondeur pair ou impaire est donc inutile, puisque ce n'est pas l'IA qui joue à la place de son adversaire.
+	 */
+	
+	/*NOTE: Il me semble que je ne suis pas tout à fait d'accord avec ta boucle while. 
+	 * Elle dit qu'un noeud est gagnant si tous ses fils sont gagnants, ce qui n'est pas vrai.
+	 *
+	 * D'après moi il y a deux façons de voir la chose, les deux ressemblent assez à ta solution, mais pas pile :
+	 * 
+	 * Solution 1. La note 1 veut dire que l'ia gagne, la note 0 veut dire que l'ia perd.
+	 * Dans ce cas, la notation dépend de la profondeur du noeud (i.e. de qui va poser le pion)
+	 * Si l'ia va poser le pion, alors un fils gagnant (note = 1) suffit : l'ia le choisira
+	 * Si l'adversaire va poser le pion, alors un fils perdant (note = 0) suffit pour perdre, il faudrait tous les fils gagnant (note = 1) pour gagner
+	 *
+	 * Solution 2. La note 1 veut dire que celui qui va poser le pion va gagner (donc, selon la profondeur, c'est l'ia ou son adversaire)
+	 * Dans ce cas, un noeud est perdant (note = 0) si l'un de ses fils est gagnant (note = 1)
+	 * car un joueur est perdant si au coup suivant l'adversaire est gagnant.
+	 *
+	 * Je pense que les deux marchent.
+	 * L'ia cherche donc un coup parmi les fils de la racine (situation actuelle) qui est noté 1 
+	 * 
 	 */
 	return A;
 }
@@ -150,8 +152,9 @@ arbre_mnx suprimer_config_suivante_mnx(arbre_mnx A)
 arbre_mnx ajouter_mnx(Damier D, int tour_de_jeu_en_entree, int profondeur, int X, int Y, 
 											int nb_config_suivantes, Joueur celui_qui_joue)
 {
+	printf("prof=%d x=%d y=%d\n", profondeur, X, Y);
 	arbre_mnx a = creer_mnx(D, tour_de_jeu_en_entree, profondeur, X, Y);
-	a->damier_du_noeud = Damier_modifierCase(D, celui_qui_joue, X, Y);
+	a->damier_du_noeud = Damier_modifierCase(Damier_copier(D), celui_qui_joue, X, Y);
 	a->nb_configurations_suivantes = nb_config_suivantes;
 	
 	/*si l'arbre doit avoir des fils, il faudrait aussi ajouté une condition sur le fait que le damier du noeud puisse être gagnant, dans ce cas, free son tableau de config suivante et return a
@@ -196,7 +199,8 @@ arbre_mnx ajouter_mnx(Damier D, int tour_de_jeu_en_entree, int profondeur, int X
 			a->vers_victoire = 1;
 		}
 	}
-			
+	
+	GrapheHex_libererMemoire(&graphe_damier_du_noeud);		
 	
 	return a;
 }
@@ -250,30 +254,33 @@ arbre_mnx construir_mnx(Damier D, Joueur idIA)
 	int nbcoupJ1;
 	int nbcoupJ2;
 	int nbtour;
-	
+		
 	nbtour = calcul_nb_tour(D, &nbcoupJ1, &nbcoupJ2);
 	/*on creer un arbre, en lui donnant le damier.
 	 */
 	arbre_mnx a = creer_mnx(D, nbtour, 0, -1, -1);
-	a->damier_du_noeud = D;
+	a->damier_du_noeud = Damier_copier(D);
 	
 	/*on initialise ensuite chaque configuration suivantes de la racine
 	 */
 	int i, x, y, largeur;
 	largeur = Damier_obtenirLargeur(D);
-	for (i = 0; i < a->nb_configurations_suivantes; ++i)
-		for (y = 0; y < largeur; ++y)
-			for (x = 0; x < largeur; ++x)
-				if (Damier_obtenirCase(D, x, y) == J0)
-					a->configurations_suivantes[i] = ajouter_mnx(a->damier_du_noeud,
-																											 nbtour + 1,
-																											 a->hauteur + 1,
-					                                             x,
-					                                             y,
-					                                             a->nb_configurations_suivantes - 1,
-					                                             idIA);
+	i = 0;
+	for (y = 0; y < largeur; ++y)
+		for (x = 0; x < largeur; ++x)
+			if (Damier_obtenirCase(D, x, y) == J0){
+				a->configurations_suivantes[i] = ajouter_mnx(a->damier_du_noeud,
+				                                             nbtour + 1,
+				                                             a->hauteur + 1,
+				                                             x,
+				                                             y,
+				                                             a->nb_configurations_suivantes - 1,
+				                                             idIA);
+				++i;
+			}
 		
-	return a = noter_mnx(a);
+	/*return a = noter_mnx(a);*/
+	return a;
 }
 
 
@@ -286,9 +293,61 @@ void suprimer_mnx(arbre_mnx A)
 	int i;
 	for(i = 0; i < A->nb_configurations_suivantes; i++)
 	{
+		/* Supprime récursivement les sous-arbres */
 		suprimer_mnx(A->configurations_suivantes[i]);
 	}
+	/* Supprime le tableau */
+	free(A->configurations_suivantes);
+	
+	/* Supprime le damier */
+	Damier_libererMemoire(&(A->damier_du_noeud));
+	
+	/* Supprime la structure */
 	free(A);
 }
+
+
+
+
+
+
+
+void afficher_mnx_recursif(arbre_mnx A, const char * legende, char mode)
+{
+	char str[256];
+	int i;
+	
+	printf("%s", legende);
+	switch (A->vers_victoire)
+	{
+		case 1: sprintf(str, "gagnant"); break;
+		case 0: sprintf(str, "perdant"); break;
+		default:sprintf(str, "?"); break;
+	}
+	switch (mode)
+	{
+		case 'v':
+			printf("  vers_victoire = %s\n", str);
+			printf("  hauteur       = %d\n", A->hauteur);
+			printf("  coord_X       = %d\n", A->coord_X);
+			printf("  coord_Y       = %d\n", A->coord_Y);
+			printf("  nb_conf_suiv  = %d\n\n", A->nb_configurations_suivantes);
+			break;
+		default:
+			printf(" -> %s\n", str);
+	}
+	
+	for (i = 0; i < A->nb_configurations_suivantes; ++i)
+	{
+		sprintf(str, "%s -> %d", legende, i);
+		afficher_mnx_recursif(A->configurations_suivantes[i], str, mode);
+	}
+}
+
+void afficher_mnx(arbre_mnx A, char mode)
+{
+	afficher_mnx_recursif(A, "Noeud 0", mode);
+}
+
 
 

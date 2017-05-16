@@ -24,19 +24,23 @@ LIB_IA0_SO           = cretinhex_randombot.so
 LIB_IA0_DLL          = cretinhex_randombot.dll
 LIB_BRIDGEBOT_SO     = cretinhex_bridgebot.so
 LIB_BRIDGEBOT_DLL    = cretinhex_bridgebot.dll
+LIB_GOTOONEBOT_SO    = cretinhex_gotoonebot.so
+LIB_GOTOONEBOT_DLL   = cretinhex_gotoonebot.dll
 
 ifeq ($(SYSTEME), windows)
 	LIB_CRETINHEX    = $(LIB_CRETINHEX_DLL)
 	LIB_IA0          = $(LIB_IA0_DLL)
-	LDB_BRIDGEBOT    = $(LIB_BRIDGEBOT_DLL)
+	LIB_BRIDGEBOT    = $(LIB_BRIDGEBOT_DLL)
+	LIB_GOTOONEBOT   = $(LIB_GOTOONEBOT_DLL)
 else
 	LIB_CRETINHEX    = $(LIB_CRETINHEX_SO)
 	LIB_IA0          = $(LIB_IA0_SO)
 	LIB_BRIDGEBOT    = $(LIB_BRIDGEBOT_SO)
+	LIB_GOTOONEBOT   = $(LIB_GOTOONEBOT_SO)
 endif
-TOUTES_LIB           = $(LIB_CRETINHEX) $(LIB_IA0)
 
 TOUTES_LIB           = $(LIB_CRETINHEX) $(LIB_IA0) $(LIB_BRIDGEBOT)
+#TOUTES_LIB           = $(LIB_CRETINHEX) $(LIB_IA0) $(LIB_BRIDGEBOT) $(LIB_GOTOONEBOT)
 
 
 # Dossiers du projet (relatif au projet)
@@ -63,6 +67,7 @@ C_CRETINLIB          = cretinlib
 C_HEX                = hex
 C_IA0                = ia_randombot
 C_BRIDGEBOT          = ia_bridgebot
+C_GOTOONEBOT         = ia_gotoonebot
 C_TESTS              = tests
 C_TOUT               = $(C_CRETINLIB) $(C_HEX) $(C_IA0) $(C_BRIDGEBOT) $(C_TESTS)
 
@@ -83,6 +88,7 @@ DOS_D                = dep
 C_HEADER_PARTIEJNI   = $(C_HEX)/PartieJNI.h
 C_HEADER_IA0         = $(C_IA0)/randombot.h
 C_HEADER_BRIDGEBOT   = $(C_BRIDGEBOT)/bridgebotJNI.h
+C_HEADER_GOTOONEBOT  = $(C_GOTOONEBOT)/gotoonebotJNI.h
 
 
 

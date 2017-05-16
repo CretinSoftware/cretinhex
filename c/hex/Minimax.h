@@ -21,6 +21,8 @@ arbre_mnx construir_mnx(Damier D, Joueur idIA);
 void suprimer_mnx(arbre_mnx A);
 arbre_mnx noter_mnx(arbre_mnx A);
 
+void afficher_mnx(arbre_mnx A, char mode);
+
 
 
 #endif
