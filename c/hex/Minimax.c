@@ -137,7 +137,6 @@ kendou@debian:~/Bureau/UPS Tlse 3/S4/Projet S4/cretinhex/c/hex$
 typedef struct Et_arbre_minimax
 {
 	int vers_victoire;
-	Joueur qui_est_IA;
 	int tour_de_jeu;
 	int coord_X;
 	int coord_Y;
@@ -152,21 +151,23 @@ typedef struct Et_arbre_minimax
  * \param D //le damier donné lors du premier tour de jeu de l'IA
  * \
  */
-arbre_mnx creer_mnx(Damier D, int nbtour, Joueur idIA)
+arbre_mnx creer_mnx(Damier D, int nbtour, int X, int Y)
 {
+	/* idIA ne sert peut être plus a rien*/
+	/* ancienne definition de la fonction : arbre_mnx creer_mnx(Damier D, int nbtour, Joueur idIA)*/
 	arbre_mnx a = (arbre_mnx) malloc(sizeof(arbre_mnx));
 	assert(a != NULL);
 	
-	a->qui_est_IA = idIA;
 	a->tour_de_jeu = nbtour;
-	a->coord_X = -1;
-	a->coord_Y = -1;
+	a->coord_X = X;
+	a->coord_Y = Y;
 	a->nb_configurations_suivantes = (Damier_obtenirLargeur(D) * Damier_obtenirLargeur(D)) -(nbtour);
-	a->damier_du_noeud = D;
+	a->damier_du_noeud = NULL;
 	a->configurations_suivantes = (arbre_mnx*) calloc(a->nb_configurations_suivantes, sizeof(arbre_mnx));
 	
 	return a;
 }
+
 
 /**
  * \brief ajoute a une racine de type arbre_mnx, les arbres_mnx venant composer son tableau de configurations suivantes. 
@@ -181,24 +182,17 @@ arbre_mnx creer_mnx(Damier D, int nbtour, Joueur idIA)
  * \param celui_qui_joue / modifié a chaque appel récurcif grace a la fonction Joueur_suivant
  */
 
-arbre_mnx ajouter_mnx(arbre_mnx A, Damier D, Joueur idIA, int tour_de_jeu_en_entree, int X, int Y, 
+arbre_mnx ajouter_mnx(Damier D, int tour_de_jeu_en_entree, int X, int Y, 
 											int nb_config_suivantes, Joueur celui_qui_joue)
 {
-	/*parametrage de l'arbre allant être ajouté
-	 */
-	A->qui_est_IA = idIA;
-	A->damier_du_noeud = Damier_modifierCase(D, celui_qui_joue, X, Y);
-	A->tour_de_jeu = tour_de_jeu_en_entree;
-	A->coord_X = X;
-	A->coord_Y = Y;
-	A->nb_configurations_suivantes = nb_config_suivantes;
-	A->configurations_suivantes = (arbre_mnx*) calloc(A->nb_configurations_suivantes, sizeof(arbre_mnx));
-	/*fin du parametrage de l'arbre.
-	 */
+	arbre_mnx a = creer_mnx(D, tour_de_jeu_en_entree, X, Y);
+	a->damier_du_noeud = Damier_modifierCase(D, celui_qui_joue, X, Y);
+	a->nb_configurations_suivantes = nb_config_suivantes;
 	
-	/*si l'arbre doit avoir des fils
-	 */
-	if(A->nb_configurations_suivantes > 0)
+	/*si l'arbre doit avoir des fils, il faudrait aussi ajouté une condition sur le fait que le damier du noeud puisse être gagnant, dans ce cas, free son tableau de config suivante et return a
+	*/
+	GrapheHex graphe_damier_du_noeud = GrapheHex_init(a->damier_du_noeud);
+	if((a->nb_configurations_suivantes > 0) && (GrapheHex_quiGagne(graphe_damier_du_noeud) == J0))
 	{
 		/*indice de navigation dans le tableau de configurations suivante du nouvel arbre_mnx
 		 */
@@ -208,21 +202,21 @@ arbre_mnx ajouter_mnx(arbre_mnx A, Damier D, Joueur idIA, int tour_de_jeu_en_ent
 		int j = 0;
 		/*tant que le tableau de configurations suivantes du nouvel arbre n'est pas complet
 		 */
-		while(i < A->nb_configurations_suivantes)
+		while(i < a->nb_configurations_suivantes)
 		{
 			/*si j est positionné sur une case n'étant pas attribué.
 			 */
-			if((j < Damier_obtenirLargeur(D) * Damier_obtenirLargeur(D)) && (Damier_obtenirCase(A->damier_du_noeud, j%Damier_obtenirLargeur(D), j/Damier_obtenirLargeur(D)) == J0))
+			if((j < Damier_obtenirLargeur(D) * Damier_obtenirLargeur(D)) && (Damier_obtenirCase(a->damier_du_noeud, j%Damier_obtenirLargeur(D), j/Damier_obtenirLargeur(D)) == J0))
 			{
-				A->configurations_suivantes[i] = ajouter_mnx(A->configurations_suivantes[i], A->damier_du_noeud, idIA, A->tour_de_jeu+1, j%Damier_obtenirLargeur(D), j/Damier_obtenirLargeur(D), 
-																										 A->nb_configurations_suivantes-1, Joueur_suivant(celui_qui_joue));
+				a->configurations_suivantes[i] = ajouter_mnx(a->damier_du_noeud, a->tour_de_jeu+1, j%Damier_obtenirLargeur(D), j/Damier_obtenirLargeur(D), 
+																										 a->nb_configurations_suivantes-1, Joueur_suivant(celui_qui_joue));
 				i++;
 			}
 			j++;
 		}
 	}
 	
-	return A;
+	return a;
 }
 
 
@@ -242,22 +236,6 @@ int calcul_nb_tour(Damier D, int *nbcoupJ1, int *nbcoupJ2)
 	
 	/*parcourt de l'intégralité des cases du damier et comptage des coup de J1 et J2
 	 */
-	/*int i;
-	for(i = 0; i < D->largeur * D->largeur; i++)
-	{
-		if(D->cellules[i] != J0)
-		{
-			if(D->cellules[i] == J1)
-			{
-				*nbcoupJ1+=1;
-			}
-			else
-			{
-				*nbcoupJ2+=1;
-			}
-		}
-	}*/
-	/* On ne peut pas acceder au type caché Damier, (D->largeur, D->cellules) il faut utiliser les opérateurs du .h */
 	int x, y, largeur;
 	largeur = Damier_obtenirLargeur(D);
 	for (y = 0; y < largeur; ++y)
@@ -279,7 +257,7 @@ int calcul_nb_tour(Damier D, int *nbcoupJ1, int *nbcoupJ2)
  * \note joueur idIA désigne ici quel joueur est l'IA ATTENTION idée de génie: pour suprimer la question : a qui c'est de jouer dans mon arbre d'IA ?
  * l'IA peu ne créer son arbre qu'a son premier tour de jeu lors d'une partie et non, au lancement de la partie. 
  * Ainsi, dans l'arbre, l'IA commence toujours par placer ses propre pions dans les arbre succédants a la racine de son arbre, 
- * l'IA ne donnera 1 que pour les noeud menant vers une victoire en rang (prodfondeur) impaire.
+ * l'IA ne donnera 1 que pour les noeud menant vers une victoire en rang (profondeur) impaire.
  */
 
 arbre_mnx construir_mnx(Damier D, Joueur idIA)
@@ -294,37 +272,18 @@ arbre_mnx construir_mnx(Damier D, Joueur idIA)
 	nbtour = calcul_nb_tour(D, &nbcoupJ1, &nbcoupJ2);
 	/*on creer un arbre, en lui donnant le damier.
 	 */
-	arbre_mnx a = creer_mnx(D, nbtour, idIA);
+	arbre_mnx a = creer_mnx(D, nbtour, -1, -1);
+	a->damier_du_noeud = D;
 	
 	/*on initialise ensuite chaque configuration suivantes de la racine
 	 */
-	/*indice de navigation dans le tableau de configurations suivante du nouvel arbre_mnx
-	*/
-	/*int i = 0;*/
-	/*indice de navigation dans le damier du noeud de l'arbre.
-	*/
-	/*
-	int j = 0;
-	while( i < a->nb_configurations_suivantes)
-	{
-		if((j < D->largeur * D->largeur) && (D->cellules[j] == J0))
-		{
-			a->configurations_suivantes[i] = ajouter_mnx(a->configurations_suivantes[i], a->damier_du_noeud, idIA, a->tour_de_jeu+1, j%D->largeur, j/D->largeur,
-																									 a->nb_configurations_suivantes-1, idIA);
-			i++;
-		}
-		j++;
-	}*/
-	/* Accès à D->largeur, etc. impossible */
 	int i, x, y, largeur;
 	largeur = Damier_obtenirLargeur(D);
 	for (i = 0; i < a->nb_configurations_suivantes; ++i)
 		for (y = 0; y < largeur; ++y)
 			for (x = 0; x < largeur; ++x)
 				if (Damier_obtenirCase(D, x, y) == J0)
-					a->configurations_suivantes[i] = ajouter_mnx(a->configurations_suivantes[i],
-					                                             a->damier_du_noeud,
-					                                             idIA,
+					a->configurations_suivantes[i] = ajouter_mnx(a->damier_du_noeud,
 					                                             a->tour_de_jeu + 1,
 					                                             x,
 					                                             y,

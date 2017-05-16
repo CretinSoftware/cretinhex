@@ -5,6 +5,7 @@
 #include "Partie.h"
 #include "Damier.h"
 #include "Joueur.h"
+#include "GrapheHex.h"
 
 /*
  * \struct arbre_mnx
