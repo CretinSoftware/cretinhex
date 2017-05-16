@@ -6,6 +6,7 @@
 #include "Damier.h"
 #include "Joueur.h"
 #include "GrapheHex.h"
+#include "assert.h"
 
 /*
  * \struct arbre_mnx
@@ -17,6 +18,9 @@ typedef struct Et_arbre_minimax *arbre_mnx;
 
 
 arbre_mnx construir_mnx(Damier D, Joueur idIA);
+void suprimer_mnx(arbre_mnx A);
+arbre_mnx noter_mnx(arbre_mnx A);
+
 
 
 #endif

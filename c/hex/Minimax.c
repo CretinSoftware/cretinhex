@@ -43,101 +43,18 @@ Donc 'cd c/hex && make', ou, sur place, 'make -C c/hex'
 Le makefile général appelle celui du dossier c/ UNIQUEMENT si les bibliothèques .so  sont absentes (peu importe si elles sont à jour)
 Le makefile du dossier c/ appelle ceux des sous-dossiers UNIQUEMENT si les .o sont absents, de la même manière.
 Parfois, 'make maxclean all' (efface et recompile tout) et peut être salutaire, mais bien plus long.
-
-
- 
-
-
-CE QUE J'AI CHANGÉ DANS CE FICHIER (15/05)  :
-
-   - Ce grand commentaire
-   - Une légère ambiguïté entre le type arbre_mnx (struct * mnx) et les tableaux de type arbre_mnx* (struct ** mnx)
-   - L'utilisation du type caché Damier comme s'il était ouvert
-
-Tu verras les modifs ligne par ligne en regardant le dernier commit (bitbucket ou gitg etc)
-
-
-
-Sinon ça m'a l'air bien pensé. J'aime bien la façon dont tu codes, et la façon dont tu présente ton code :-)
-Allez bon courage et moi je passe à table
- 
- 
- 
- 
- 
- 
- 
- 
- 
-
-kendou@debian:~/Bureau/UPS Tlse 3/S4/Projet S4/cretinhex/c/hex$ make
-gcc -Wall -Werror -ansi -fPIC -g -c Minimax.c -o obj/Minimax.o
-Minimax.c: In function ‘ajouter_mnx’:
-Minimax.c:119:38: error: incompatible type for argument 1 of ‘ajouter_mnx’
-     A->configurations_suivantes[i] = ajouter_mnx(A->configurations_suivantes[i], A->damier_du_noeud, idIA, A->tour_de_jeu+1, j%Damier_obtenirLargeur(D), j/Damier_obtenirLargeur(D), 
-                                      ^
-Minimax.c:86:11: note: expected ‘arbre_mnx’ but argument is of type ‘struct Et_arbre_minimax’
- arbre_mnx ajouter_mnx(arbre_mnx A, Damier D, Joueur idIA, int tour_de_jeu_en_entree, int X, int Y, 
-           ^
-Minimax.c: In function ‘calcul_nb_tour’:
-Minimax.c:148:18: error: dereferencing pointer to incomplete type
-  for(i = 0; i < D->largeur * D->largeur; i++)
-                  ^
-Minimax.c:148:31: error: dereferencing pointer to incomplete type
-  for(i = 0; i < D->largeur * D->largeur; i++)
-                               ^
-Minimax.c:150:7: error: dereferencing pointer to incomplete type
-   if(D->cellules[i] != J0)
-       ^
-Minimax.c:152:8: error: dereferencing pointer to incomplete type
-    if(D->cellules[i] == J1)
-        ^
-Minimax.c: In function ‘construir_mnx’:
-Minimax.c:200:12: error: dereferencing pointer to incomplete type
-   if((j < D->largeur * D->largeur) && (D->cellules[j] == J0))
-            ^
-Minimax.c:200:25: error: dereferencing pointer to incomplete type
-   if((j < D->largeur * D->largeur) && (D->cellules[j] == J0))
-                         ^
-Minimax.c:200:41: error: dereferencing pointer to incomplete type
-   if((j < D->largeur * D->largeur) && (D->cellules[j] == J0))
-                                         ^
-Minimax.c:202:128: error: dereferencing pointer to incomplete type
-    a->configurations_suivantes[i] = ajouter_mnx(a->configurations_suivantes[i], a->damier_du_noeud, idIA, a->tour_de_jeu+1, j%D->largeur, j/D->largeur,
-                                                                                                                                ^
-Minimax.c:202:142: error: dereferencing pointer to incomplete type
-    a->configurations_suivantes[i] = ajouter_mnx(a->configurations_suivantes[i], a->damier_du_noeud, idIA, a->tour_de_jeu+1, j%D->largeur, j/D->largeur,
-                                                                                                                                              ^
-Minimax.c:202:37: error: incompatible type for argument 1 of ‘ajouter_mnx’
-    a->configurations_suivantes[i] = ajouter_mnx(a->configurations_suivantes[i], a->damier_du_noeud, idIA, a->tour_de_jeu+1, j%D->largeur, j/D->largeur,
-                                     ^
-Minimax.c:86:11: note: expected ‘arbre_mnx’ but argument is of type ‘struct Et_arbre_minimax’
- arbre_mnx ajouter_mnx(arbre_mnx A, Damier D, Joueur idIA, int tour_de_jeu_en_entree, int X, int Y, 
-           ^
-Minimax.c: In function ‘suprimer_MNX’:
-Minimax.c:221:3: error: incompatible type for argument 1 of ‘suprimer_MNX’
-   suprimer_MNX(A->configurations_suivantes[i]);
-   ^
-Minimax.c:216:6: note: expected ‘arbre_mnx’ but argument is of type ‘struct Et_arbre_minimax’
- void suprimer_MNX(arbre_mnx A)
-      ^
-Makefile:36: recipe for target 'obj/Minimax.o' failed
-make: *** [obj/Minimax.o] Error 1
-kendou@debian:~/Bureau/UPS Tlse 3/S4/Projet S4/cretinhex/c/hex$ 
-
 */
-
-
+ 
 
 
 /**
- * \struct Et.arbre_minimax
- * \brief Structure décisionelle de l'IA minimax
+ * struct Et_arbre_minimax
+ * \brief /Structure décisionelle de l'IA minimax
  */
 typedef struct Et_arbre_minimax
 {
 	int vers_victoire;
-	int tour_de_jeu;
+	int hauteur;
 	int coord_X;
 	int coord_Y;
 	int nb_configurations_suivantes;
@@ -151,21 +68,69 @@ typedef struct Et_arbre_minimax
  * \param D //le damier donné lors du premier tour de jeu de l'IA
  * \
  */
-arbre_mnx creer_mnx(Damier D, int nbtour, int X, int Y)
+arbre_mnx creer_mnx(Damier D, int nbtour, int profondeur, int X, int Y)
 {
 	/* idIA ne sert peut être plus a rien*/
 	/* ancienne definition de la fonction : arbre_mnx creer_mnx(Damier D, int nbtour, Joueur idIA)*/
-	arbre_mnx a = (arbre_mnx) malloc(sizeof(arbre_mnx));
+	arbre_mnx a = (arbre_mnx) malloc(sizeof(arbre_mnx_interne));
 	assert(a != NULL);
 	
-	a->tour_de_jeu = nbtour;
+	a->vers_victoire = -1;
+	a->hauteur = profondeur;
 	a->coord_X = X;
 	a->coord_Y = Y;
-	a->nb_configurations_suivantes = (Damier_obtenirLargeur(D) * Damier_obtenirLargeur(D)) -(nbtour);
+	a->nb_configurations_suivantes = (Damier_obtenirLargeur(D) * Damier_obtenirLargeur(D)) - (nbtour);
 	a->damier_du_noeud = NULL;
 	a->configurations_suivantes = (arbre_mnx*) calloc(a->nb_configurations_suivantes, sizeof(arbre_mnx));
 	
 	return a;
+}
+
+
+/**
+ * \brief noter minimax
+ * \param A // l'arbre Minimax a noter
+ */
+
+arbre_mnx noter_mnx(arbre_mnx A)
+{
+	int i;
+	for(i = 0; i < A->nb_configurations_suivantes; i++)
+	{
+		if(A->configurations_suivantes[i]->vers_victoire == 2)
+		{
+			noter_mnx(A->configurations_suivantes[i]);
+		}
+	}
+	i = 0;
+	A->vers_victoire = 1;
+	while ((i < A->nb_configurations_suivantes) && (A->vers_victoire == 1))
+	{
+		A->vers_victoire = A->configurations_suivantes[i]->vers_victoire;
+	}
+	/*ATTENTION: Il me semble finalement me rendre compte que l'IA cherche a gagner a coup sûr, les branches quelle suivra serront forcément notée 1, puisque venant de la racine, elle suivra
+	 * des branches qui forcément, mène à sa victoire, sans que le joueur n'ai la possibilité de gagner. Elle suivra donc des branches qui auront toute leurs configurations se terminant 
+	 * sur une feuille de profondeur impaire, les branches aillant des noeuds se terminant sur des profondeur paire serront forcément élliminées, puisque si le joueurs est bon, il choisira
+	 * forcément un coup le faisant gagner si il en a la possibilité. Le fait de se diriger vers une branche faisant perdre l'IA ne serra pas de son fait, mais celui de son adversaire,
+	 * adopter une politique de notation différente en fonction d'un noeud de profondeur pair ou impaire est donc inutile, puisque ce n'est pas l'IA qui joue à la place de son adversaire.
+	 */
+	return A;
+}
+
+/**
+ *\brief libère l'espace mamoire occupée par le tableau configurations_suivantes d'un noeud
+ *\param A //le noeud sur le quel le tableau de configurations_suivantes n'est plus utile
+ */
+
+arbre_mnx suprimer_config_suivante_mnx(arbre_mnx A)
+{
+	int i;
+	for(i = 0; i < A->nb_configurations_suivantes; i++)
+	{
+		free(A->configurations_suivantes[i]);
+	}
+	A->nb_configurations_suivantes = 0;
+	return A;
 }
 
 
@@ -182,10 +147,10 @@ arbre_mnx creer_mnx(Damier D, int nbtour, int X, int Y)
  * \param celui_qui_joue / modifié a chaque appel récurcif grace a la fonction Joueur_suivant
  */
 
-arbre_mnx ajouter_mnx(Damier D, int tour_de_jeu_en_entree, int X, int Y, 
+arbre_mnx ajouter_mnx(Damier D, int tour_de_jeu_en_entree, int profondeur, int X, int Y, 
 											int nb_config_suivantes, Joueur celui_qui_joue)
 {
-	arbre_mnx a = creer_mnx(D, tour_de_jeu_en_entree, X, Y);
+	arbre_mnx a = creer_mnx(D, tour_de_jeu_en_entree, profondeur, X, Y);
 	a->damier_du_noeud = Damier_modifierCase(D, celui_qui_joue, X, Y);
 	a->nb_configurations_suivantes = nb_config_suivantes;
 	
@@ -208,13 +173,30 @@ arbre_mnx ajouter_mnx(Damier D, int tour_de_jeu_en_entree, int X, int Y,
 			 */
 			if((j < Damier_obtenirLargeur(D) * Damier_obtenirLargeur(D)) && (Damier_obtenirCase(a->damier_du_noeud, j%Damier_obtenirLargeur(D), j/Damier_obtenirLargeur(D)) == J0))
 			{
-				a->configurations_suivantes[i] = ajouter_mnx(a->damier_du_noeud, a->tour_de_jeu+1, j%Damier_obtenirLargeur(D), j/Damier_obtenirLargeur(D), 
+				a->configurations_suivantes[i] = ajouter_mnx(a->damier_du_noeud, tour_de_jeu_en_entree+1, profondeur+1, j%Damier_obtenirLargeur(D), j/Damier_obtenirLargeur(D), 
 																										 a->nb_configurations_suivantes-1, Joueur_suivant(celui_qui_joue));
 				i++;
 			}
 			j++;
 		}
 	}
+	else if (a->nb_configurations_suivantes > 0)
+	{
+		a = suprimer_config_suivante_mnx(a);
+	}
+	
+	if (a->nb_configurations_suivantes == 0)
+	{
+		if(a->hauteur%2 == 0)
+		{
+			a->vers_victoire = 0;
+		}
+		else
+		{
+			a->vers_victoire = 1;
+		}
+	}
+			
 	
 	return a;
 }
@@ -272,7 +254,7 @@ arbre_mnx construir_mnx(Damier D, Joueur idIA)
 	nbtour = calcul_nb_tour(D, &nbcoupJ1, &nbcoupJ2);
 	/*on creer un arbre, en lui donnant le damier.
 	 */
-	arbre_mnx a = creer_mnx(D, nbtour, -1, -1);
+	arbre_mnx a = creer_mnx(D, nbtour, 0, -1, -1);
 	a->damier_du_noeud = D;
 	
 	/*on initialise ensuite chaque configuration suivantes de la racine
@@ -284,13 +266,14 @@ arbre_mnx construir_mnx(Damier D, Joueur idIA)
 			for (x = 0; x < largeur; ++x)
 				if (Damier_obtenirCase(D, x, y) == J0)
 					a->configurations_suivantes[i] = ajouter_mnx(a->damier_du_noeud,
-					                                             a->tour_de_jeu + 1,
+																											 nbtour + 1,
+																											 a->hauteur + 1,
 					                                             x,
 					                                             y,
 					                                             a->nb_configurations_suivantes - 1,
 					                                             idIA);
 		
-	return a;
+	return a = noter_mnx(a);
 }
 
 
@@ -298,13 +281,14 @@ arbre_mnx construir_mnx(Damier D, Joueur idIA)
  * \brief libère l'espace mémoire occupée par une structure Minimax
  * \param A //la structure minimax a supprimer
  */
-void suprimer_MNX(arbre_mnx A)
+void suprimer_mnx(arbre_mnx A)
 {
 	int i;
 	for(i = 0; i < A->nb_configurations_suivantes; i++)
 	{
-		suprimer_MNX(A->configurations_suivantes[i]);
+		suprimer_mnx(A->configurations_suivantes[i]);
 	}
 	free(A);
 }
-	
+
+
