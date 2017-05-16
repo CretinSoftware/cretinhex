@@ -70,9 +70,9 @@ C_TOUT               = $(C_CRETINLIB) $(C_HEX) $(C_IA0) $(C_BRIDGEBOT) $(C_TESTS
 # Compilation C
 CC                   = gcc
 ifeq ($(DEV),oui)
-	C_OPT            = -Wall -Werror -ansi -fPIC -g
+	C_OPT            = -Wall -Werror -ansi -fPIC -g -std=c99
 else
-	C_OPT            = -Wall -Werror -ansi -fPIC -DNDEBUG
+	C_OPT            = -Wall -Werror -ansi -fPIC -DNDEBUG -std=c99
 endif
 JNI_OPT              = -I$(JAVA_HOME)/include/ -I$(JAVA_HOME)/include/linux
 DOS_O                = obj

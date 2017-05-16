@@ -88,6 +88,30 @@ Damier Damier_modifierCase(Damier d, Joueur j, int x, int y){
 
 
 
+/**
+ * \fn Damier Damier_copier(Damier d)
+ * \param d Le damier à copier
+ * \brief Duplique un damier
+ *
+ */
+Damier Damier_copier(Damier d){
+	int i;
+	
+	Damier d2 = (Damier) malloc(sizeof(DamierInterne));
+	assert(d2 != NULL);
+	
+	d2->largeur = d->largeur;
+	
+	d2->cellules = (Joueur *) malloc(d->largeur * d->largeur * sizeof(Joueur));
+	assert(d->cellules != NULL);
+	for (i = 0; i < d->largeur * d->largeur; ++i)
+		d2->cellules[i] = d->cellules[i];
+	
+	return d2;
+}
+
+
+
 
 /*
  * \fn Joueur Damier_obtenirCase(Damier d, int x, int y)
