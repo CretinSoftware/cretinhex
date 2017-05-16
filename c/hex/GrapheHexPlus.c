@@ -48,28 +48,32 @@ int GrapheNoeud_estDifferent(GrapheNoeud n1, GrapheNoeud n2){
 /**
  * \brief   Touve tous les noeuds considérés comme reliés
  * \param   noeud Le noeud auquel on rattache les autres.
- * \param   indicateurJoueur  Un GrapheNoeud dont la seule utilité est de désigner le joueur j concerné. On considère que <i>noeud<i> lui appartient
+ * \param   j Le joueur
  * \param   ponts Activer les ponts : les cases pontées sont considérées comme reliées
  * \return  Une liste contenant :
  *            - Le noeud passé en paramètre
  *            - Tous les voisins de la couleur de <i>j</i>
  *            - Si <i>ponts</i> != 0, toutes les cases pontées, et récursivement tous les voisins et les cases pontées de ces cases
  */
-LDC noeudsRelies(GrapheNoeud noeud, GrapheNoeud indicateurJoueur, int ponts){
-	LDC resultat, casesLibres, indicateurJ, tmp, tmp2;
-	LDCIterateur it, it2, it3;
+ARN noeudsRelies(GrapheNoeud noeud, Joueur j, int ponts){
+	ARN resultat, casesLibres, tmp, tmp2, tmp3;
+	LDCIterateur it, it3;
+	ABRIterateur at, at2;
 	GrapheNoeud voisin, caseLibre, caseLibre2;
-	Joueur j, joueurNoeud;
+	Joueur joueurNoeud;
 	int modifiesCeTour;
 	
-	j = GHElement_valeur(GrapheNoeud_obtenirElement(indicateurJoueur));
-	indicateurJ = LDC_inserer(LDC_init(), 0, indicateurJoueur, NULL);
+	ARNElementEval GrapheNoeud_estDuJoueur;
+	if (j == J1)
+		GrapheNoeud_estDuJoueur = (ARNElementEval) GrapheNoeud_estJ1;
+	else
+		GrapheNoeud_estDuJoueur = (ARNElementEval) GrapheNoeud_estJ2;
 	
-	resultat = LDC_init();
+	resultat = ARN_init(ARNElement_adresse);
 	
 	/* 1. Le noeud passé en paramètre */
-	resultat = LDC_inserer(resultat, 0, noeud, NULL);
-	casesLibres = LDC_init();
+	resultat = ARN_inserer(resultat, noeud, NULL);
+	casesLibres = ARN_init(ARNElement_adresse);
 	
 	
 	/* 2. Les voisins jamais visités */
@@ -77,68 +81,80 @@ LDC noeudsRelies(GrapheNoeud noeud, GrapheNoeud indicateurJoueur, int ponts){
 	for (it = LDCIterateur_debut(it); ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it)){
 		voisin = (GrapheNoeud) LDCIterateur_valeur(it);
 		
-		if (LDC_chercher(resultat, voisin, (LDCElementEgal) GrapheNoeud_estEgal) < 0){
+		if (! ARN_chercher(resultat, voisin)){
 		
 			joueurNoeud = GHElement_valeur(GrapheNoeud_obtenirElement(voisin));
 
 			/* On veut tous les voisins appartenant à j */
 			if (joueurNoeud == j)
-				resultat = LDC_inserer(resultat, -1, voisin, NULL);
+				resultat = ARN_inserer(resultat, voisin, NULL);
 	
 			/* On conserve les cases libres pour trouver les ponts */
 			else if (joueurNoeud == J0)
-				if (ponts)
-					casesLibres = LDC_inserer(casesLibres, -1, voisin, NULL);
+				/*if (ponts)*/
+					casesLibres = ARN_inserer(casesLibres, voisin, NULL);
 		}
 	}
 	LDCIterateur_free(&it);
+	
+	
 	
 	/* 3. Récursivement, en cas de ponts, les deux-fois-voisins-d'une-case-libre appartenant à j */
 	modifiesCeTour = 1;
 	while (ponts && modifiesCeTour){
 		modifiesCeTour = 0;
 		
-		it = LDCIterateur_init(casesLibres, LDCITERATEUR_AVANT);
-		for (it = LDCIterateur_debut(it); ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it)){
-			caseLibre = (GrapheNoeud) LDCIterateur_valeur(it);
+		at = ABRIterateur_init(casesLibres);
+		for (at = ABRIterateur_debut(at); ! ABRIterateur_fin(at); at = ABRIterateur_avancer(at)){
+			caseLibre = (GrapheNoeud) ABRIterateur_valeur(at);
 			
 			
 			/* Noeuds appartenant au joueur, n'étant pas déjà dans resultat  */
-			tmp = LDC_filtrer(GrapheNoeud_obtenirVoisins(caseLibre), indicateurJ, (LDCElementEgal) GrapheNoeud_memeJoueur);
-			tmp2 = LDC_exfiltrer(tmp, resultat, (LDCElementEgal) GrapheNoeud_estEgal);
-			LDC_free(&tmp);
+			tmp3 = ARN_fromLDC(GrapheNoeud_obtenirVoisins(caseLibre), ARNElement_adresse);
+			tmp = ARN_filtrerCondition(tmp3, GrapheNoeud_estDuJoueur);
+			tmp2 = ARN_exfiltrer(tmp, resultat);
+			
+			ARN_free(&tmp);
+			ARN_free(&tmp3);
+			
 			
 			/* S'ils ont au moins deux voisins dans casesLibres, ils sont pontés */
-			it2 = LDCIterateur_init(tmp2, LDCITERATEUR_AVANT);
-			for (it2 = LDCIterateur_debut(it2); ! LDCIterateur_fin(it2); it2 = LDCIterateur_avancer(it2)){
-				voisin = (GrapheNoeud) LDCIterateur_valeur(it2);
-				tmp = LDC_filtrer(GrapheNoeud_obtenirVoisins(voisin), casesLibres, (LDCElementEgal) GrapheNoeud_estEgal);
-				if (LDC_taille(tmp) >= 2){
-					resultat = LDC_inserer(resultat, -1, voisin, NULL);
+			at2 = ABRIterateur_init(tmp2);
+			for (at2 = ABRIterateur_debut(at2); ! ABRIterateur_fin(at2); at2 = ABRIterateur_avancer(at2)){
+			
+				voisin = (GrapheNoeud) ABRIterateur_valeur(at2);
+				
+				tmp3 = ARN_fromLDC(GrapheNoeud_obtenirVoisins(voisin), ARNElement_adresse);
+				tmp = ARN_filtrer(tmp3, casesLibres);
+				ARN_free(&tmp3);
+				
+				if (ARN_taille(tmp) >= 2){
+					resultat = ARN_inserer(resultat, voisin, NULL);
 					++modifiesCeTour;
 					it3 = LDCIterateur_init(GrapheNoeud_obtenirVoisins(voisin), LDCITERATEUR_AVANT);
 					for (it3 = LDCIterateur_debut(it3); ! LDCIterateur_fin(it3); it3 = LDCIterateur_avancer(it3)){
 						caseLibre2 = (GrapheNoeud) LDCIterateur_valeur(it3);
 						if (GHElement_valeur(GrapheNoeud_obtenirElement(caseLibre2)) == J0 && \
-						    LDC_obtenirPosition(casesLibres, caseLibre2, (LDCElementEgal) GrapheNoeud_estEgal) < 0){
-						    casesLibres = LDC_inserer(casesLibres, 0, caseLibre2, NULL);
+						    ! ARN_chercher(casesLibres, caseLibre2)){
+						    casesLibres = ARN_inserer(casesLibres, caseLibre2, NULL);
 						}
 					}
 					LDCIterateur_free(&it3);
 				}
-				LDC_free(&tmp);
+				ARN_free(&tmp);
 			}
 			
-			LDC_free(&tmp2);
-			LDCIterateur_free(&it2);
+			ARN_free(&tmp2);
+			ABRIterateur_free(&at2);
+			if (modifiesCeTour)
+				break;
 			
 		}
-		LDCIterateur_free(&it);
+		ABRIterateur_free(&at);
 		
 	}
 	
-	LDC_free(&casesLibres);
-	LDC_free(&indicateurJ);
+	ARN_free(&casesLibres);
 	
 	return resultat;
 }
@@ -155,102 +171,125 @@ LDC noeudsRelies(GrapheNoeud noeud, GrapheNoeud indicateurJoueur, int ponts){
 LDC noeudsSuivants(GrapheHex g, LDC ldc, Joueur j, int ponts){
 	assert(LDC_taille(ldc) > 0);
 	
-	LDC coucheNPlusUn, coucheN, coucheNMoinsUn;
-	LDC casesPontees, tmp, tmp2, tmp3;
-	LDCIterateur it, it2;
+	ARN coucheNPlusUn, coucheN, coucheNMoinsUn;
+	ARN casesPontees, tmp, tmp2, tmp3/*, tmp4*/;
+	
+	LDCIterateur it2;
+	ABRIterateur at, at2/*, at3*/;
 	GrapheNoeud noeud, voisin, voisinDuVoisin;
-	GrapheNoeud indicJoueur;
 	
-	if (j == J1)
-		indicJoueur = GrapheHex_nord(g);
-	else
-		indicJoueur = GrapheHex_ouest(g);
-	
-	coucheNPlusUn = LDC_init();
-	coucheN = (LDC) LDC_obtenirElement(ldc, -1);
+	coucheNPlusUn = ARN_init(ARNElement_adresse);
+	coucheN = (ARN) LDC_obtenirElement(ldc, -1);
 	
 	if (LDC_taille(ldc) > 1)
-		coucheNMoinsUn = (LDC) LDC_obtenirElement(ldc, -2);
+		coucheNMoinsUn = (ARN) LDC_obtenirElement(ldc, -2);
 	else
 		coucheNMoinsUn = coucheN;
 	
 	
-	it = LDCIterateur_init(coucheN, LDCITERATEUR_AVANT);
-	for (it = LDCIterateur_debut(it); ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it)){
+	at = ABRIterateur_init(coucheN);
+	for (at = ABRIterateur_debut(at); ! ABRIterateur_fin(at); at = ABRIterateur_avancer(at)){
 		
-		/* On parcourt les noeuds de la couche n */
-		noeud = (GrapheNoeud) LDCIterateur_valeur(it);
+		/* On parcourt les voisins des noeuds de la couche n */
+		noeud = (GrapheNoeud) ABRIterateur_valeur(at);
 		it2 = LDCIterateur_init(GrapheNoeud_obtenirVoisins(noeud), LDCITERATEUR_AVANT);
 		
 		for (it2 = LDCIterateur_debut(it2); ! LDCIterateur_fin(it2); it2 = LDCIterateur_avancer(it2)){
 			voisin = (GrapheNoeud) LDCIterateur_valeur(it2);
 			
 			/* On trouve les voisins n'appartenant pas aux couches précédentes */
-			if (LDC_obtenirPosition(coucheN,        voisin, (LDCElementEgal) GrapheNoeud_estEgal) < 0 && \
-			    LDC_obtenirPosition(coucheNMoinsUn, voisin, (LDCElementEgal) GrapheNoeud_estEgal) < 0){
+			if (! ARN_chercher(coucheN,        voisin) && \
+			    ! ARN_chercher(coucheNMoinsUn, voisin)){
 				
 				/* Ces voisins sont libres */
 				if (GHElement_valeur(GrapheNoeud_obtenirElement(voisin)) == J0){
 					
 					/* On insère ce voisin et toutes les cases reliées n'appartenant pas aux couches précédentes */
-					tmp  = noeudsRelies(voisin, indicJoueur, ponts);
-					tmp2 = LDC_exfiltrer(tmp, coucheN, (LDCElementEgal) GrapheNoeud_estEgal);
-					tmp3 = LDC_exfiltrer(tmp2, coucheNMoinsUn, (LDCElementEgal) GrapheNoeud_estEgal); 
-					
-					coucheNPlusUn = LDC_fusion(coucheNPlusUn, tmp3);
-					
-					LDC_free(&tmp);
-					LDC_free(&tmp2);
+					tmp  = noeudsRelies(voisin, j, ponts);
+					/*tmp2 = ARN_exfiltrer(tmp, coucheN);
+					tmp3 = ARN_exfiltrer(tmp2, coucheNMoinsUn); 
+					*/
+					coucheNPlusUn = ARN_fusion(coucheNPlusUn, tmp);
+					/*
+					ARN_free(&tmp);
+					ARN_free(&tmp2);*/
 				}
 			}
 		}
 		LDCIterateur_libererMemoire(&it2);
 	}
-	LDCIterateur_libererMemoire(&it);
+	ABRIterateur_free(&at);
 	
 	/* Ponts : on cherche les noeuds pontables */
 	if (ponts){
 		
-		it = LDCIterateur_init(coucheNPlusUn, LDCITERATEUR_ARRIERE);
-		casesPontees = LDC_init();
+		at = ABRIterateur_init(coucheNPlusUn);
+		casesPontees = ARN_init(ABRElement_adresse);
 		
-		for (it = LDCIterateur_debut(it); ! LDCIterateur_fin(it); it = LDCIterateur_avancer(it)){
-			voisin = (GrapheNoeud) LDCIterateur_valeur(it);
+		for (at = ABRIterateur_debut(at); ! ABRIterateur_fin(at); at = ABRIterateur_avancer(at)){
+			voisin = (GrapheNoeud) ABRIterateur_valeur(at);
 			
 			
-			/* tmp2 = pseudo-couche n+2 */
-			tmp = LDC_exfiltrer(GrapheNoeud_obtenirVoisins(voisin), coucheN, (LDCElementEgal) GrapheNoeud_estEgal);
-			tmp2 = LDC_exfiltrer(tmp, coucheNPlusUn, (LDCElementEgal) GrapheNoeud_estEgal);
-			LDC_free(&tmp);
+			/* tmp2 = pseudo-couche n+2 : les voisins d'un noeud de la couche n+1 */
+			tmp3 = ARN_fromLDC(GrapheNoeud_obtenirVoisins(voisin), ARNElement_adresse);
+			tmp = ARN_exfiltrer(tmp3, coucheN);
+			tmp2 = ARN_exfiltrer(tmp, coucheNPlusUn);
+			ARN_free(&tmp);
+			ARN_free(&tmp3);
 		
 		
-			it2 = LDCIterateur_init(tmp2, LDCITERATEUR_AVANT);
-			for (it2 = LDCIterateur_debut(it2); ! LDCIterateur_fin(it2); it2 = LDCIterateur_avancer(it2)){
-				voisinDuVoisin = (GrapheNoeud) LDCIterateur_valeur(it2);
-			
+			at2 = ABRIterateur_init(tmp2);
+			for (at2 = ABRIterateur_debut(at2); ! ABRIterateur_fin(at2); at2 = ABRIterateur_avancer(at2)){
+				voisinDuVoisin = (GrapheNoeud) ABRIterateur_valeur(at2);
+							
 				if (GHElement_valeur(GrapheNoeud_obtenirElement(voisinDuVoisin)) == J0){
-					tmp3 = LDC_filtrer(GrapheNoeud_obtenirVoisins(voisinDuVoisin), coucheNPlusUn, (LDCElementEgal) GrapheNoeud_estEgal);
+					
+					/* Recherche de ponts avec voisinDuVoisin uniquement */
+					tmp = ARN_fromLDC(GrapheNoeud_obtenirVoisins(voisinDuVoisin), ARNElement_adresse);
+					tmp3 = ARN_filtrer(tmp, coucheNPlusUn);
+					ARN_free(&tmp);
 			
-					if (LDC_taille(tmp3) >= 2){
-						LDC_free(&tmp3);
-						tmp = noeudsRelies(voisinDuVoisin, indicJoueur, ponts);
-						tmp3 = LDC_exfiltrer(tmp, coucheN, (LDCElementEgal) GrapheNoeud_estEgal);
-						casesPontees = LDC_fusion(casesPontees, tmp3);
-						LDC_free(&tmp);
+					if (ARN_taille(tmp3) >= 2){
+						ARN_free(&tmp3);
+						tmp = noeudsRelies(voisinDuVoisin, j, ponts);
+						tmp3 = ARN_exfiltrer(tmp, coucheN);
+						casesPontees = ARN_fusion(casesPontees, tmp3);
+						ARN_free(&tmp);
 					}
 					else
-						LDC_free(&tmp3);
+						ARN_free(&tmp3);
+					
+					/* Recherche de ponts avec tous les noeuds reliés à voisinDuVoisin */
+					/* Cet algo produit des résultats 'bizarres' sans que je ne comprenne pourquoi. 
+					On gardera le plus précédent, moins complet mais plus stable */	
+					/*
+					tmp = noeudsRelies(voisinDuVoisin, noeudsDuJoueur, ponts);
+					tmp3 = ARN_init(ARNElement_adresse);
+					at3 = ABRIterateur_init(tmp);
+					for (at3 = ABRIterateur_debut(at3); ! ABRIterateur_fin(at3); at3 = ABRIterateur_avancer(at3)){
+						tmp3 = ARN_insererLDCSansDoublons(tmp3, GrapheNoeud_obtenirVoisins(ABRIterateur_valeur(at3)));
+					}
+					ABRIterateur_free(&at3);
+					tmp4 = ARN_filtrer(tmp3, coucheNPlusUn);
+					ARN_free(&tmp3);
+					if (ARN_taille(tmp4) >= 2)
+						casesPontees = ARN_fusionSansDoublons(casesPontees, tmp);
+					else
+						ARN_free(&tmp);
+					ARN_free(&tmp4);
+					*/
 				}
 			}
-			LDCIterateur_free(&it2);
-			LDC_free(&tmp2);
+			ABRIterateur_free(&at2);
+			ARN_free(&tmp2);
 		}
-		LDCIterateur_free(&it);
-		coucheNPlusUn = LDC_fusionSansDoublons(coucheNPlusUn, casesPontees, (LDCElementEgal) GrapheNoeud_estEgal);
+		ABRIterateur_free(&at);
+		coucheNPlusUn = ARN_fusionSansDoublons(coucheNPlusUn, casesPontees);
 	}
 	
 	
-	ldc = LDC_insererElement(ldc, -1, coucheNPlusUn, (LDCElementFree) LDC_libererMemoire);
+	ldc = LDC_insererElement(ldc, -1, coucheNPlusUn, (LDCElementFree) ARN_free);
+	
 	
 	
 	return ldc;
@@ -268,20 +307,16 @@ LDC noeudsSuivants(GrapheHex g, LDC ldc, Joueur j, int ponts){
  *            - les ièmes contiennent les noeuds joignables en i coup minimum
  */
 LDC GrapheHex_noeudsAccessiblesEnNCoups(GrapheHex g, GrapheNoeud noeud, int n, Joueur j, int ponts){
-	LDC ldc;
-	GrapheNoeud indicJoueur;
-	
-	if (j == J1)
-		indicJoueur = GrapheHex_nord(g);
-	else
-		indicJoueur = GrapheHex_ouest(g);
+	LDC ldc, tmp;
+	tmp = GrapheHex_groupes(g, j);
+	LDC_free(&tmp);
 	
 	ldc = LDC_init();
-	ldc = LDC_inserer(ldc, 0, noeudsRelies(noeud, indicJoueur, ponts), (LDCElementFree) LDC_free);
-	/*ldc = LDC_insererElement(ldc, 0, LDC_insererElement(LDC_init(), 0, noeud, NULL), (LDCElementFree) LDC_libererMemoire);*/
+	ldc = LDC_inserer(ldc, 0, noeudsRelies(noeud, j, ponts), (LDCElementFree) ARN_free);
 	
 	while (LDC_taille(ldc) < n + 1)
 		ldc = noeudsSuivants(g, ldc, j, ponts);
+	
 	
 	return ldc;
 }
@@ -292,20 +327,21 @@ LDC GrapheHex_noeudsAccessiblesEnNCoups(GrapheHex g, GrapheNoeud noeud, int n, J
  * \brief   Trouve la distance minimale entre deux noeuds, selon le joueur
  */
 int GrapheHex_distanceMini(GrapheHex g, GrapheNoeud n1, GrapheNoeud n2, Joueur j, int ponts){
-	LDC ldc, sousldc;
+	LDC ldc;
+	ARN arn;
 	int retour;
 	
-	ldc = LDC_init();
-	ldc = LDC_insererElement(ldc, 0, LDC_insererElement(LDC_init(), 0, n1, NULL), (LDCElementFree) LDC_libererMemoire);
+	ldc = GrapheHex_noeudsAccessiblesEnNCoups(g, n1, 0, j, ponts);
 	
-	sousldc = LDC_obtenirElement(ldc, -1);
-	while (LDC_obtenirPosition(sousldc, n2, (LDCElementEgal) GrapheNoeud_estEgal) < 0 && LDC_taille(sousldc) > 0){
+	arn = LDC_obtenirElement(ldc, -1);
+	while (! ARN_chercher(arn, n2) && ARN_taille(arn) > 0){
 		ldc = noeudsSuivants(g, ldc, j, ponts);
-		sousldc = LDC_obtenirElement(ldc, -1);
+		arn = LDC_obtenirElement(ldc, -1);
 	}		
-	if (LDC_taille(sousldc) == 0)
+	
+	if (ARN_taille(arn) == 0)
 		retour = -1;
-	else
+	else 
 		retour = LDC_taille(ldc) - 1;
 	
 	LDC_libererMemoire(&ldc);

@@ -486,6 +486,34 @@ Partie Partie_charger(const char * nomFichier){
 
 
 
+/*
+ * \fn Partie Partie_annuler(int nombreDeTours)
+ * \param p La partie à modifier
+ * \param nombreDeTours Le nombre de tours à annuler
+ * \return La partie lue
+ *
+ * \brief Annule les nombreDeTours derniers tours
+ *
+ * \pre  nomBreDeTours < Partie_obtenirTour(p)
+ */
+Partie Partie_annuler(Partie p, int nombreDeTours){
+	assert(nombreDeTours < Partie_obtenirTour(p));
+	int i;
+	ElemHisto eh;
+	
+	for (i = 0; i < nombreDeTours; ++i){
+		eh = (ElemHisto) LDC_obtenirElement(p->historique, -1);
+		Damier_modifierCase(p->damier, J0, eh->x, eh->y);
+		-- p->tour;
+		p->aQuiDeJouer = Joueur_suivant(p->aQuiDeJouer);
+		p->historique = LDC_enleverElement(p->historique, -1);
+	}
+	
+	return p;
+}
+
+
+
 /**
  * \fn void Partie_libererMemoire(Partie p)
  * \param p La partie à supprimer

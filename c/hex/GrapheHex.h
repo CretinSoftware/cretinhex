@@ -48,6 +48,10 @@ int GHElement_memeJoueur(GHElement e1, GHElement e2);
 
 int GrapheNoeud_memeJoueur(GrapheNoeud n1, GrapheNoeud n2);
 
+int GrapheNoeud_estJ0(GrapheNoeud n);
+int GrapheNoeud_estJ1(GrapheNoeud n);
+int GrapheNoeud_estJ2(GrapheNoeud n);
+
 void GHElement_libererMemoire(GHElement * e);
 
 

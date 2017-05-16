@@ -19,6 +19,9 @@ int int_egal(int * a, int * b){
 	return (*a == *b);
 }
 
+int int_eval(int * n){
+	return *n;
+}
 
 
 
@@ -79,8 +82,15 @@ int NUplet_egal(NUplet nu1, NUplet nu2){
 		++i;
 	}
 	
-	
 	return ok;
+}
+
+int NUplet_eval(NUplet nu){
+	int somme = 0;
+	int i;
+	for (i = 0; i < NUplet_dimension(nu); ++i)
+		somme += NUplet_get(nu, i);
+	return somme;
 }
 
 

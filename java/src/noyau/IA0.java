@@ -11,6 +11,7 @@ public class IA0 implements Utilisateur {
 
 
 	private String nom;     /**< \brief Nom de l'IA*/	
+	private Joueur j;       /**< \brief Nom de l'IA*/	
 	
 	/** \brief Chargement de la bibliothèque native de l'IA */
 	static { System.loadLibrary("cretinhex_randombot"); }
@@ -22,8 +23,9 @@ public class IA0 implements Utilisateur {
 	private native int[] randombotXjouer(int[] damier, int tailleDamier);
 	
 	/** \brief Constructeur d'après un nom et un joueur (J1 ou J2) */
-	public IA0(){
+	public IA0(Joueur j){
 		this.nom = "RandomBot";
+		this.j = j;
 		randombotXinit();
 	}
 
@@ -45,6 +47,14 @@ public class IA0 implements Utilisateur {
 	
 	public void setNom(String nom){
 		this.nom = nom;
+	}
+	
+	public Joueur getJoueur(){
+		return this.j;
+	}
+	
+	public String getExistance(){
+		return "ia0";
 	}
 	
 }

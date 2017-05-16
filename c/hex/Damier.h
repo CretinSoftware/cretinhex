@@ -88,6 +88,16 @@ Damier Damier_init(int l);
 
 
 /**
+ * \fn Damier Damier_copier(Damier d)
+ * \param d Le damier à copier
+ * \brief Duplique un damier
+ *
+ */
+Damier Damier_copier(Damier d);
+
+
+
+/**
  * \fn Damier Damier_modifierCase(Damier d, Joueur j, int x, int y)
  * \param d Le damier à modifier
  * \param j La valeur à entrer

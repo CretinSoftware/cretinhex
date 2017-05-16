@@ -27,7 +27,7 @@ public class PageOptions extends Page{
 				Application.j1 = new Humain(str, Joueur.J1);
 				break;
 			case 2:
-				Application.j1 = new IA0();
+				Application.j1 = new IA0(Joueur.J1);
 				break;
 			case 3:
 				Application.j1 = new BridgeBot(Joueur.J1);
@@ -42,7 +42,7 @@ public class PageOptions extends Page{
 				Application.j2 = new Humain(str, Joueur.J2);
 				break;
 			case 2:
-				Application.j2 = new IA0();
+				Application.j2 = new IA0(Joueur.J2);
 				break;
 			case 3:
 				Application.j2 = new BridgeBot(Joueur.J2);

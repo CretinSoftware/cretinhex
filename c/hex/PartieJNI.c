@@ -182,6 +182,16 @@ JNIEXPORT void JNICALL Java_noyau_PartieJNI_cretinhexXcharger
 	printf("Charger depuis : %s\n", nomFichier);
 	PARTIE_GLOBALE = Partie_charger(nomFichier);
 }
+
+/*
+ * Class:     noyau_PartieJNI
+ * Method:    cretinhexXannuler
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_noyau_PartieJNI_cretinhexXannuler
+  (JNIEnv * jEnv, jobject jObject, jint nombreDeTours){
+	PARTIE_GLOBALE = Partie_annuler(PARTIE_GLOBALE, nombreDeTours);
+}
 /*
  * Class:     cretinhex_PartieJNI
  * Method:    libererMemoire

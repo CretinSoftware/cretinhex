@@ -52,4 +52,12 @@ public class BridgeBot implements Utilisateur {
 		this.nom = nom;
 	}
 	
+	public Joueur getJoueur(){
+		return this.j;
+	}
+	
+	public String getExistance(){
+		return "bridgebot";
+	}
+	
 }

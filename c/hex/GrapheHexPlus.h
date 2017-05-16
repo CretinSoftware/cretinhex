@@ -12,6 +12,7 @@
 # define __GRAPHEHEXPLUS__
 
 # include "GrapheHex.h"
+# include "../cretinlib/ARNPlus.h"
 
 # include <stdio.h>
 # include <stdlib.h>

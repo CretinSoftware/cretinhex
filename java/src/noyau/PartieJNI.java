@@ -170,6 +170,14 @@ public class PartieJNI {
 	
 
 	/**
+	 * \fn native void cretinhexXcharger(String nomFichier)
+	 * \param nomFichier Le fichier de sauvegarde
+	 * \brief Charge la partie depuis un fichier
+	 */ 
+	protected native void cretinhexXannuler(int nombreDeTours);
+	
+
+	/**
 	 * \fn native int cretinhexXlibererMemoire()
 	 * \brief Libère la mémoire allouée à une partie.
 	 */ 
