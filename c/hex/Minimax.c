@@ -77,7 +77,7 @@ arbre_mnx creer_mnx(Damier D, int nbtour, int profondeur, int X, int Y)
 int Max_mnx(arbre_mnx A)
 {
 	int c = 0;
-	int i = 0
+	int i = 0;
 	while((i < A->nb_configurations_suivantes) && (c == 0))
 	{
 		c = c & A->configurations_suivantes[i++]->vers_victoire;
@@ -121,7 +121,7 @@ arbre_mnx noter_mnx(arbre_mnx A)
 	while ((i < A->nb_configurations_suivantes) && (A->vers_victoire == 1))
 	{
 		A->vers_victoire = A->configurations_suivantes[i]->vers_victoire;
-		i++
+		i++;
 	}
 	/*ATTENTION: Il me semble finalement me rendre compte que l'IA cherche a gagner a coup sûr, les branches quelle suivra serront forcément notée 1, puisque venant de la racine, elle suivra
 	 * des branches qui forcément, mène à sa victoire, sans que le joueur n'ai la possibilité de gagner. Elle suivra donc des branches qui auront toute leurs configurations se terminant 
@@ -408,4 +408,29 @@ void afficher_mnx(arbre_mnx A, char mode)
 }
 
 
+/**
+ *\brief obtenir un mnx gagnant si il existe, sinon, un au hasard depuis le noeud en paramètre
+ *\param A // le mnx père
+ */
 
+arbre_mnx obtenir_config_gagnante_mnx(arbre_mnx A)
+{
+	int i = 0;
+	while((A->configurations_suivantes[i]->vers_victoire != 1) && (i < A->nb_configurations_suivantes))
+	{
+		i++;
+	}
+	return A->configurations_suivantes[i];
+}
+
+/**
+ * \brief obtenir X et Y
+ * \param A // le noeud possédent les coordonnées
+ */
+
+void obtenir_XY_mnx(arbre_mnx A, int *X, int *Y)
+{
+	*X = A->coord_X;
+	*Y = A->coord_Y;
+}
+	

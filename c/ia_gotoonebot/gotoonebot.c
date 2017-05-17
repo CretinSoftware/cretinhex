@@ -1,4 +1,5 @@
 #include "gotoonebot.h"
+#include <stdlib.h>
 
 
 
@@ -15,10 +16,11 @@ typedef struct Et_gotoone
 
 gotoone gotoone_init(Joueur qui_est_ce)
 {
-	gotoone Le_gotoone = (gotoone) maloc(sizeof(gotoone));
+	gotoone Le_gotoone = (gotoone) malloc(sizeof(gotoone_interne));
 	/* Le_gotoone est un genre de batman super fort du hex, comme Le Batman est : Le Batman, Le Gotoone se doit d'être Le Gotoone*/
 	Le_gotoone->qui_suis_je = qui_est_ce;
 	Le_gotoone->mon_jeu = NULL;
+	return Le_gotoone;
 }
 
 /**
@@ -35,15 +37,8 @@ void gotoone_jouer(gotoone le_gotoone, Damier D, int *X, int *Y)
 		le_gotoone->mon_jeu = construir_mnx(D, le_gotoone->qui_suis_je);
 	}
 	
-	int i = 0;
-	while(le_gotoone->mon_jeu->configurations_suivantes[i] != 1)
-	{
-		i++;
-	}
-	
-	le_gotoone->mon_jeu = le_gotoone->mon_jeu->configurations_suivantes[i];
-	*X = le_gotoone->mon_jeu->coord_X;
-	*y = le_gotoone->mon_jeu->coord_Y;
+	le_gotoone->mon_jeu = obtenir_config_gagnante_mnx(le_gotoone->mon_jeu);
+	obtenir_XY_mnx(le_gotoone->mon_jeu, X, Y);
 }
 
 
@@ -57,7 +52,6 @@ void suprimer_gotoone(gotoone G)
 	{
 		suprimer_mnx(G->mon_jeu);
 	}
-	free(G->qui_suis_je);
 	free(G);
 }
 		
