@@ -88,6 +88,37 @@ arbre_mnx creer_mnx(Damier D, int nbtour, int profondeur, int X, int Y)
 
 
 /**
+ * \brief trouve le max de la condition de victoire des noeuds inférieurs
+ * \param A // le noeud servant de racine a l'évaluation
+ */
+int Max_mnx(arbre_mnx A)
+{
+	int c = 0;
+	int i = 0
+	while((i < A->nb_configurations_suivantes) && (c == 0))
+	{
+		c = c & A->configurations_suivantes[i++]->vers_victoire;
+	}
+	return c;
+}
+
+/**
+ * \brief trouve le min de la condition de victoire des noeuds inférieurs
+ * \param A // le noeud servant de racine a l'évaluation
+ */
+int Min_mnx(arbre_mnx A)
+{
+	int c = 1;
+	int i;
+	while((i < A->nb_configurations_suivantes) && (c == 1))
+	{
+		c = c ^ A->configurations_suivantes[i++]->vers_victoire;
+	}
+	return c;
+}
+
+
+/**
  * \brief noter minimax
  * \param A // l'arbre Minimax a noter
  */
@@ -97,7 +128,7 @@ arbre_mnx noter_mnx(arbre_mnx A)
 	int i;
 	for(i = 0; i < A->nb_configurations_suivantes; i++)
 	{
-		if(A->configurations_suivantes[i]->vers_victoire == 2)
+		if(A->configurations_suivantes[i]->vers_victoire == -1)
 		{
 			noter_mnx(A->configurations_suivantes[i]);
 		}
@@ -107,6 +138,7 @@ arbre_mnx noter_mnx(arbre_mnx A)
 	while ((i < A->nb_configurations_suivantes) && (A->vers_victoire == 1))
 	{
 		A->vers_victoire = A->configurations_suivantes[i]->vers_victoire;
+		i++
 	}
 	/*ATTENTION: Il me semble finalement me rendre compte que l'IA cherche a gagner a coup sûr, les branches quelle suivra serront forcément notée 1, puisque venant de la racine, elle suivra
 	 * des branches qui forcément, mène à sa victoire, sans que le joueur n'ai la possibilité de gagner. Elle suivra donc des branches qui auront toute leurs configurations se terminant 
@@ -118,7 +150,33 @@ arbre_mnx noter_mnx(arbre_mnx A)
 }
 
 /**
- *\brief libère l'espace mamoire occupée par le tableau configurations_suivantes d'un noeud
+ * \brief noter minimax V2
+ */
+arbre_mnx noter_mnx_V2(arbre_mnx A)
+{
+	int i;
+	for(i = 0; i < A->nb_configurations_suivantes; i++)
+	{
+		if(A->configurations_suivantes[i]->vers_victoire == -1)
+		{
+			noter_mnx_V2(A->configurations_suivantes[i]);
+		}
+	}
+	if(A->hauteur%2 == 0)
+	{
+		A->vers_victoire = Max_mnx(A);
+	}
+	else
+	{
+		A->vers_victoire = Min_mnx(A);
+	}
+	return A;
+}
+
+
+
+/**
+ *\brief libère l'espace mémoire occupée par le tableau configurations_suivantes d'un noeud
  *\param A //le noeud sur le quel le tableau de configurations_suivantes n'est plus utile
  */
 
@@ -189,11 +247,11 @@ arbre_mnx ajouter_mnx(Damier D, int tour_de_jeu_en_entree, int profondeur, int X
 	{
 		if(a->hauteur%2 == 0)
 		{
-			a->vers_victoire = 0;
+			a->vers_victoire = 1;
 		}
 		else
 		{
-			a->vers_victoire = 1;
+			a->vers_victoire = 0;
 		}
 	}
 			
