@@ -12,14 +12,12 @@ gotoone TRUC = NULL;
 
 JNIEXPORT void JNICALL Java_noyau_Gotoonebot_gotoonebotXinit
   (JNIEnv * jEnv, jobject jObj, jint joueur){
-		printf("JNI : Init GTOB : %d\n", joueur);
 		TRUC = gotoone_init((Joueur) joueur);
 	}
 
 
 JNIEXPORT jintArray JNICALL Java_noyau_Gotoonebot_gotoonebotXjouer
   (JNIEnv * jEnv, jobject jObj, jintArray plateau, jint largeur){
-	printf("JNI : Jeu GTOB\n");
 		
 		
 		

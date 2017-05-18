@@ -4,7 +4,7 @@ include ../../parametres/make.txt
 
 
 # Séries de tests
-SERIE_TESTS   = LDC ABR ARN Graphe GrapheHex Partie Minimax BridgeBot
+SERIE_TESTS   = LDC ABR ARN Graphe GrapheHex Partie Minimax BridgeBot GotooneBot
 SERIE_TESTS_MEMOIRE =  $(foreach t,$(SERIE_TESTS), $(t)_memoire)
 
 
@@ -99,6 +99,13 @@ main_BridgeBot:  $(foreach f, LDC ARNPlus Graphe utile , ../$(C_CRETINLIB)/$(DOS
 	$(CC) $(C_OPT) $^ -o $@
 	
 	
+main_GotooneBot: $(foreach f, LDC Graphe utile , ../$(C_CRETINLIB)/$(DOS_O)/$(f).o) \
+                 $(foreach f, Joueur Damier GrapheHex Minimax, ../$(C_HEX)/$(DOS_O)/$(f).o) \
+                 $(foreach f, gotoonebot, ../$(C_GOTOONEBOT)/$(DOS_O)/$(f).o) \
+                 $(foreach f, tests main_GotooneBot, $(DOS_O)/$(f).o)
+	$(CC) $(C_OPT) $^ -o $@
+	
+	
 	
 
 
@@ -160,5 +167,5 @@ maxclean: clean
 	rm -f $(GENERE)
 
 
-.PHONY: all tests $(SERIE_TESTS) tests_memoire $(SERIE_TESTS_MEMOIRE) clean maxclean
+.PHONY: all tests $(SERIE_TESTS) tests_memoire memory_tests $(SERIE_TESTS_MEMOIRE) clean maxclean
 	

@@ -137,8 +137,8 @@ public class DialoguePrefsJoueurs extends Dialogue {
 		this.existanceJ2 = new JComboBox();
 		this.existanceJ2.addItem("Humain");
 		this.existanceJ2.addItem("RandomBot");
-		this.existanceJ2.addItem("BridgeBot");
 		this.existanceJ2.addItem("GotooneBot");
+		this.existanceJ2.addItem("BridgeBot");
 		this.existanceJ2.setPreferredSize(new Dimension(100, 50));
 		if (Application.j2.getExistance().equals("ia0"))
 			this.existanceJ2.setSelectedItem("RandomBot");

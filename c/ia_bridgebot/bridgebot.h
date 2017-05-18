@@ -10,7 +10,7 @@
 # define __CRETINHEX_BRIDGEBOT__
 
 # define BRIDGEBOT_PONTS 1
-# define BRIDGEBOT_DEBUG 1
+# define BRIDGEBOT_DEBUG 0
 
 
 # include "../hex/Joueur.h"

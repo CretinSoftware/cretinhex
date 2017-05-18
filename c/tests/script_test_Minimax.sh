@@ -145,21 +145,20 @@ test $? -eq 0 || ko=`expr $ko + 1`
 #idem
 
 # Pattern du fichier en sortie
-f_out="$REP_OUT/notation_@1x@2_@3.txt"
+f_out="$REP_OUT/notation_@1x0_@3.txt"
 
 # Pattern de la commande pour créer le fichier en entrée
 mk_f_in="./mk_sauvegardes @1 1 0 $f_in"
 
 # Pattern de la commande de test
-commande="./main_Minimax -n $f_in @2 n"
+commande="./main_Minimax -m $f_in @2 n"
 
 # Pattern de la commande de vérification
 verif="" 
 
 
-# Désactiové pour l'instant...
-# ./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "" "" "$f_out" "$commande" "$verif" "$TAILLE_DAMIER" "$JOUEURS" "$bcl"
-# test $? -eq 0 || ko=`expr $ko + 1`
+./exec_serie_tests.sh $use_valgrind "$f_in" "$mk_f_in" "" "" "$f_out" "$commande" "$verif" "$TAILLE_DAMIER" "1" "$bcl"
+test $? -eq 0 || ko=`expr $ko + 1`
 
 
 

@@ -19,7 +19,6 @@ public class Gotoonebot implements Utilisateur
 		this.nom = "Rainbow Dash";
 		this.j = J;
 		gotoonebotXinit(this.j.toInt());
-		System.out.println("Init faite");
 	}
 	
 		public int[] jouer(Partie p){

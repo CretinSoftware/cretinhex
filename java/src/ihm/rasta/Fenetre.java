@@ -419,9 +419,7 @@ public class Fenetre extends JFrame implements ActionListener {
 		
 		String tab[] = dialogue.afficher();
 		
-		if (tab == null)
-			System.out.println("Annulé");
-		else {
+		if (tab != null){
 			if (tab[0].equals("Humain"))
 				Application.j1 = new Humain(tab[1], Joueur.J1);
 			else if (tab[0].equals("RandomBot"))
@@ -615,7 +613,7 @@ public class Fenetre extends JFrame implements ActionListener {
 		
 			/* Par défaut : rien */
 			else {
-				System.out.println("Action " + cmd + " non gérée par la fenêtre");
+				System.err.println("Action " + cmd + " non gérée par la fenêtre");
 			}
 		}
 	}
