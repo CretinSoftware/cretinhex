@@ -80,7 +80,7 @@ int Max_mnx(arbre_mnx A)
 	int i = 0;
 	while((i < A->nb_configurations_suivantes) && (c == 0))
 	{
-		c = c & A->configurations_suivantes[i++]->vers_victoire;
+		c = A->configurations_suivantes[i++]->vers_victoire;
 	}
 	return c;
 }
@@ -95,7 +95,7 @@ int Min_mnx(arbre_mnx A)
 	int i;
 	while((i < A->nb_configurations_suivantes) && (c == 1))
 	{
-		c = c ^ A->configurations_suivantes[i++]->vers_victoire;
+		c = A->configurations_suivantes[i++]->vers_victoire;
 	}
 	return c;
 }
@@ -164,14 +164,16 @@ arbre_mnx noter_mnx_V2(arbre_mnx A)
 			noter_mnx_V2(A->configurations_suivantes[i]);
 		}
 	}
-	if(A->hauteur%2 == 0)
+	
+	if(Max_mnx(A) == 1)
 	{
-		A->vers_victoire = Max_mnx(A);
+		A->vers_victoire = 0;
 	}
 	else
 	{
-		A->vers_victoire = Min_mnx(A);
+		A->vers_victoire = 1;
 	}
+	
 	return A;
 }
 
@@ -210,7 +212,6 @@ arbre_mnx suprimer_config_suivante_mnx(arbre_mnx A)
 arbre_mnx ajouter_mnx(Damier D, int tour_de_jeu_en_entree, int profondeur, int X, int Y, 
 											int nb_config_suivantes, Joueur celui_qui_joue)
 {
-	printf("prof=%d x=%d y=%d\n", profondeur, X, Y);
 	arbre_mnx a = creer_mnx(D, tour_de_jeu_en_entree, profondeur, X, Y);
 	a->damier_du_noeud = Damier_modifierCase(Damier_copier(D), celui_qui_joue, X, Y);
 	a->nb_configurations_suivantes = nb_config_suivantes;
@@ -248,14 +249,7 @@ arbre_mnx ajouter_mnx(Damier D, int tour_de_jeu_en_entree, int profondeur, int X
 	
 	if (a->nb_configurations_suivantes == 0)
 	{
-		if(a->hauteur%2 == 0)
-		{
-			a->vers_victoire = 1;
-		}
-		else
-		{
-			a->vers_victoire = 0;
-		}
+		a->vers_victoire = 1;
 	}
 	
 	GrapheHex_libererMemoire(&graphe_damier_du_noeud);		
@@ -416,7 +410,7 @@ void afficher_mnx(arbre_mnx A, char mode)
 arbre_mnx obtenir_config_gagnante_mnx(arbre_mnx A)
 {
 	int i = 0;
-	while((A->configurations_suivantes[i]->vers_victoire != 1) && (i < A->nb_configurations_suivantes))
+	while((A->configurations_suivantes[i]->vers_victoire != 1) && (i < A->nb_configurations_suivantes - 1))
 	{
 		i++;
 	}

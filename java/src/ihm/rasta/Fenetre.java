@@ -428,6 +428,8 @@ public class Fenetre extends JFrame implements ActionListener {
 				Application.j1 = new IA0(Joueur.J1);
 			else if (tab[0].equals("BridgeBot"))
 				Application.j1 = new BridgeBot(Joueur.J1);
+			else if (tab[0].equals("GotooneBot"))
+				Application.j1 = new Gotoonebot(Joueur.J1);
 				
 			if (tab[2].equals("Humain"))
 				Application.j2 = new Humain(tab[3], Joueur.J2);
@@ -435,6 +437,8 @@ public class Fenetre extends JFrame implements ActionListener {
 				Application.j2 = new IA0(Joueur.J2);
 			else if (tab[2].equals("BridgeBot"))
 				Application.j2 = new BridgeBot(Joueur.J2);
+			else if (tab[2].equals("GotooneBot"))
+				Application.j2 = new Gotoonebot(Joueur.J2);
 				
 			this.CADRE_ACCUEIL = new CadreAccueil(this);
 			this.CADRE_NOUVELLE_PARTIE = new CadreNouvellePartie(this);

@@ -39,8 +39,8 @@ else
 	LIB_GOTOONEBOT   = $(LIB_GOTOONEBOT_SO)
 endif
 
-TOUTES_LIB           = $(LIB_CRETINHEX) $(LIB_IA0) $(LIB_BRIDGEBOT)
-#TOUTES_LIB           = $(LIB_CRETINHEX) $(LIB_IA0) $(LIB_BRIDGEBOT) $(LIB_GOTOONEBOT)
+#TOUTES_LIB           = $(LIB_CRETINHEX) $(LIB_IA0) $(LIB_BRIDGEBOT)
+TOUTES_LIB           = $(LIB_CRETINHEX) $(LIB_IA0) $(LIB_BRIDGEBOT) $(LIB_GOTOONEBOT)
 
 
 # Dossiers du projet (relatif au projet)
@@ -60,6 +60,7 @@ JAVA_CLASS_APP       = cretinplay.Application
 JAVA_CLASS_PARTIEJNI = noyau.PartieJNI
 JAVA_CLASS_IA0       = noyau.IA0
 JAVA_CLASS_BRIDGEBOT = noyau.BridgeBot
+JAVA_CLASS_GOTOONEBOT= noyau.Gotoonebot
 
 
 # Dossiers C
@@ -69,7 +70,7 @@ C_IA0                = ia_randombot
 C_BRIDGEBOT          = ia_bridgebot
 C_GOTOONEBOT         = ia_gotoonebot
 C_TESTS              = tests
-C_TOUT               = $(C_CRETINLIB) $(C_HEX) $(C_IA0) $(C_BRIDGEBOT) $(C_TESTS)
+C_TOUT               = $(C_CRETINLIB) $(C_HEX) $(C_IA0) $(C_BRIDGEBOT) $(C_GOTOONEBOT) $(C_TESTS)
 
 
 # Compilation C

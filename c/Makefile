@@ -60,6 +60,11 @@ $(LIB_BRIDGEBOT_SO): $(foreach f, LDC ARNPlus Graphe utile, $(C_CRETINLIB)/$(DOS
                      $(foreach f, bridgebot bridgebotJNI, $(C_BRIDGEBOT)/$(DOS_O)/$(f).o)
 	gcc -shared $(C_OPT) $^ -o $@
 	
+$(LIB_GOTOONEBOT_SO): $(foreach f, LDC Graphe utile, $(C_CRETINLIB)/$(DOS_O)/$(f).o) \
+                      $(foreach f, Joueur Damier GrapheHex Minimax, $(C_HEX)/$(DOS_O)/$(f).o) \
+                      $(foreach f, gotoonebot gotoonebotJNI, $(C_GOTOONEBOT)/$(DOS_O)/$(f).o)
+	gcc -shared $(C_OPT) $^ -o $@
+	
 	
 
 # Windows : le fera-t'on ?

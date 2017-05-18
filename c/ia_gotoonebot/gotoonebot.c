@@ -32,12 +32,11 @@ gotoone gotoone_init(Joueur qui_est_ce)
  */
 void gotoone_jouer(gotoone le_gotoone, Damier D, int *X, int *Y)
 {
-	if(le_gotoone->mon_jeu == NULL)
-	{
-		le_gotoone->mon_jeu = construir_mnx(D, le_gotoone->qui_suis_je);
-	}
+	le_gotoone->mon_jeu = construir_mnx(D, le_gotoone->qui_suis_je);
+	le_gotoone->mon_jeu = noter_mnx_V2(le_gotoone->mon_jeu);
 	
 	le_gotoone->mon_jeu = obtenir_config_gagnante_mnx(le_gotoone->mon_jeu);
+	
 	obtenir_XY_mnx(le_gotoone->mon_jeu, X, Y);
 }
 

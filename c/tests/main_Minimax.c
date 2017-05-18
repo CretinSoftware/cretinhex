@@ -109,6 +109,25 @@ void test_notation(const char * fichier, int joueur, char mode){
 
 
 
+/**
+ * \brief Test de notation
+ */
+void test_notation_V2(const char * fichier, int joueur, char mode){
+	Damier d;
+	arbre_mnx a;
+	
+	d = Damier_construireDepuisFichier(fichier);
+	a = construir_mnx(d, (Joueur) joueur);
+	a = noter_mnx_V2(a);
+	
+	afficher_mnx(a, mode);
+	
+	suprimer_mnx(a);
+	Damier_libererMemoire(&d);
+}
+
+
+
 
 
 int main(int argc, char * argv[]){
@@ -125,6 +144,11 @@ int main(int argc, char * argv[]){
 		case 'n':
 			if (argc != 5) erreurUsage(argv[0]);
 			test_notation(argv[2], atoi(argv[3]), argv[4][0]);
+			break;
+		/* Notation 2 */
+		case 'm':
+			if (argc != 5) erreurUsage(argv[0]);
+			test_notation_V2(argv[2], atoi(argv[3]), argv[4][0]);
 			break;
 			
 		default:
