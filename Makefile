@@ -53,6 +53,9 @@ doc: javadoc cdoc
 
 client: $(FICHIERS_CLIENT)
 
+tests tests_memoire memory_tests:
+	make $@ -C c/tests
+
 
 
 # L'application java
@@ -124,5 +127,5 @@ maxmaxclean: maxclean doc-clean
 
 	
 
-.PHONY: all java c raccourci client copie_fichiers_client doc javadoc cdoc clean maxclean maxmaxclean
+.PHONY: all java c raccourci client copie_fichiers_client doc javadoc cdoc tests tests_memoire memory_tests clean maxclean maxmaxclean
 
