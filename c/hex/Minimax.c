@@ -2,7 +2,7 @@
  * \file Minimax.c
  * \brief Code source de l'IA basée sur la structure decisionnelle Minimax
  * \author Francois Mahe
- * \version 1.0
+ * \version 2.0
  * \date 10 Avril 2017
  *
  * \todo TAD
@@ -42,19 +42,20 @@ typedef struct Et_arbre_minimax
 	int coord_Y;
 	int nb_configurations_suivantes;
 	Damier damier_du_noeud;
-	struct Et_arbre_minimax **configurations_suivantes; /* C'est un tableau : l'adresse d'une liste d'adresses */
+	struct Et_arbre_minimax **configurations_suivantes;
 }arbre_mnx_interne;
 
 
 /**
  * \brief creer une structure decisionnelle pour une IA minimax
  * \param D //le damier donné lors du premier tour de jeu de l'IA
- * \
+ * \param nbtour //le nombre de tour écoulé dans le damier D
+ * \param profondeur // la profondeur du noeud créer
+ * \param X //la coordonnée X du noeud creer
+ * \param Y //la coordonnée Y du noeud creer
  */
 arbre_mnx creer_mnx(Damier D, int nbtour, int profondeur, int X, int Y)
 {
-	/* idIA ne sert peut être plus a rien*/
-	/* ancienne definition de la fonction : arbre_mnx creer_mnx(Damier D, int nbtour, Joueur idIA)*/
 	arbre_mnx a = (arbre_mnx) malloc(sizeof(arbre_mnx_interne));
 	assert(a != NULL);
 	
@@ -123,36 +124,14 @@ arbre_mnx noter_mnx(arbre_mnx A)
 		A->vers_victoire = A->configurations_suivantes[i]->vers_victoire;
 		i++;
 	}
-	/*ATTENTION: Il me semble finalement me rendre compte que l'IA cherche a gagner a coup sûr, les branches quelle suivra serront forcément notée 1, puisque venant de la racine, elle suivra
-	 * des branches qui forcément, mène à sa victoire, sans que le joueur n'ai la possibilité de gagner. Elle suivra donc des branches qui auront toute leurs configurations se terminant 
-	 * sur une feuille de profondeur impaire, les branches aillant des noeuds se terminant sur des profondeur paire serront forcément élliminées, puisque si le joueurs est bon, il choisira
-	 * forcément un coup le faisant gagner si il en a la possibilité. Le fait de se diriger vers une branche faisant perdre l'IA ne serra pas de son fait, mais celui de son adversaire,
-	 * adopter une politique de notation différente en fonction d'un noeud de profondeur pair ou impaire est donc inutile, puisque ce n'est pas l'IA qui joue à la place de son adversaire.
-	 */
 	
-	/*NOTE: Il me semble que je ne suis pas tout à fait d'accord avec ta boucle while. 
-	 * Elle dit qu'un noeud est gagnant si tous ses fils sont gagnants, ce qui n'est pas vrai.
-	 *
-	 * D'après moi il y a deux façons de voir la chose, les deux ressemblent assez à ta solution, mais pas pile :
-	 * 
-	 * Solution 1. La note 1 veut dire que l'ia gagne, la note 0 veut dire que l'ia perd.
-	 * Dans ce cas, la notation dépend de la profondeur du noeud (i.e. de qui va poser le pion)
-	 * Si l'ia va poser le pion, alors un fils gagnant (note = 1) suffit : l'ia le choisira
-	 * Si l'adversaire va poser le pion, alors un fils perdant (note = 0) suffit pour perdre, il faudrait tous les fils gagnant (note = 1) pour gagner
-	 *
-	 * Solution 2. La note 1 veut dire que celui qui va poser le pion va gagner (donc, selon la profondeur, c'est l'ia ou son adversaire)
-	 * Dans ce cas, un noeud est perdant (note = 0) si l'un de ses fils est gagnant (note = 1)
-	 * car un joueur est perdant si au coup suivant l'adversaire est gagnant.
-	 *
-	 * Je pense que les deux marchent.
-	 * L'ia cherche donc un coup parmi les fils de la racine (situation actuelle) qui est noté 1 
-	 * 
-	 */
 	return A;
 }
 
 /**
- * \brief noter minimax V2
+ * \brief noter minimax version 2
+ * \param A // la racine de l'arbre a noter
+ * \note fonction dissociée de la construction pour pouvoir la tester de manière indépendante.
  */
 arbre_mnx noter_mnx_V2(arbre_mnx A)
 {
@@ -199,14 +178,13 @@ arbre_mnx suprimer_config_suivante_mnx(arbre_mnx A)
 /**
  * \brief ajoute a une racine de type arbre_mnx, les arbres_mnx venant composer son tableau de configurations suivantes. 
  * La fonction est récurcive, les branches sont construites les unes aprés les autres depuis la racine.
- * \param A //le nouvel arbre ( il est créer avant appel de la fonction )
  * \param D //le damier du père ( modifié dans la fonction, noeud par noeud )
- * \param idIA // identificateur de l'IA ( serra utile lors de la notation des branches )
  * \param tour_de_jeu_en_entree //tour de jeu du nouvel arbre ( incrémenté a l'appel de la fonction, depuis celui du père)
- * \param X
- * \param Y
- * \param nb_config_suivantes
- * \param celui_qui_joue / modifié a chaque appel récurcif grace a la fonction Joueur_suivant
+ * \param profondeur //la profondeur du noeud ajouté a l'appel de la fontion
+ * \param X //coordonnée X du noeud ajouté
+ * \param Y //coordonnée Y du noeud ajouté
+ * \param nb_config_suivantes // précalculée puis transmise dpuis l'arbre appellant
+ * \param celui_qui_joue //modifié a chaque appel récurcif grace a la fonction Joueur_suivant
  */
 
 arbre_mnx ajouter_mnx(Damier D, int tour_de_jeu_en_entree, int profondeur, int X, int Y, 
@@ -260,9 +238,9 @@ arbre_mnx ajouter_mnx(Damier D, int tour_de_jeu_en_entree, int profondeur, int X
 
 /**
  * \brief permet de connaitre le nombre de tour joué dans le damier récupéré par l'IA.
- * \param D
- * \param *nbcoupJ1
- * \param *nbcoupJ2
+ * \param D // le damier sur le quel opérer le calcul
+ * \param *nbcoupJ1 // pointeur vers le nombre de coup de J1
+ * \param *nbcoupJ2 // pointeur vers le nombre de coup de J2
  */
 
 int calcul_nb_tour(Damier D, int *nbcoupJ1, int *nbcoupJ2)
@@ -291,11 +269,7 @@ int calcul_nb_tour(Damier D, int *nbcoupJ1, int *nbcoupJ2)
 /**
  * \brief construit un arbre decisionelle de type minimax
  * \param D \ un damier quelquonc en entrée
- * \param idIA \ l'identifiant de l'IA (J1 ou J2)
- * \note joueur idIA désigne ici quel joueur est l'IA ATTENTION idée de génie: pour suprimer la question : a qui c'est de jouer dans mon arbre d'IA ?
- * l'IA peu ne créer son arbre qu'a son premier tour de jeu lors d'une partie et non, au lancement de la partie. 
- * Ainsi, dans l'arbre, l'IA commence toujours par placer ses propre pions dans les arbre succédants a la racine de son arbre, 
- * l'IA ne donnera 1 que pour les noeud menant vers une victoire en rang (profondeur) impaire.
+ * \param idIA \ l'identifiant de l'IA (J1 ou J2) utile malgrés sont absence dans la structure, pour pouvoir simmuler la partie en cours et savoir quoi placer sur une case du plateau
  */
 
 arbre_mnx construir_mnx(Damier D, Joueur idIA)
@@ -331,7 +305,6 @@ arbre_mnx construir_mnx(Damier D, Joueur idIA)
 				++i;
 			}
 		
-	/*return a = noter_mnx(a);*/
 	return a;
 }
 
@@ -362,8 +335,9 @@ void suprimer_mnx(arbre_mnx A)
 
 
 
-
-
+/**
+ *\brief ne sers que pour générer de l'affichage dans des tests et ne serra ps commentée
+ */
 void afficher_mnx_recursif(arbre_mnx A, const char * legende, char mode)
 {
 	char str[256];
@@ -396,6 +370,9 @@ void afficher_mnx_recursif(arbre_mnx A, const char * legende, char mode)
 	}
 }
 
+/**
+ * \brief ne sers que pour générer de l'affichage dans des tests et ne serra ps commentée
+ */
 void afficher_mnx(arbre_mnx A, char mode)
 {
 	afficher_mnx_recursif(A, "Noeud 0", mode);
@@ -403,10 +380,9 @@ void afficher_mnx(arbre_mnx A, char mode)
 
 
 /**
- *\brief obtenir un mnx gagnant si il existe, sinon, un au hasard depuis le noeud en paramètre
- *\param A // le mnx père
- */
-
+ *\brief recupère le fils contenant la première configuration suivante gagnante dans un arbre_mnx
+ *\param A // l'arbre a scanner
+ */ 
 arbre_mnx obtenir_config_gagnante_mnx(arbre_mnx A)
 {
 	int i = 0;
