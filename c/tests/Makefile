@@ -43,6 +43,8 @@ Minimax Minimax_memoire: main_Minimax mk_sauvegardes
 
 BridgeBot BridgeBot_memoire: main_BridgeBot mk_sauvegardes
 
+GotooneBot GotooneBot_memoire: main_GotooneBot mk_sauvegardes
+
 $(SERIE_TESTS):
 	-./script_test_$@.sh
 

@@ -27,7 +27,7 @@ erreur(){
 
 # Répertoires
 REP_IN=fichiers_in
-REP_OUT=fichiers_out/BridgeBot
+REP_OUT=fichiers_out/GotooneBot
 
 # Dimension des grilles
 DIMENSIONS="2"

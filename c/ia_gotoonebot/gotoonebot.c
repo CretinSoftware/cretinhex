@@ -41,6 +41,7 @@ void gotoone_jouer(gotoone le_gotoone, Damier D, int *X, int *Y)
 	obtenir_XY_mnx(le_gotoone->mon_jeu, X, Y);
 	
 	suprimer_mnx(memoire_mnx);
+	le_gotoone->mon_jeu = NULL;
 	//on peut pas actuellement suprimer le_gotoone car on en a besoin au tours suivants, il faudrait le free a la fin de la partie, mais a quel moment est-il déjà initialisé ?
 	
 }
