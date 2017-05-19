@@ -32,12 +32,17 @@ gotoone gotoone_init(Joueur qui_est_ce)
  */
 void gotoone_jouer(gotoone le_gotoone, Damier D, int *X, int *Y)
 {
+	arbre_mnx memoire_mnx;
 	le_gotoone->mon_jeu = construir_mnx(D, le_gotoone->qui_suis_je);
 	le_gotoone->mon_jeu = noter_mnx_V2(le_gotoone->mon_jeu);
+	memoire_mnx = le_gotoone->mon_jeu;
 	
 	le_gotoone->mon_jeu = obtenir_config_gagnante_mnx(le_gotoone->mon_jeu);
-	
 	obtenir_XY_mnx(le_gotoone->mon_jeu, X, Y);
+	
+	suprimer_mnx(memoire_mnx);
+	//on peut pas actuellement suprimer le_gotoone car on en a besoin au tours suivants, il faudrait le free a la fin de la partie, mais a quel moment est-il déjà initialisé ?
+	
 }
 
 
@@ -53,4 +58,5 @@ void suprimer_gotoone(gotoone G)
 	}
 	free(G);
 }
+
 		
