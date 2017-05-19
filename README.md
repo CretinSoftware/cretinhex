@@ -28,15 +28,15 @@ Utilisez le makefile pour compiler l'application entière
 
 Et lancez l'application avec l'exécutable produit
 
-	./mon_premier_programme
+	./cretinhex_thegame
 
 Cet exécutable comprend quelques options :
 
 	# Utiliser l'interface graphique
-	./mon_premier_programme -ihm [classic|rasta|abeille]
+	./cretinhex_thegame -ihm [classic|rasta|abeille]
 	
 	# Paramètres de l'interface en ligne de commande (système unix, largeur du terminal)
-	./mon_premier_programme [-ihm console] [-sys=unix] [-l xxx]
+	./cretinhex_thegame [-ihm console] [-sys=unix] [-l xxx]
 
 
 Options du makefile
@@ -88,4 +88,8 @@ Un peu de nettoyage
 	# Grand nettoyage : efface tout ce qui est re-générable
 	make maxmaxclean
 
+
+Le makefile général, ainsi que tous les sous-makefiles (présents dans les sous-dossiers) lisent le fichier *parametres/make.txt*.
+On y trouve les constantes nécessaires à la compilation.  
+En cas de difficulté, les premières lignes, contenant des réglages personnels, peuvent être modifiées sans risque.
 
