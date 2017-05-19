@@ -33,10 +33,10 @@ Et lancez l'application avec l'exécutable produit
 Cet exécutable comprend quelques options :
 
 	# Utiliser l'interface graphique
-	./mon_premier_programme -ihm \[classic|rasta|abeille\]
+	./mon_premier_programme -ihm [classic|rasta|abeille]
 	
 	# Paramètres de l'interface en ligne de commande (système unix, largeur du terminal)
-	./mon_premier_programme \[-ihm console\] \[-sys=unix\] \[-l xxx\]
+	./mon_premier_programme [-ihm console] [-sys=unix] [-l xxx]
 
 
 Options du makefile
@@ -45,7 +45,7 @@ Options du makefile
 Compile
 
 	# Tout
-	make \[all\]
+	make [all]
 	
 	# La partie C
 	make c
@@ -53,7 +53,7 @@ Compile
 	# La partie Java
 	make java
 
-Lance les séries de tests
+Lance les séries de tests (un avant-goût du dossier c/tests/)
 
 	# Tous les tests
 	make tests
@@ -61,7 +61,6 @@ Lance les séries de tests
 	# Tous les tests en vérifiant les fuites mémoires
 	make tests_memoire
 	make memory_tests
-Plus de tests dans le dossier c/tests/
 
 Génère la documentation doxygen dans le dossier doc/
 
@@ -81,7 +80,7 @@ Crée le dossier client (sans les codes sources cachés)
 Un peu de nettoyage
 
 	# Nettoie les dossiers c/ et java/
-	make \[max\]clean
+	make [max]clean
 	
 	# Efface la doc
 	make doc-clean

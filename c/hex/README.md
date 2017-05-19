@@ -34,7 +34,7 @@ Minimax
 L'arbre Minimax utilise cette méthode de notation :
 
   - En français : *Un placement de pion est gagnant si les bords opposés sont reliés, où si l'adversaire ne peut que perdre au coup suivant. Il est perdant dans les autres cas*
-  - En matheux : *Une feuille est notée 1. Un nœud est noté 1 si tous ses fils sont à 0, et noté0 sinon*
+  - En matheux : *Une feuille est notée 1. Un nœud est noté 1 si tous ses fils sont à 0, et noté 0 sinon*
 
 La note qui remonte récursivement est alors relative au joueur dont c'est le tour, est annonce la victoire (ou la défaite) :
 

@@ -7,8 +7,13 @@ Description
 
 Voici l'IA qui utilise l'arbre Minimax
 
-Gotoone *(prononcez Gotoune)*  
+Gotoone *(prononcez Gotoune ou Gotouwane)*  
 Étymologie : *Aglomération des mots go-to-one, ce que se contente de faire cette IA*
+
+Contenu :
+
+  - **gotoonebot** : Implémentation de l'IA (elle cherche dans un arbre minimax des fils notés 1)
+  - **gotoonebotJNI** : Interface JNI pour l'utilisation de l'IA en Java
 
 Cette IA est imbattable (du moins si elle commence), et toute erreur face à elle est impardonnable.  
 Elle adopte toujours la stratégie gagnante, si elle existe. Or nous savons que cette stratégie existe pour le premier joueur.
