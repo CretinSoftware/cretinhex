@@ -25,7 +25,8 @@ import ihm.rasta.apparences.*;
 public class Fenetre extends JFrame implements ActionListener {
 
 
-	
+	/** \brief  Thread pour l'action *play* de l'historique 
+	 *  \note   C'est un peu précaire ! */
 	public static class ThreadHisto extends Thread {
 		private Fenetre fen;
 		public ThreadHisto(String name, Fenetre fen){
@@ -42,10 +43,10 @@ public class Fenetre extends JFrame implements ActionListener {
 		}
 	}
 	
-	public static String MNEMO_ACC = "accueil";
-	public static String MNEMO_NV  = "nvPartie";
-	public static String MNEMO_JEU = "jeu";
-	public static String MNEMO_HST = "histo";
+	public static String MNEMO_ACC = "accueil";   /**< \brief Mnémonique pour le CadreAccueil */
+	public static String MNEMO_NV  = "nvPartie";  /**< \brief Mnémonique pour le CadreNouvellePartie */
+	public static String MNEMO_JEU = "jeu";       /**< \brief Mnémonique pour le CadreJeu */
+	public static String MNEMO_HST = "histo";     /**< \brief Mnémonique pour le CadreHisto */
 	
 	
 	private static Cadre CADRE_ACCUEIL;
@@ -54,7 +55,7 @@ public class Fenetre extends JFrame implements ActionListener {
 	private static Cadre CADRE_HISTO;
 	private static String idCadreActif;
 	
-	public static Apparence apparence;
+	public static Apparence apparence;            /**< \brief Jeu d'images et de couleurs */
 	
 	private CardLayout cl;
 	private JPanel contenu;
@@ -79,7 +80,7 @@ public class Fenetre extends JFrame implements ActionListener {
 		this.init();
 	}
 	
-	
+	/** \brief Construction de fenêtre (suite) */
 	private void init(){
 		
 		
@@ -281,12 +282,13 @@ public class Fenetre extends JFrame implements ActionListener {
 	
 	
 	
-	
+	/** \brief Actualise les cadres */ 
 	void rafraichirCadres(){
 		this.initCadres();
 		this.afficherCadre(this.idCadreActif);
 	}
 	
+	/** \brief Redessine les composants des cadres */
 	void redessinerCadres(){
 		this.CADRE_NOUVELLE_PARTIE = new CadreNouvellePartie(this);
 		this.CADRE_ACCUEIL = new CadreAccueil(this);
@@ -295,6 +297,8 @@ public class Fenetre extends JFrame implements ActionListener {
 		this.rafraichirCadres();
 	}
 	
+	/** \brief Passe un cadre en premier plan
+	 *  \param mnemo Mnémonique désignant un Cadre */
 	void afficherCadre(String mnemo){
 		
 		if (mnemo.equals("jeu")){
@@ -339,6 +343,7 @@ public class Fenetre extends JFrame implements ActionListener {
 		
 	}
 	
+	/** \brief Accesseur à un cadre particulier */
 	Cadre getCadre(String mnemo){
 		if (mnemo.equals(MNEMO_NV))
 			return this.CADRE_NOUVELLE_PARTIE;
@@ -353,6 +358,7 @@ public class Fenetre extends JFrame implements ActionListener {
 		return null;
 	}
 	
+	/** \brief Accesseur pour le cadre actif */
 	Cadre getCadreActif(){
 		if (this.idCadreActif.equals(MNEMO_NV))
 			return this.CADRE_NOUVELLE_PARTIE;
@@ -365,6 +371,7 @@ public class Fenetre extends JFrame implements ActionListener {
 		return null;
 	}
 	
+	/** \brief Modifie un cadre par effet de bord */
 	void setCadre(Cadre cadre, String mnemo){
 		if (mnemo.equals(MNEMO_NV))
 			this.CADRE_NOUVELLE_PARTIE = cadre;
@@ -413,6 +420,7 @@ public class Fenetre extends JFrame implements ActionListener {
 		}
 	}
 	
+	/** \brief Affiche le dialogue de sélection des joueurs */
 	public void prefsJoueurs(){
 	
 		DialoguePrefsJoueurs dialogue = new DialoguePrefsJoueurs(this);
@@ -449,7 +457,7 @@ public class Fenetre extends JFrame implements ActionListener {
 	
 	
 	
-	
+	/** \brief *Ecouteur* (listener) d'événement */
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
 		Random rand = new Random();

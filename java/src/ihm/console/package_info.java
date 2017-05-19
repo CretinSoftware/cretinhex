@@ -1,7 +1,7 @@
 /**
  * \package   ihm.console
  * \brief     Interface utilisateur en mode "Ligne de commande"
- * \author    Pierre Pomeret-Coquot
+ * \author    François Mahé
  * \date      samedi 1er avril
  *
  * \par       Description

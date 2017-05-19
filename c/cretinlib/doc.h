@@ -3,10 +3,10 @@
 
 /**
  * \defgroup pack_cretinlib cretinlib
- * \brief Manipulation de données (listes, etc.)
- * \author Cretin Software Interactive
- * \version 1.0
- * \date 12 mars 2017
+ * \brief Manipulation de données (listes, arbres, etc.)
+ * \author Pierre Pomeret-Coquot
+ * \version 1.2
+ * \date mars 2017
  *
  * \par Description
  * Structures de données manipulant des listes d'objets génériques

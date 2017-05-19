@@ -20,10 +20,11 @@
  * \defgroup pack_cretinlib_Graphe Graphe
  * \ingroup pack_cretinlib
  * \author Pierre POMERET-COQUOT
+ * \brief   Graphe générique
  *
  * \par Description
- * Permet la manipulation de graphe (noeuds et liens entre les noeuds)
- * depuis leurs points d'entrée/
+ * Permet la manipulation de graphe (noeuds et liens entre les noeuds - i.e. sommets et arêtes)
+ * depuis leurs points d'entrée
  *
  * La structure manipule et renvoie des LDC. D'une manière générale, la libération de la mémoire
  * se fait naturellement grâce aux fonctions spécifiques à cette structure.
@@ -35,7 +36,7 @@
  * @{               
  */
 
-
+/** \brief Graphe générique */
 typedef struct Graphe * Graphe;
 
 
@@ -44,6 +45,7 @@ typedef struct Graphe * Graphe;
 
 /**
  * \defgroup pack_cretinlib_GrapheElement GrapheElement
+ * \brief Element à insérer dans un noeud du Graphe
  * 
  * \par Description
  * Type manipulé par les Graphes, dans lesquels vous pouvez stocker vos &laquo; trucs &raquo;
@@ -52,7 +54,7 @@ typedef struct Graphe * Graphe;
  * @{               
  */
 
-typedef void * GrapheElement;                           /**< Pointeur vers un truc externe, pour être contenu dans un LDCElement */
+typedef void * GrapheElement;                           /**< Pointeur vers un truc externe, pour être contenu dans un GrapheNoeud */
 typedef void (*GrapheElementFree)(GrapheElement *);     /**< Callback pour libérer la mémoire allouée à un LDCElement par un script externe */
 typedef int  (*GrapheElementEgal)(GrapheElement, GrapheElement); /**< Affirme que deux éléments sont égaux, ou non */
 
@@ -70,6 +72,7 @@ typedef int  (*GrapheElementEgal)(GrapheElement, GrapheElement); /**< Affirme qu
 
 /**
  * \defgroup pack_cretinlib_GrapheNoeud GrapheNoeud
+ * \brief Noeud, ou sommet du Graphe
  * 
  * \par Description
  * Type manipulé par les Graphes, dans lesquels vous pouvez stocker vos &laquo; trucs &raquo;
@@ -164,7 +167,11 @@ void GrapheNoeud_libererMemoire(GrapheNoeud * noeud);
  */
 Graphe Graphe_init(LDC pointsEntree);
 
+/** 
+ * \brief   Affiche un graphe d'une manière illisible
+*/
 void Graphe_afficher(Graphe g);
+
 /**
  * \brief Donne ne nombre de points d'entrées (passé lors de l'initialisation)
  */
@@ -243,7 +250,6 @@ Graphe Graphe_fusionner(Graphe g, GrapheNoeud n1, GrapheNoeud n2);
 /**
  * \brief   Libère la mémoire allouée à un Graphe
  * \attention Ne libère pas la mémoire allouée aux noeuds !
- * \todo    Trouver l'heuristique permettant de nettoyer tous les noeuds
  */
 void Graphe_libererMemoire(Graphe * g);
 

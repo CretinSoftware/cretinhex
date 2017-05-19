@@ -90,8 +90,6 @@
  * \struct Partie
  * \brief Permet la manimulation de parties
  *
- * C'est une structure de ce type qui est utilisée dans la bibliothèque JNI produite
- *
  * TAD dans le fichier header
  * \see Partie.h
  */

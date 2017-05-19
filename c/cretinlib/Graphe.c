@@ -19,20 +19,10 @@
  * \ingroup pack_cretinlib
  * \author Pierre POMERET-COQUOT
  *
- * \par Description
- * \todo Rapide description
  *
  *
  * \par Type abstrait de données
- *
- * <pre style="line-height:1.1em;">
- * SORTE :            Graphe
- * 
- * UTILISE :          GrapheElement, LDC, int
- *
- * CONSTRUCTEURS :    Graphe_init                                       int[] -> Graphe
-
- * \todo Finir le TAD     
+ * voir le .h   
  *
  * @{               
  */

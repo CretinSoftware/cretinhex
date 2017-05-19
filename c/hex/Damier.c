@@ -11,8 +11,6 @@
  *
  *
  * Type abstrait de données dans le fichier header
- *
- * \todo Eviter la confusion entre le type Damier et les variables de type (Joueur *)
  *                    
  */
 
@@ -31,7 +29,6 @@
  * - largeur : La largeur de la matrice carrée
  * - cellules : un tableau de largeur * largeur variables de type Joueur
  *
- * C'est une structure de ce type qui est utilisée dans la bibliothèque JNI produite
  */
 typedef struct Damier {
 	int largeur;           /**< \brief Largeur du damier (i.e; hauteur : le damier est carré) */

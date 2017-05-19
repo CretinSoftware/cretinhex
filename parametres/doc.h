@@ -3,7 +3,7 @@
  * \brief   Commentaires pour Doxygen
  * \author  Pierre POMERET-COQUOT
  * \version 1.0
- * \date    4 mars 2017
+ * \date    Printemps 2017
  *
  * Ici sont les pages définitions de groupes du menu principal.
  *
@@ -21,18 +21,16 @@
  * Et il vit que cela était bon.
  * 
  * \par Documentation
- *   - \ref accueil_c "Bibliothèque C : cretinhex"      
- *   - \ref accueil_java "Démonstrateur Java : playhex"  
+ *   - \ref accueil_c "Bibliothèques C"      
+ *   - \ref accueil_java "Application Java"
  *
  * \par Infomations supplémentaires
  *   - \ref RH "Présentation de l'équipe" 
- *   - \ref paperasse "Paperasse liée au projet" 
+ *   - \ref paperasse "Documents produits dans le cadre du projet" 
  * 
- * \todo Renommer paperasse
  *
- *
- * \version 0.8.4 béta
- * \date 4 mars 2017
+ * \version 1.2
+ * \date Printemps 2017
  * \author François Mahé
  * \author Pierre Pomeret-Coquot
  *
@@ -47,7 +45,7 @@
  *
  * Il s'agit d'un travail collectif effectué par les co-pharaons de Cretin Software Interactive, à savoir :
  *  - François MAHE
- *    - Numéro étudiant <i>x</i>
+ *    - Numéro étudiant 21 50 62 01
  *    - Groupe 4.1
  *    - Mél : francois.mahe31@gmail.com
  *  - Pierre POMERET-COQUOT
@@ -55,7 +53,6 @@
  *    - Groupe 4.2
  *    - Mél : pierre.pomeret@univ-tlse3.fr
  *
- * \todo Terminer la page des ressources humaines
  */
 
 
@@ -92,7 +89,7 @@
 
 
 /**
- * \defgroup paperasse Paperasse
+ * \defgroup paperasse Papiers
  * \brief Collection de papiers rendus pour le Projet S4
  * @{
  */
@@ -105,7 +102,6 @@
 	 * sur lequel le client et l'équipe de développement se sont mis d'accord.
 	 *
 	 * \see <a href="../../papiers/Dossier_de_specification.pdf"> Document PDF</a>
-	 * \see <a href="../../papiers/Dossier_de_specification.odt"> Document ODT</a>
 	 */
 
 	/** 
@@ -115,7 +111,15 @@
 	 * Le dossier de conception contient les diagrammes UML et les TADs sur lesquels nous nous appuyons pour développer ce logiciel.
 	 * 
 	 * \see <a href="../../papiers/Dossier_de_conception.pdf"> Document PDF</a>
-	 * \see <a href="../../papiers/Dossier_de_conception.odt"> Document ODT</a>
+	 */
+
+	/** 
+	 * \file Bilan.pdf
+	 * \brief Bilan
+	 *
+	 * Le document de bilan contient le bilan, ainsi qu'une analyse de la complexité de certains modules
+	 * 
+	 * \see <a href="../../papiers/Bilan.pdf"> Document PDF</a>
 	 */
 /** @} */
 /* Fin de la paperasse */

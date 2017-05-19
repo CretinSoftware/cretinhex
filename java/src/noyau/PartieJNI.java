@@ -147,7 +147,6 @@ public class PartieJNI {
 	 * \return Le joueur gagnant, J0 si la partie est en cours
 	 * \brief A-t'on un gagnant ?
 	 *
-	 * \attention La fonctionnalité n'est pas codé en C, la fonction renvoie toujours J0
 	 */ 
 	protected native int cretinhexXquiGagne();
 	

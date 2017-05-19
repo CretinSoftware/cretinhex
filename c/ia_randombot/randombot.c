@@ -12,8 +12,8 @@
 # include "randombot.h"
 
 /**
- * \defgroup c_pack_ia_randombot IA0 : randombot
- * \ingroup  c_pack_ia
+ * \defgroup pack_ia_randombot IA0 : randombot
+ * \ingroup  pack_ia
  * \brief    IA jouant des coups valides aléatoires
  * \author   Pierre Pomeret-Coquot
  * \version  1.1

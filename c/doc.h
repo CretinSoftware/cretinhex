@@ -10,15 +10,17 @@
  */
  
 /**
- * \mainpage Bibliothèque c : cretinhex
+ * \mainpage Bibliothèques c pour cretinhex
  * \anchor accueil_c
  *
  * <a href="../../html/index.html">Retour à la page générale du projet</a>
  *
- * Vous consultez la documentation de la bibliothèque cretinhex.
+ * Vous consultez la documentation de la **partie C**.
  * 
- *   - Documentation des types et fonctions pour hex [\subpage pack_hex]
- *   - Documentation des types et fonctions fournis par cretinlib [\subpage pack_cretinlib]
+ *   - \subpage pack_cretinlib : Types génériques
+ *   - \subpage pack_hex : Types spécifiques au jeu de Hex
+ *   - \subpage pack_ia : Intelligences artificielles
+ *   - \subpage pack_tests : Tests des modules
  *
  * Ce travail a été réalisé par François MAHÉ et Pierre POMERET-COQUOT
  *
@@ -26,9 +28,16 @@
 
 
 /**
- * \defgroup c_pack_ia Intelligences Artificielles
+ * \defgroup pack_ia Intelligences Artificielles
  * \brief    Regroupe les IA
  */
+
+
+/**
+ * \defgroup pack_tests Tests
+ * \brief    Tests de tous les modules
+ */
+
 
 
 /**
@@ -42,5 +51,6 @@
  * \brief Joue des coups valides aléatoires
  *
  * \dir c/tests
+ * \ingroup pack_tests
  * \brief Programmes de test des modules
  */

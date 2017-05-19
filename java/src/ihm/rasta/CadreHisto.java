@@ -1,6 +1,6 @@
 /**
- * \class     ihm.rasta.CadreJeu
- * \brief     Le cadre pour afficher l'historique (remplace le cadre jeu)
+ * \class     ihm.rasta.CadreHisto
+ * \brief     Le cadre pour afficher l'historique
  * \author    Pierre Pomeret-Coquot
  * \date      7 mai
  */
@@ -42,12 +42,13 @@ public class CadreHisto extends Cadre {
 		Action.OUVRIR
 	};
 	
-	
+	/** \brief Constructeur : cadre *vide* */
 	public CadreHisto(Fenetre f){
 		super(f);
 		this.play = false;
 	}
 
+	/** \brief Constructeur : cadre d'après une partie ouverte */
 	public CadreHisto (Fenetre f, Partie p){
 		super(f);
 		this.play = false;
@@ -56,6 +57,7 @@ public class CadreHisto extends Cadre {
 		this.init();
 	}
 
+	/** \brief Constructeur : d'après lui-même */
 	public CadreHisto (CadreHisto c){
 		super(c.getFenetre());
 		this.play = c.getPlay();

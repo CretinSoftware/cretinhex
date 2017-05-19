@@ -20,9 +20,10 @@
  * \author Pierre POMERET-COQUOT
  * \version 1.0
  * \date 1 mars 2017
+ * \brief Liste doublement chaînée
  *
  * \par Description
- * \todo Rapide description
+ * Une simple liste en O(n)
  *
  *
  * \par Type abstrait de données
@@ -40,8 +41,7 @@
  *                    LDC_taille                                     LDC -> int
  *                    LDC_libererMemoire                      LDCElement -> _____
  *
- * </pre>
- * \todo Finir le TAD     
+ * </pre>    
  *
  * @{               
  */
@@ -58,7 +58,8 @@
 
 /**
  * \defgroup pack_cretinlib_LDCElement LDCElement
- * 
+ * \brief Elément de LDC
+ *
  * \par Description
  * Type manipulé par les LDC, dans lesquels vous pouvez stocker vos &laquo; trucs &raquo;
  * 
@@ -133,6 +134,8 @@ LDC LDC_init();
  *
  */
 LDC LDC_insererElement(LDC ldc, int pos, LDCElement e, LDCElementFree free);
+
+/** \brief Alias de \ref LDC_insererElement */
 LDC LDC_inserer(LDC ldc, int pos, LDCElement e, LDCElementFree free);
 
 /**
@@ -143,6 +146,8 @@ LDC LDC_inserer(LDC ldc, int pos, LDCElement e, LDCElementFree free);
  *
  */
 LDCElement LDC_obtenirElement(LDC ldc, int pos);
+
+/** \brief Alias de \ref LDC_obtenirElement */
 LDCElement LDC_obtenir(LDC ldc, int pos);
 
 
@@ -152,6 +157,8 @@ LDCElement LDC_obtenir(LDC ldc, int pos);
  \brief renvoie la position d'un élément, -1 si absent
  */
 int LDC_obtenirPosition(LDC ldc, LDCElement e, LDCElementEgal egal);
+
+/** \brief Alias de \ref LDC_obtenirPosition */
 int LDC_chercher(LDC ldc, LDCElement e, LDCElementEgal egal);
 
 
@@ -163,6 +170,8 @@ int LDC_chercher(LDC ldc, LDCElement e, LDCElementEgal egal);
  *
  */
 LDC LDC_enleverElement(LDC ldc, int pos); 
+
+/** \brief Alias de \ref LDC_enleverElement */
 LDC LDC_enlever(LDC ldc, int pos); 
 
 
@@ -241,6 +250,8 @@ void LDC_afficher(LDC ldc);
  *
  */
 void LDC_libererMemoire(LDC * ldc);
+
+/** \brief Alias de \ref LDC_libererMemoire */
 void LDC_free(LDC * ldc);
 
 
@@ -292,6 +303,8 @@ LDCIterateur LDCIterateur_init(LDC ldc, int sens);
  * \param it Pointeur vers un itérateur
  */
 void LDCIterateur_libererMemoire(LDCIterateur * it);
+
+/** \brief Alias de \ref LDCIterateur_libererMemoire */
 void LDCIterateur_free(LDCIterateur * it);
 
 /**

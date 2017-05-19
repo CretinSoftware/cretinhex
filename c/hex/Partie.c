@@ -5,13 +5,6 @@
  * \version 1.0
  * \date 1er mars 2017
  *
- * \todo Gestion des sauvegardes
- * \todo Historique
- * \todo Détermination du gagnant
- * \todo Graphe simplifié
- *
- *
- *
  * Partie est un type permettant de manipuler des parties de Hex en C.
  * Il est développé dans le cadre du projet S4 (UPS Tlse3, L2 Info, session 2016-2017).
  *
@@ -268,7 +261,6 @@ Joueur * Partie_obtenirTabJoueurs(Partie p){
  *
  * \req 0 < n &le; Partie_obtenirTour(p)
  *
- * \todo Travailler avec un itérateur !
  */
 Joueur * Partie_obtenirTabJoueursHisto(Partie p, int n){
 	Damier d = Damier_init(Damier_obtenirLargeur(p->damier));
@@ -410,7 +402,6 @@ void formatFichierIncorrect(const char * nomFichier){
  * (i.e. créé avec Partie_sauvegarder)
  *
  * \attention Impossible de charger des sauvegardes du tour 0 ! Que faire ?
- * \todo Trouver comment charger des sauvegardes du tour 0, ou l'interdire...
  */
 Partie Partie_charger(const char * nomFichier){
 
@@ -451,7 +442,6 @@ Partie Partie_charger(const char * nomFichier){
 	
 	
 	/* Les pions sont placés d'après l'historique. Plus de vérif... */
-	/** \todo Vérification de la correspondance damier / historique */
 	
 	/* Historique + premier joueur + aQuiDeJouer + vérification des coups ! */
 	fscanf(f, "\\game\n");

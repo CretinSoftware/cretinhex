@@ -15,30 +15,16 @@
  *
  * <a href="../../html/index.html">Retour à la page générale du projet</a>
  *
- *
- * Ce travail a été réalisé par François MAHÉ et Pierre POMERET-COQUOT
- *
- * \todo Ettofer cette description.
+ * L'application java est composé de trois paquetages :
+ *  - \ref cretinplay : *main*, interprétation de la commande passé et lancement d'une ihm
+ *  - \ref ihm : deux ihm (interfaces-utilisateur) permettent d'interagir avec le noyau
+ *       - ihm.console : interface en ligne de commande
+ *       - ihm.rasta : interface graphique utilisant awt et swing 
+ *  - \ref noyau : *cœur de calcul* de l'application, utilisant les bibliothèques natives (JNI)
  *
  */
 
 
 
 
-
-
-/**
- * \defgroup java_pack_JNI Classes utilisant JNI
- * \brief Interfaces JNI avec les bibliothèques externes
- * \version 1.2
- * \author Pierre Pomeret-Coquot
- * \date 12 mars 2017
- *
- * Ces classes sont dédiées à la communication avec les bibliothèques externes. Elles permettent :
- *  - La manipulation de partie
- *  - Les décisions des joueurs non-humains
- *
- * \note En développement
- * \todo Des joueurs non-humains, mêmes factices
- */
 	

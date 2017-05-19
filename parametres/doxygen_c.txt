@@ -32,7 +32,7 @@ DOXYFILE_ENCODING      = UTF-8
 # title of most generated pages and in a few other places.
 # The default value is: My Project.
 
-PROJECT_NAME           = "Bibliothèque C : cretinhex"
+PROJECT_NAME           = "Bibliothèques C pour cretinhex"
 
 # The PROJECT_NUMBER tag can be used to enter a project or revision number. This
 # could be handy for archiving the generated documentation or if some version
@@ -44,7 +44,7 @@ PROJECT_NUMBER         =
 # for a project that appears at the top of each page and should give viewer a
 # quick idea about the purpose of the project. Keep the description short.
 
-PROJECT_BRIEF          = "Bibliothèque C développée dans le cadre de l'UE projet S4 (Univ tlse3, L2 Info, Session 2016-2017) afin de gérer une partie de Hex"
+PROJECT_BRIEF          = "Bibliothèques C développée dans le cadre de l'UE projet S4 (Univ tlse3, L2 Info, Session 2016-2017) afin de gérer une partie de Hex et fournir des IA"
 
 # With the PROJECT_LOGO tag one can specify an logo or icon that is included in
 # the documentation. The maximum height of the logo should not exceed 55 pixels

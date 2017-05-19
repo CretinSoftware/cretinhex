@@ -1,6 +1,6 @@
 /**
  * \class     ihm.rasta.Action
- * \brief     Action réalisables, accompagnées d'une légende unique
+ * \brief     Mnémoniques des actions réalisables, accompagnées d'une légende unique
  * \author    Pierre Pomeret-Coquot
  * \date      3 mai
  */

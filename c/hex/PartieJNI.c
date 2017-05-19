@@ -21,7 +21,6 @@
 
 /** 
  * La variable globale PARTIE_GLOBALE stocke la partie en cours
- * \todo Trouver comment stocker la partie en mémoire / la transmettre à java
  */
 Partie PARTIE_GLOBALE = NULL;
 

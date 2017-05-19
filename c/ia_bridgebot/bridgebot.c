@@ -46,8 +46,6 @@ void BridgeBot_jouer(Damier d, int joueur, int * x, int * y, int ponts){
 	LDC noeudsAPrendre, listeDepuisA, listeDepuisB;
 	ARN tmpA, tmpB, tmp2A, tmp2B, tmp;
 	LDCIterateur it;
-	/*ABRIterateur at;
-	GrapheNoeud n;*/
 	
 	
 	noeudsAPrendre = LDC_init();
@@ -63,26 +61,7 @@ void BridgeBot_jouer(Damier d, int joueur, int * x, int * y, int ponts){
 		j = distance + 1 - i;
 		tmpA = LDC_obtenirElement(listeDepuisA, i);
 		tmpB = LDC_obtenirElement(listeDepuisB, j);
-		/*
-		tmp2A = ARN_init(ARNElement_adresse);
-		tmp2B = ARN_init(ARNElement_adresse);
 		
-		at = ABRIterateur_init(tmpA);
-		for (at = ABRIterateur_debut(at); ! ABRIterateur_fin(at); at = ABRIterateur_avancer(at)){
-			n = (GrapheNoeud) ABRIterateur_valeur(at);
-			if (GHElement_valeur(GrapheNoeud_obtenirElement(n)) == J0)
-				tmp2A = ARN_inserer(tmp2A, n, NULL);
-		}
-		ABRIterateur_free(&at);
-		
-		at = ABRIterateur_init(tmpB);
-		for (at = ABRIterateur_debut(at); ! ABRIterateur_fin(at); at = ABRIterateur_avancer(at)){
-			n = (GrapheNoeud) ABRIterateur_valeur(at);
-			if (GHElement_valeur(GrapheNoeud_obtenirElement(n)) == J0)
-				tmp2B = ARN_inserer(tmp2B, n, NULL);
-		}
-		ABRIterateur_free(&at);
-		*/
 		tmp2A = ARN_filtrerCondition(tmpA, (ARNElementEval) GrapheNoeud_estJ0);
 		tmp2B = ARN_filtrerCondition(tmpB, (ARNElementEval) GrapheNoeud_estJ0);
 		tmp = ARN_filtrer(tmp2A, tmp2B);

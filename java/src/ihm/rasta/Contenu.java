@@ -1,6 +1,6 @@
 /**
  * \class     ihm.rasta.Contenu
- * \brief     Contenu des pages d'aide, à propos, etc... (bref, du texte)
+ * \brief     Textes des pages d'aide, à propos, etc.
  * \author    Pierre Pomeret-Coquot
  * \date      6 mai
  */

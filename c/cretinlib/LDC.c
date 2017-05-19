@@ -45,6 +45,7 @@ int int_estEgal(int * a, int * b){
 /**
  * \defgroup pack_cretinlib_LDCCellule LDCCellule
  * \ingroup pack_cretinlib_LDC
+ * \brief Cellule de LDC
  *
  * \par Description
  * LDCCellule est une simple cellule de LDC, connaissant son prédécesseur et son successeur.

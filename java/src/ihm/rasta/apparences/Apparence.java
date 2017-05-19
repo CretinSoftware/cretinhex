@@ -1,6 +1,6 @@
 /**
  * \interface ihm.rasta.apparences.Apparence
- * \brief     Ce que fait une Apparence : donner des urls
+ * \brief     Palette d'images et de couleurs pour l'application
  * \author    Pierre Pomeret-Coquot
  * \date      6 mai
  */
@@ -53,7 +53,10 @@ public interface Apparence {
 	
 	public static final String[] NOM_JOUEURS_PAR_DEFAUT = null;
 
+	/** \brief Chemin d'accès à une image */
 	public String url(Apparence.Image ref);
+	
+	/** \brief Chemin d'accès à l'image d'un utilisateur */
 	public String url(Utilisateur u);
 	
 	public Color couleur(Apparence.Couleur ref);
