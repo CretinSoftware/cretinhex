@@ -6,6 +6,7 @@
 # include <stdlib.h>
 # include <assert.h>
 
+# include "utile.h"
 # include "ABR.h"
 
 
@@ -137,7 +138,7 @@ ABRCellule ABRCellule_rotationG(ABRCellule a){
 
 
 int ABRElement_adresse(ABRElement e){
-	return (int) (unsigned long long int) e;
+	return adresseComplete(e);
 }
 
 

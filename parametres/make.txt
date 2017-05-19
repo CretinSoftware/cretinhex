@@ -10,8 +10,10 @@
 # JAVA_HOME          = /usr/lib/jvm/java-7-openjdk-amd64
 JAVA_HOME            = $(subst /jre,,$(shell jrunscript -e 'java.lang.System.out.println(java.lang.System.getProperty("java.home"));'))
 SYSTEME              = unix
-DEV                  = oui
+# Architecture 32 ou 64 bits
+ARCHITECTURE         = 32
 
+DEV                  = oui
 
 # Executable
 EXE                  = mon_premier_programme

@@ -14,7 +14,7 @@ FICHIERS_C = $(wildcard *.c)
 
 
 # Tout
-all: $(foreach f, $(FICHIERS_C:.c=.o), $(DOS_O)/$(f))
+all: selon_archi $(foreach f, $(FICHIERS_C:.c=.o), $(DOS_O)/$(f))
 
 # Dépendances
 -include $(foreach f, $(FICHIERS_C:.c=.d), $(DOS_D)/$(f))
@@ -35,7 +35,10 @@ $(DOS_O):
 $(DOS_D):
 	mkdir $(DOS_D)
 	
-	
+selon_archi:
+	cp utile_$(ARCHITECTURE).h utile.h
+
+
 	
 
 # Nettoyage
@@ -43,6 +46,6 @@ clean:
 	rm -fr $(DOS_O) $(DOS_D)
 maxclean: clean
 
-.PHONY: all clean maxclean
+.PHONY: selon_archi all clean maxclean
 
 
