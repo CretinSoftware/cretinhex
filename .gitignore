@@ -1,7 +1,7 @@
 !.gitignore
 doc/
 rendu_client
-mon_premier_programme
+cretinhex_thegame
 java/bin
 c/*.so
 c/*/dep

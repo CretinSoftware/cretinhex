@@ -16,7 +16,7 @@ ARCHITECTURE         = 32
 DEV                  = oui
 
 # Executable
-EXE                  = mon_premier_programme
+EXE                  = cretinhex_thegame
 
 
 # Bibliothèques
